@@ -28,7 +28,7 @@ public record ErrorResponse(
 ) {
 
 	private ErrorResponse(ErrorCode code, List<FieldError> errors) {
-		this(LocalDateTime.now(), code.getCode, errors, code.getMessage());
+		this(LocalDateTime.now(), code.getCode(), errors, code.getMessage());
 	}
 
 	private ErrorResponse(ErrorCode code) {
