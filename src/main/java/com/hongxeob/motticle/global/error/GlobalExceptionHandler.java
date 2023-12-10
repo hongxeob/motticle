@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
+import com.hongxeob.motticle.global.error.exception.RequiredAuthenticationException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,6 +32,14 @@ public class GlobalExceptionHandler {
 		ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode());
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(RequiredAuthenticationException.class)
+	public ResponseEntity<ErrorResponse> handleRequiredAuthenticationException(RequiredAuthenticationException e) {
+		// 인증을 필요로하지만 토큰이 헤더에 들어있지 않은 경우(토큰이 null인 경우)
+		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.REQUIRED_AUTHENTICATION);
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 	}
 
 	@ExceptionHandler(MissingServletRequestParameterException.class)
