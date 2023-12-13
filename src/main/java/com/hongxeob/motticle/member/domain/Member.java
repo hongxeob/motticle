@@ -50,4 +50,14 @@ public class Member extends BaseEntity {
 	public void updatedNickname(String nickname) {
 		this.nickname = nickname;
 	}
+
+	public void registerInfo(Member member) {
+		this.nickname = member.getNickname();
+		this.genderType = member.getGenderType();
+		this.role=member.getRole();
+	}
+
+	public void updateRole(Role role) {
+		this.role = role;
+	}
 }
