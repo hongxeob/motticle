@@ -39,7 +39,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-		String accessToken = response.getHeader(TOKEN_HEADER);
+		String accessToken = request.getHeader(TOKEN_HEADER);
 
 		if (!StringUtils.hasText(accessToken)) {
 			doFilter(request, response, filterChain);
@@ -60,7 +60,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 			SecurityMemberDto memberDto = SecurityMemberDto.from(member);
 
-			Authentication auth = getAuthentication(memberDto);
+			Authentication auth = getAuthentication(memberDto, accessToken);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 		}
 	}
@@ -70,8 +70,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		return request.getRequestURI().contains("auth/");
 	}
 
-	public Authentication getAuthentication(SecurityMemberDto member) {
-		return new UsernamePasswordAuthenticationToken(member, "",
+	public Authentication getAuthentication(SecurityMemberDto member, String accessToken) {
+		return new UsernamePasswordAuthenticationToken(member, accessToken,
 			List.of(new SimpleGrantedAuthority(member.role())));
 	}
 }
