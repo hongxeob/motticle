@@ -25,7 +25,8 @@ public enum ErrorCode {
 	//멤버
 	NOT_FOUND_MEMBER("M001", "멤버를 찾을 수 없습니다."),
 	GENDER_CANNOT_BE_EMPTY("M002", "성별은 비어있을 수 없습니다."),
-	INVALID_GENDER_TYPE("M003", "잘못된 성별입니다.");
+	INVALID_GENDER_TYPE("M003", "잘못된 성별입니다."),
+	DUPLICATED_NICKNAME("M004", "이미 존재하는 닉네임 입니다."),;
 
 	private final String code;
 	private final String message;

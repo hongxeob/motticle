@@ -17,7 +17,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.util.Assert;
 
-import com.hongxeob.motticle.global.MemberInfo;
 import com.hongxeob.motticle.member.domain.GenderType;
 import com.hongxeob.motticle.member.domain.Member;
 
@@ -28,7 +27,7 @@ import lombok.ToString;
 @Getter
 @EqualsAndHashCode
 @ToString
-public class MyOAuth2member implements OAuth2User, Serializable, MemberInfo {
+public class MyOAuth2member implements OAuth2User, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
@@ -36,6 +35,7 @@ public class MyOAuth2member implements OAuth2User, Serializable, MemberInfo {
 	private final Set<GrantedAuthority> authorities;
 	private final String nameAttributeKey;
 	private final Long memberId;
+	private final String email;
 	private final GenderType genderType;
 	private String nickName;
 
@@ -49,6 +49,7 @@ public class MyOAuth2member implements OAuth2User, Serializable, MemberInfo {
 		this.nameAttributeKey = nameAttributeKey;
 		this.memberId = member.getId();
 		this.nickName = member.getNickname();
+		this.email =member.getEmail();
 		this.genderType = member.getGenderType();
 	}
 
