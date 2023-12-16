@@ -41,8 +41,7 @@ public class MemberService {
 
 	public void changeNickname(Long id, MemberModifyReq modifyReq) {
 		Member findMember = getMember(id);
-		System.out.println("id = " + id);
-		System.out.println("findMember = " + findMember.toString());
+
 		checkDuplicatedNickname(modifyReq.nickname());
 
 		findMember.updatedNickname(modifyReq.nickname());
