@@ -2,6 +2,7 @@ package com.hongxeob.motticle.member.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,6 +33,15 @@ public class MemberController {
 	@PatchMapping("/modify/{id}")
 	public ResponseEntity<Void> modifyNickname(@PathVariable Long id, @RequestBody @Validated MemberModifyReq req) {
 		memberService.changeNickname(id, req);
+
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@GetMapping("/nickname")
+	public ResponseEntity<Void> checkDuplicatedNickname(@RequestBody @Validated MemberModifyReq req) {
+		memberService.checkDuplicatedNickname(req);
 
 		return ResponseEntity
 			.noContent()

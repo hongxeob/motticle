@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
+import com.hongxeob.motticle.member.application.dto.req.MemberInfoReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberModifyReq;
 import com.hongxeob.motticle.member.application.dto.res.MemberInfoRes;
 import com.hongxeob.motticle.member.domain.GenderType;
@@ -58,15 +59,19 @@ class MemberServiceTest {
 	@DisplayName("회원 추가 정보 입력 성공")
 	void registerSuccessTest() throws Exception {
 
-	    //given
+		//given
+		MemberInfoReq memberInfoReq = new MemberInfoReq("이호빵", "MALE");
 
+		when(memberRepository.findById(member.getId()))
+			.thenReturn(Optional.of(member));
 
-	    //when
+		//when
+		MemberInfoRes memberInfoRes = memberService.registerInfo(member.getId(), memberInfoReq);
 
-	    //then
-
+		//then
+		assertThat(memberInfoReq.genderType()).isEqualTo(GenderType.MALE.name());
+		assertThat(memberInfoReq.nickname()).isEqualTo(memberInfoReq.nickname());
 	}
-
 
 	@Test
 	@DisplayName("멤버 정보 조회 성공")
@@ -97,6 +102,21 @@ class MemberServiceTest {
 	}
 
 	@Test
+	@DisplayName("닉네임 중복 검사 성공")
+	void checkDuplicatedNicknameSuccessTest() throws Exception {
+
+		//given
+		String requestNickname = "호빵2";
+		MemberModifyReq modifyReq = new MemberModifyReq(requestNickname);
+
+		when(memberRepository.findByNickname(requestNickname))
+			.thenReturn(Optional.of(member2));
+
+		//when -> then
+		assertThrows(BusinessException.class, () -> memberService.checkDuplicatedNickname(modifyReq));
+	}
+
+	@Test
 	@DisplayName("멤버 닉네임 변경 성공")
 	void modifyNicknameSuccessTest() throws Exception {
 
@@ -106,7 +126,8 @@ class MemberServiceTest {
 		//given
 		when(memberRepository.findById(member.getId()))
 			.thenReturn(Optional.of(member));
-		when(memberRepository.findByNickname(requestNickname)).thenReturn(Optional.empty());
+		when(memberRepository.findByNickname(requestNickname))
+			.thenReturn(Optional.empty());
 
 		//when
 		memberService.changeNickname(member.getId(), modifyReq);

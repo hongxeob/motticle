@@ -42,10 +42,9 @@ public class MemberService {
 	public void changeNickname(Long id, MemberModifyReq modifyReq) {
 		Member findMember = getMember(id);
 
-		checkDuplicatedNickname(modifyReq.nickname());
+		checkDuplicatedNickname(modifyReq);
 
 		findMember.updatedNickname(modifyReq.nickname());
-		System.out.println("findMember = " + findMember.getNickname());
 	}
 
 	public void delete(Long id) {
@@ -55,9 +54,9 @@ public class MemberService {
 	}
 
 	@Transactional(readOnly = true)
-	public void checkDuplicatedNickname(String nickname) {
-		memberRepository.findByNickname(nickname).ifPresent(member -> {
-			log.warn("GET:READ:DUPLICATED_NICKNAME : {}", nickname);
+	public void checkDuplicatedNickname(MemberModifyReq nicknameReq) {
+		memberRepository.findByNickname(nicknameReq.nickname()).ifPresent(member -> {
+			log.warn("GET:READ:DUPLICATED_NICKNAME : {}", nicknameReq.nickname());
 			throw new BusinessException(ErrorCode.DUPLICATED_NICKNAME);
 		});
 	}

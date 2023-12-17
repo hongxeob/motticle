@@ -40,7 +40,8 @@ public class Member extends BaseEntity {
 	private Role role;
 
 	@Builder
-	public Member(String nickname, String email, GenderType genderType, Role role) {
+	public Member(Long id, String nickname, String email, GenderType genderType, Role role) {
+		this.id = id;
 		this.nickname = nickname;
 		this.email = email;
 		this.genderType = genderType;
@@ -54,7 +55,7 @@ public class Member extends BaseEntity {
 	public void registerInfo(Member member) {
 		this.nickname = member.getNickname();
 		this.genderType = member.getGenderType();
-		this.role=member.getRole();
+		this.role = member.getRole();
 	}
 
 	public void updateRole(Role role) {
