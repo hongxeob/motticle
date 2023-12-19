@@ -2,30 +2,42 @@ package com.hongxeob.motticle.auth.token;
 
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import com.hongxeob.motticle.auth.application.AccessTokenService;
+import com.hongxeob.motticle.auth.application.dto.SecurityMemberDto;
+import com.hongxeob.motticle.global.error.ErrorCode;
+import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
+import com.hongxeob.motticle.member.domain.Member;
+import com.hongxeob.motticle.member.domain.MemberRepository;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtUtil {
 
 	private final JwtProperties jwtProperties;
 	private final AccessTokenService tokenService;
+	private final MemberRepository memberRepository;
 	private String secretKey;
 
+	private static final String TOKEN_HEADER = "Authorization";
 	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 1;
 	public static final Long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 6;// Refresh 토큰 만료 시간 : 6시간
-	public static final Long REISSUE_EXPIRE_TIME = 1000L * 60 * 60 * 3; // Reissue 만료 시간 : 3시간
 
 	@PostConstruct
 	protected void init() {
@@ -86,18 +98,11 @@ public class JwtUtil {
 				.compact();
 	}
 
-	public boolean verifyToken(String token) {
-		try {
-			Jws<Claims> claims = Jwts.parser()
-				.setSigningKey(secretKey) // 비밀키를 설정하여 파싱한다.
-				.parseClaimsJws(token);  // 주어진 토큰을 파싱하여 Claims 객체를 얻는다.
-			// 토큰의 만료 시간과 현재 시간비교
-			return claims.getBody()
-				.getExpiration()
-				.after(new Date());  // 만료 시간이 현재 시간 이후인지 확인하여 유효성 검사 결과를 반환
-		} catch (Exception e) {
-			return false;
-		}
+	public void verifyToken(String token) {
+		Jwts.parserBuilder()
+			.setSigningKey(secretKey)
+			.build()
+			.parseClaimsJws(token);
 	}
 
 	// 토큰에서 Email을 추출한다.
@@ -116,5 +121,22 @@ public class JwtUtil {
 			.parseClaimsJws(token)
 			.getBody()
 			.get("role", String.class);
+	}
+
+	public String resolveAccessToken(HttpServletRequest request) {
+		return request.getHeader(TOKEN_HEADER);
+	}
+
+	public Authentication getAccessTokenAuthentication(String token) {
+		Member member = memberRepository.findByEmail(getUid(token))
+			.orElseThrow(() -> {
+				log.warn("GET:READ:NOT_FOUND_MEMBER_BY_EMAIL : {}", token);
+				return new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER);
+			});
+
+		SecurityMemberDto memberDto = SecurityMemberDto.from(member);
+
+		return new UsernamePasswordAuthenticationToken(memberDto, token,
+			List.of(new SimpleGrantedAuthority(memberDto.role())));
 	}
 }

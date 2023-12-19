@@ -20,7 +20,6 @@ import com.hongxeob.motticle.auth.application.dto.SecurityMemberDto;
 import com.hongxeob.motticle.auth.token.JwtUtil;
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
-import com.hongxeob.motticle.global.error.exception.JwtTokenException;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.MemberRepository;
 
@@ -46,23 +45,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			return;
 		}
 
-		if (!jwtUtil.verifyToken(accessToken)) {
-			throw new JwtTokenException(ErrorCode.INVALID_TOKEN);
-		}
-		if (jwtUtil.verifyToken(accessToken)) {
-			// AccessToken 내부의 payload에 있는 email로 member를 조회한다.
-			// 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
-			Member member = memberRepository.findByEmail(jwtUtil.getUid(accessToken))
-				.orElseThrow(() -> {
-					log.warn("GET:READ:NOT_FOUND_MEMBER_BY_EMAIL : {}", accessToken);
-					return new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER);
-				});
+		jwtUtil.verifyToken(accessToken);
 
-			SecurityMemberDto memberDto = SecurityMemberDto.from(member);
+		// AccessToken 내부의 payload에 있는 email로 member를 조회한다.
+		// 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
+		Member member = memberRepository.findByEmail(jwtUtil.getUid(accessToken))
+			.orElseThrow(() -> {
+				log.warn("GET:READ:NOT_FOUND_MEMBER_BY_EMAIL : {}", accessToken);
+				return new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER);
+			});
 
-			Authentication auth = getAuthentication(memberDto, accessToken);
-			SecurityContextHolder.getContext().setAuthentication(auth);
-		}
+		SecurityMemberDto memberDto = SecurityMemberDto.from(member);
+
+		Authentication auth = getAuthentication(memberDto, accessToken);
+		SecurityContextHolder.getContext().setAuthentication(auth);
+		log.info("세션에 저장된 객체 => {}", SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+		filterChain.doFilter(request, response);
 	}
 
 	@Override
