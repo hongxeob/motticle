@@ -20,7 +20,7 @@ public enum GenderType {
 			.filter(genderType -> genderType.name().equalsIgnoreCase(gender))
 			.findFirst()
 			.orElseThrow(() -> {
-				log.warn("GET:READ:NOT_FOUND_REFRESH_TOKEN_BY_ACCESS_TOKEN : {}", gender);
+				log.warn("GET:READ:NOT_FOUND_GENDER_TYPE : {}", gender);
 				return new BusinessException(ErrorCode.INVALID_GENDER_TYPE);
 			});
 	}

@@ -47,7 +47,7 @@ class MemberServiceTest {
 			.build();
 
 		member2 = Member.builder()
-			.id(1L)
+			.id(2L)
 			.email("sjun29128@naver.com")
 			.nickname("호빵2")
 			.role(Role.GUEST)
@@ -69,8 +69,8 @@ class MemberServiceTest {
 		MemberInfoRes memberInfoRes = memberService.registerInfo(member.getId(), memberInfoReq);
 
 		//then
-		assertThat(memberInfoReq.genderType()).isEqualTo(GenderType.MALE.name());
-		assertThat(memberInfoReq.nickname()).isEqualTo(memberInfoReq.nickname());
+		assertThat(memberInfoRes.genderType()).isEqualTo(GenderType.MALE.name());
+		assertThat(memberInfoRes.nickname()).isEqualTo(memberInfoReq.nickname());
 	}
 
 	@Test
@@ -78,15 +78,15 @@ class MemberServiceTest {
 	void getInfoSuccessTest() throws Exception {
 
 		//given
-		when(memberRepository.findById(member.getId()))
-			.thenReturn(Optional.of(member));
+		when(memberRepository.findById(member2.getId()))
+			.thenReturn(Optional.of(member2));
 
 		//when
-		MemberInfoRes memberInfoRes = memberService.getInfo(member.getId());
+		MemberInfoRes memberInfoRes = memberService.getInfo(member2.getId());
 
 		//then
-		assertThat(memberInfoRes.id()).isEqualTo(member.getId());
-		assertThat(memberInfoRes.email()).isEqualTo(member.getEmail());
+		assertThat(memberInfoRes.id()).isEqualTo(member2.getId());
+		assertThat(memberInfoRes.email()).isEqualTo(member2.getEmail());
 	}
 
 	@Test

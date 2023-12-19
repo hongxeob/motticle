@@ -61,7 +61,8 @@ public class MemberService {
 		});
 	}
 
-	private Member getMember(Long id) {
+	@Transactional(readOnly = true)
+	public Member getMember(Long id) {
 		return memberRepository.findById(id).orElseThrow(() -> {
 			log.warn("GET:READ:NOT_FOUND_MEMBER_BY_ID : {}", id);
 			return new EntityNotFoundException(ErrorCode.NOT_FOUND_MEMBER);
