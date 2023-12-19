@@ -14,9 +14,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.hongxeob.motticle.article_tag.domain.ArticleTag;
+import com.hongxeob.motticle.global.BaseEntity;
+import com.hongxeob.motticle.global.error.ErrorCode;
+import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.member.domain.Member;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "tags")
-public class Tag {
+public class Tag extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +43,20 @@ public class Tag {
 	@OneToMany(mappedBy = "tag", fetch = FetchType.LAZY)
 	private List<ArticleTag> articleTags = new ArrayList<>();
 
-	public Tag(String name, Member member) {
+	@Builder
+	public Tag(Long id, String name, Member member) {
+		this.id = id;
 		this.name = name;
 		this.member = member;
 	}
 
 	public void createdBy(Member member) {
 		this.member = member;
+	}
+
+	public void checkTagOwnerWithRequesterId(Long requesterId) {
+		if (!this.member.getId().equals(requesterId)) {
+			throw new BusinessException(ErrorCode.TAG_OWNER_AND_REQUESTER_ARE_DIFFERENT);
+		}
 	}
 }
