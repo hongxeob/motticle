@@ -5,11 +5,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.member.application.MemberService;
 import com.hongxeob.motticle.member.application.dto.req.MemberInfoReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberModifyReq;
@@ -24,16 +24,18 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@PatchMapping("/{id}")
-	public ResponseEntity<MemberInfoRes> registerInfo(@PathVariable Long id, @RequestBody @Validated MemberInfoReq req) {
-		MemberInfoRes memberInfoRes = memberService.registerInfo(id, req);
+	@CurrentMemberId
+	@PatchMapping
+	public ResponseEntity<MemberInfoRes> registerInfo(Long memberId, @RequestBody @Validated MemberInfoReq req) {
+		MemberInfoRes memberInfoRes = memberService.registerInfo(memberId, req);
 
 		return ResponseEntity.ok(memberInfoRes);
 	}
 
-	@PatchMapping("/modify/{id}")
-	public ResponseEntity<Void> modifyNickname(@PathVariable Long id, @RequestBody @Validated MemberModifyReq req) {
-		memberService.changeNickname(id, req);
+	@CurrentMemberId
+	@PatchMapping("/modify")
+	public ResponseEntity<Void> modifyNickname(Long memberId, @RequestBody @Validated MemberModifyReq req) {
+		memberService.changeNickname(memberId, req);
 
 		return ResponseEntity
 			.noContent()
@@ -49,8 +51,9 @@ public class MemberController {
 			.build();
 	}
 
-	@DeleteMapping("/{memberId}")
-	public ResponseEntity<Void> delete(@PathVariable Long memberId) {
+	@CurrentMemberId
+	@DeleteMapping
+	public ResponseEntity<Void> delete(Long memberId) {
 		memberService.delete(memberId);
 
 		return ResponseEntity
