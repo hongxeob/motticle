@@ -40,6 +40,8 @@ public class TagService {
 		Tag tag = TagReq.toTag(tagReq);
 		tag.createdBy(member);
 
+		tagRepository.save(tag);
+
 		return TagRes.from(tag);
 	}
 
