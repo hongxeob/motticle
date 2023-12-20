@@ -36,6 +36,11 @@ public enum ErrorCode {
 	//아티클
 	INVALID_ARTICLE_TYPE("A001", "잘못된 타입입니다."),
 	UPLOAD_IMAGE_FILE("A002", "이미지 파일을 업로드 하세요"),
+	NOT_FOUND_ARTICLE("A003", "아티클을 찾을 수 없습니다."),
+	ARTICLE_OWNER_AND_REQUESTER_ARE_DIFFERENT("A004", "아티클 소유자와 요청자가 일치하지 않습니다."),
+	ALREADY_REGISTERED_BY_TAG_IN_ARTICLE("A005", "이미 아티클에 등록된 태그입니다."),
+	NOT_FOUND_REQUEST_TAG_IN_ARTICLE("A006", "해당 아티클에는 요청한 태그가 없습니다."),
+	ARTICLE_IS_NOT_IMAGE_TYPE("T007", "해당 아티클은 이미지 타입이 아닙니다."),
 
 	//태그
 	NOT_FOUND_TAG("T001", "태그를 찾을 수 없습니다."),

@@ -19,6 +19,8 @@ import javax.persistence.Table;
 
 import com.hongxeob.motticle.article_tag.domain.ArticleTag;
 import com.hongxeob.motticle.global.BaseEntity;
+import com.hongxeob.motticle.global.error.ErrorCode;
+import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -58,15 +60,42 @@ public class Article extends BaseEntity {
 	private List<ArticleTag> articleTags = new ArrayList<>();
 
 	@Builder
-	public Article(String title, ArticleType type, String content, String memo, boolean isPublic, Member member) {
+	public Article(Long id, String title, ArticleType type, String content, String memo, boolean isPublic, Member member) {
+		this.id = id;
 		this.title = title;
 		this.type = type;
 		this.content = content;
 		this.memo = memo;
 		this.isPublic = isPublic;
+		this.member = member;
 	}
 
 	public void writeBy(Member member) {
 		this.member = member;
+	}
+
+	public void addTag(ArticleTag tag) {
+		articleTags.add(tag);
+	}
+
+	public void setFilePath(String filePath) {
+		this.content = filePath;
+	}
+
+	public void deleteFilePath() {
+		this.content = "";
+	}
+
+	public void checkArticleOwnerWithRequesterId(Long requesterId) {
+		if (!this.member.getId().equals(requesterId)) {
+			throw new BusinessException(ErrorCode.TAG_OWNER_AND_REQUESTER_ARE_DIFFERENT);
+		}
+	}
+
+	public void updateInfo(Article article) {
+		this.title = article.title;
+		this.content = article.content;
+		this.memo = article.memo;
+		this.isPublic = article.isPublic;
 	}
 }

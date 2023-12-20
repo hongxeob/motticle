@@ -31,10 +31,11 @@ public class TagService {
 	public TagRes register(Long memberId, TagReq tagReq) {
 		Member member = memberService.getMember(memberId);
 
-		tagRepository.findByMemberIdAndName(member.getId(), tagReq.name()).ifPresent(tag -> {
-			log.warn("GET:READ:ALREADY_REGISTERED_BY_MEMBER_ID : memberId => {}, tagName: {} ", member.getId(), tagReq.name());
-			throw new BusinessException(ErrorCode.ALREADY_REGISTERED_BY_MEMBERS);
-		});
+		tagRepository.findByMemberIdAndName(member.getId(), tagReq.name())
+			.ifPresent(tag -> {
+				log.warn("GET:READ:ALREADY_REGISTERED_BY_MEMBER_ID : memberId => {}, tagName: {} ", member.getId(), tagReq.name());
+				throw new BusinessException(ErrorCode.ALREADY_REGISTERED_BY_MEMBERS);
+			});
 
 		Tag tag = TagReq.toTag(tagReq);
 		tag.createdBy(member);
