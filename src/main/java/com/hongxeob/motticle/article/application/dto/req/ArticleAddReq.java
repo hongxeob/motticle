@@ -2,8 +2,6 @@ package com.hongxeob.motticle.article.application.dto.req;
 
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.hongxeob.motticle.article.domain.Article;
 import com.hongxeob.motticle.article.domain.ArticleType;
 
@@ -13,7 +11,6 @@ public record ArticleAddReq(
 	String content,
 	String memo,
 	boolean isPublic,
-	MultipartFile file,
 	List<Long> tagIds
 ) {
 

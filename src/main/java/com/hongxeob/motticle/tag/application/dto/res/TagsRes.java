@@ -13,4 +13,8 @@ public record TagsRes(
 			.map(TagRes::from)
 			.toList());
 	}
+
+	public static TagsRes fromRes(List<TagRes> tagRes) {
+		return new TagsRes(tagRes);
+	}
 }

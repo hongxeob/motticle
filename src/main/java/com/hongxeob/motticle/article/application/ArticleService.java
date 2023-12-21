@@ -2,8 +2,10 @@ package com.hongxeob.motticle.article.application;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,9 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
+import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
+import com.hongxeob.motticle.article.application.dto.res.OpenGraphResponse;
 import com.hongxeob.motticle.article.domain.Article;
 import com.hongxeob.motticle.article.domain.ArticleRepository;
 import com.hongxeob.motticle.article.domain.ArticleType;
+import com.hongxeob.motticle.article.opengraph.OpenGraphService;
+import com.hongxeob.motticle.article.opengraph.OpenGraphVO;
 import com.hongxeob.motticle.article_tag.application.ArticleTagService;
 import com.hongxeob.motticle.article_tag.domain.ArticleTag;
 import com.hongxeob.motticle.article_tag.domain.ArticleTagRepository;
@@ -43,16 +49,17 @@ public class ArticleService {
 	private final ArticleTagService articleTagService;
 	private final TagService tagService;
 	private final ArticleTagRepository articleTagRepository;
+	private final OpenGraphService openGraphService;
 
-	public ArticleInfoRes register(Long memberId, ArticleAddReq req) throws IOException {
+	public ArticleInfoRes register(Long memberId, ArticleAddReq req, ImageUploadReq imageReq) throws IOException {
 		Member member = memberService.getMember(memberId);
 		Article article = ArticleAddReq.toArticle(req);
 
 		article.writeBy(member);
 
 		if (article.getType() == ArticleType.IMAGE) {
-			validateImageFile(req.file());
-			fileUpload(article, List.of(req.file()));
+			validateImageFile(imageReq.file());
+			fileUpload(article, imageReq);
 		}
 
 		Article savedArticle = articleRepository.save(article);
@@ -62,15 +69,13 @@ public class ArticleService {
 		return ArticleInfoRes.of(savedArticle, tags);
 	}
 
-	public Long modify(Long memberId, Long articleId, ArticleModifyReq req) throws IOException {
+	public Long modify(Long articleId, Long memberId, ArticleModifyReq req) {
 		Member member = memberService.getMember(memberId);
 
 		Article article = getArticle(articleId);
-
 		article.checkArticleOwnerWithRequesterId(member.getId());
 
 		Article modifiedArticle = ArticleModifyReq.toArticle(req);
-
 		article.updateInfo(modifiedArticle);
 
 		return article.getId();
@@ -106,11 +111,13 @@ public class ArticleService {
 				throw new BusinessException(ErrorCode.ALREADY_REGISTERED_BY_TAG_IN_ARTICLE);
 			});
 
-		articleTagRepository.save(
+		ArticleTag articleTag = articleTagRepository.save(
 			ArticleTag.builder()
 				.article(article)
 				.tag(tag)
 				.build());
+
+		article.addTag(articleTag);
 
 		return article.getId();
 	}
@@ -151,6 +158,62 @@ public class ArticleService {
 		articleTagRepository.deleteAllByTagId(tag.getId());
 	}
 
+	@Transactional(readOnly = true)
+	public ArticleOgRes findArticleByMemberId(Long id, Long memberId) {
+
+		Member member = memberService.getMember(memberId);
+
+		Article article = articleRepository.findByMemberIdAndId(member.getId(), id)
+			.orElseThrow(() -> {
+				log.warn("GET:READ:NOT_FOUND_ARTICLE_WITH_MEMBER_ID : articleId => {}, memberId => {} ", id, member.getId());
+				return new BusinessException(ErrorCode.NOT_FOUND_ARTICLE);
+			});
+
+		article.setFilePath(getFilePath(article.getType(), article.getContent()));
+		return ArticleOgRes.of(article, getOpenGraphResponse(article.getType(), article.getContent()));
+	}
+
+	public void remove(Long memberId, Long id) {
+		Member member = memberService.getMember(memberId);
+
+		Article article = getArticle(id);
+		article.checkArticleOwnerWithRequesterId(member.getId());
+
+		articleRepository.delete(article);
+	}
+
+	private String getFilePath(ArticleType type, String content) {
+		if (type == ArticleType.IMAGE) {
+			return imageService.getFilePath(content);
+		}
+		return content;
+	}
+
+	private OpenGraphResponse getOpenGraphResponse(ArticleType articleType, String link) {
+		if (articleType != ArticleType.LINK) {
+			throw new BusinessException(ErrorCode.LINK_TYPE_ONLY_USE);
+		}
+
+		Optional<OpenGraphVO> openGraphVoOptional = openGraphService.getMetadata(link);
+
+		if (openGraphVoOptional.isEmpty()) {
+			throw new BusinessException(ErrorCode.LINK_CANNOT_BE_EMPTY);
+		}
+
+		OpenGraphVO openGraphVo = openGraphVoOptional.get();
+
+		OpenGraphResponse openGraphResponse = OpenGraphResponse.of(
+			HttpStatus.OK.value(),
+			openGraphVo.image(),
+			openGraphVo.siteName(),
+			openGraphVo.title(),
+			openGraphVo.url() != null ? openGraphVo.url() : link,
+			openGraphVo.description()
+		);
+
+		return openGraphResponse;
+	}
+
 	private Article getArticle(Long articleId) {
 		Article article = articleRepository.findById(articleId)
 			.orElseThrow(() -> {
@@ -161,8 +224,8 @@ public class ArticleService {
 		return article;
 	}
 
-	private void fileUpload(Article article, List<MultipartFile> images) throws IOException {
-		List<String> fileNames = imageService.add(images);
+	private void fileUpload(Article article, ImageUploadReq req) throws IOException {
+		List<String> fileNames = imageService.add(req.file());
 		if (!fileNames.isEmpty()) {
 			article.setFilePath(fileNames.get(0));
 		}
@@ -174,18 +237,22 @@ public class ArticleService {
 				.map(tagService::getTag)
 				.collect(Collectors.toList());
 
-			tags.forEach(tag -> articleTagService.save(ArticleTag.builder()
-				.article(article)
-				.tag(tag)
-				.build()));
+			tags.forEach(tag -> {
+				ArticleTag articleTag = ArticleTag.builder()
+					.article(article)
+					.tag(tag)
+					.build();
+				articleTagService.save(articleTag);
+				article.addTag(articleTag);
+			});
 
 			return tags;
 		}
 		return null;
 	}
 
-	private void validateImageFile(MultipartFile file) {
-		if (file == null) {
+	private void validateImageFile(List<MultipartFile> files) {
+		if (files == null) {
 			throw new BusinessException(ErrorCode.UPLOAD_IMAGE_FILE);
 		}
 	}
