@@ -10,4 +10,6 @@ public interface ImageService {
 	List<String> add(List<MultipartFile> files) throws IOException;
 
 	void delete(String request);
+
+	String getFilePath(String content);
 }

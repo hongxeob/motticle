@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -23,8 +23,6 @@ public class ImageFileService implements ImageService {
 
 	@Override
 	public List<String> add(List<MultipartFile> files) {
-		List<String> newFileNames = new ArrayList<>();
-
 		try {
 			// 저장할 디렉토리 경로
 			Path uploadPath = Path.of(uploadDir);
@@ -36,9 +34,9 @@ public class ImageFileService implements ImageService {
 
 			return files.stream()
 				.map(file -> {
-					// 파일명 중복 방지를 위해 UUID 사용
 					String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-					String newFileName = java.util.UUID.randomUUID().toString() + "_" + fileName;
+					String fileExtension = StringUtils.getFilenameExtension(fileName);
+					String newFileName = UUID.randomUUID().toString() + "_" + System.currentTimeMillis() + "." + fileExtension;
 
 					// 저장할 파일 경로
 					Path filePath = uploadPath.resolve(newFileName);
@@ -66,5 +64,12 @@ public class ImageFileService implements ImageService {
 		} catch (IOException e) {
 			throw new ImageIOException(ErrorCode.IMAGE_DELETE_FAILED);
 		}
+	}
+
+	@Override
+	public String getFilePath(String content) {
+		Path filePath = Path.of(uploadDir).resolve(content);
+
+		return filePath.toString();
 	}
 }
