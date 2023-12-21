@@ -46,6 +46,11 @@ public enum ErrorCode {
 	NOT_FOUND_TAG("T001", "태그를 찾을 수 없습니다."),
 	ALREADY_REGISTERED_BY_MEMBERS("T002", "이미 해당 회원이 등록한 태그입니다."),
 	TAG_OWNER_AND_REQUESTER_ARE_DIFFERENT("T003", "태그 소유자와 요청자가 일치하지 않습니다."),
+
+	//오픈 그래프
+	LINK_CANNOT_BE_EMPTY("OG001", "링크 타입은 URL이 비어있을 수 없습니다."),
+	LINK_TYPE_ONLY_USE("OG002", "링크 타입 아티클만 OpenGraph를 이용할 수 있습니다."),
+
 	;
 
 	private final String code;
