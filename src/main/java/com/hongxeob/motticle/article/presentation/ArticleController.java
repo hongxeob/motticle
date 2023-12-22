@@ -3,9 +3,11 @@ package com.hongxeob.motticle.article.presentation;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,8 @@ import com.hongxeob.motticle.article.application.ArticleService;
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
+import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
+import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
 import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
@@ -32,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class ArticleController {
 
 	private final ArticleService articleService;
+	private static final String DEFAULT_PAGING_SIZE = "10";
 
 	@CurrentMemberId
 	@PostMapping
@@ -41,6 +46,26 @@ public class ArticleController {
 		ArticleInfoRes articleInfoRes = articleService.register(memberId, req, imageUploadReq);
 
 		return ResponseEntity.ok(articleInfoRes);
+	}
+
+	@CurrentMemberId
+	@GetMapping("{id}")
+	public ResponseEntity<ArticleOgRes> getArticle(@PathVariable Long id, Long memberId) {
+		ArticleOgRes articleOgRes = articleService.findByMemberId(id, memberId);
+
+		return ResponseEntity.ok(articleOgRes);
+	}
+
+	@CurrentMemberId
+	@GetMapping
+	public ResponseEntity<ArticlesOgRes> getArticles(Long memberId,
+													 @RequestParam(required = false, defaultValue = "0") int page,
+													 @RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size) {
+		page = Math.max(page - 1, 0);
+		PageRequest pageable = PageRequest.of(page, size);
+		ArticlesOgRes articleResponse = articleService.findAllByMemberId(memberId, pageable);
+
+		return ResponseEntity.ok(articleResponse);
 	}
 
 	@CurrentMemberId
