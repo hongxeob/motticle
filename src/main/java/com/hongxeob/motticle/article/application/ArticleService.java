@@ -2,10 +2,16 @@ package com.hongxeob.motticle.article.application;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +20,7 @@ import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
+import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
 import com.hongxeob.motticle.article.application.dto.res.OpenGraphResponse;
 import com.hongxeob.motticle.article.domain.Article;
 import com.hongxeob.motticle.article.domain.ArticleRepository;
@@ -50,6 +57,7 @@ public class ArticleService {
 	private final TagService tagService;
 	private final ArticleTagRepository articleTagRepository;
 	private final OpenGraphService openGraphService;
+	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
 	public ArticleInfoRes register(Long memberId, ArticleAddReq req, ImageUploadReq imageReq) throws IOException {
 		Member member = memberService.getMember(memberId);
@@ -159,7 +167,7 @@ public class ArticleService {
 	}
 
 	@Transactional(readOnly = true)
-	public ArticleOgRes findArticleByMemberId(Long id, Long memberId) {
+	public ArticleOgRes findByMemberId(Long id, Long memberId) {
 
 		Member member = memberService.getMember(memberId);
 
@@ -173,6 +181,14 @@ public class ArticleService {
 		return ArticleOgRes.of(article, getOpenGraphResponse(article.getType(), article.getContent()));
 	}
 
+	@Transactional(readOnly = true)
+	public ArticlesOgRes findAllByMemberId(Long memberId, Pageable pageable) {
+		Member member = memberService.getMember(memberId);
+		Slice<Article> articleList = articleRepository.findAllByMemberId(member.getId(), pageable);
+
+		return generateArticlesOgResWithOpenGraph(articleList);
+	}
+
 	public void remove(Long memberId, Long id) {
 		Member member = memberService.getMember(memberId);
 
@@ -180,6 +196,30 @@ public class ArticleService {
 		article.checkArticleOwnerWithRequesterId(member.getId());
 
 		articleRepository.delete(article);
+	}
+
+	private ArticlesOgRes generateArticlesOgResWithOpenGraph(Slice<Article> articles) {
+		final Map<Long, OpenGraphResponse> inspirationOpenGraphMap = new ConcurrentHashMap<>();
+		// executor 에 작업 할당
+		final List<CompletableFuture<Void>> completableFutures =
+			articles.stream().map(
+				article -> CompletableFuture.runAsync(
+					() -> inspirationOpenGraphMap.put(
+						article.getId(),
+						getOpenGraphResponse(article.getType(), article.getContent())
+					),
+					threadPoolTaskExecutor
+				)
+			).toList();
+		// 비동기 작업 끝날때까지 대기
+		completableFutures.forEach(CompletableFuture::join);
+
+		List<ArticleOgRes> articleOgResList = articles.stream()
+			.peek(article -> article.setFilePath(getFilePath(article.getType(), article.getContent())))
+			.map(article -> ArticleOgRes.of(article, inspirationOpenGraphMap.get(article.getId())))
+			.collect(Collectors.toList());
+
+		return ArticlesOgRes.of(articleOgResList, articles);
 	}
 
 	private String getFilePath(ArticleType type, String content) {
@@ -191,24 +231,23 @@ public class ArticleService {
 
 	private OpenGraphResponse getOpenGraphResponse(ArticleType articleType, String link) {
 		if (articleType != ArticleType.LINK) {
-			throw new BusinessException(ErrorCode.LINK_TYPE_ONLY_USE);
+			return OpenGraphResponse.from(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 
 		Optional<OpenGraphVO> openGraphVoOptional = openGraphService.getMetadata(link);
 
 		if (openGraphVoOptional.isEmpty()) {
-			throw new BusinessException(ErrorCode.LINK_CANNOT_BE_EMPTY);
+			return OpenGraphResponse.from(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 
 		OpenGraphVO openGraphVo = openGraphVoOptional.get();
 
 		OpenGraphResponse openGraphResponse = OpenGraphResponse.of(
 			HttpStatus.OK.value(),
-			openGraphVo.image(),
-			openGraphVo.siteName(),
-			openGraphVo.title(),
-			openGraphVo.url() != null ? openGraphVo.url() : link,
-			openGraphVo.description()
+			openGraphVo.getImage(),
+			openGraphVo.getTitle(),
+			openGraphVo.getUrl() != null ? openGraphVo.getUrl() : link,
+			openGraphVo.getDescription()
 		);
 
 		return openGraphResponse;
