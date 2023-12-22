@@ -40,7 +40,7 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PostMapping
-	public ResponseEntity<ArticleInfoRes> register(Long memberId, @RequestPart @Validated ArticleAddReq req, @RequestPart(required = false) List<MultipartFile> image) throws IOException {
+	public ResponseEntity<ArticleInfoRes> addArticle(Long memberId, @RequestPart @Validated ArticleAddReq req, @RequestPart(required = false) List<MultipartFile> image) throws IOException {
 		ImageUploadReq imageUploadReq = new ImageUploadReq(image);
 
 		ArticleInfoRes articleInfoRes = articleService.register(memberId, req, imageUploadReq);
@@ -50,7 +50,7 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@GetMapping("{id}")
-	public ResponseEntity<ArticleOgRes> getArticle(@PathVariable Long id, Long memberId) {
+	public ResponseEntity<ArticleOgRes> getArticleByMemberId(@PathVariable Long id, Long memberId) {
 		ArticleOgRes articleOgRes = articleService.findByMemberId(id, memberId);
 
 		return ResponseEntity.ok(articleOgRes);
@@ -58,7 +58,7 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@GetMapping
-	public ResponseEntity<ArticlesOgRes> getArticles(Long memberId,
+	public ResponseEntity<ArticlesOgRes> getArticlesByMemberId(Long memberId,
 													 @RequestParam(required = false, defaultValue = "0") int page,
 													 @RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size) {
 		page = Math.max(page - 1, 0);
@@ -70,7 +70,7 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PatchMapping("{id}")
-	public ResponseEntity<Long> modify(@PathVariable Long id, Long memberId, @RequestBody ArticleModifyReq req) {
+	public ResponseEntity<Long> updateArticle(@PathVariable Long id, Long memberId, @RequestBody ArticleModifyReq req) {
 		Long modifiedArticleId = articleService.modify(memberId, id, req);
 
 		return ResponseEntity.ok(modifiedArticleId);
@@ -95,8 +95,8 @@ public class ArticleController {
 	}
 
 	@CurrentMemberId
-	@DeleteMapping("/{id}/un-tags/{tagId}")
-	public ResponseEntity<Void> removeTagFromArticle(@PathVariable Long id, @PathVariable Long tagId, Long memberId) {
+	@DeleteMapping("/{id}/un-tags")
+	public ResponseEntity<Void> removeTagFromArticle(@PathVariable Long id, @RequestParam(name = "tag") Long tagId, Long memberId) {
 		articleService.unTagArticle(memberId, id, tagId);
 
 		return ResponseEntity
@@ -106,7 +106,7 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> remove(@PathVariable Long id, Long memberId) {
+	public ResponseEntity<Void> deleteArticle(@PathVariable Long id, Long memberId) {
 		articleService.unTagArticleByArticle(id, memberId);
 		articleService.remove(memberId, id);
 
