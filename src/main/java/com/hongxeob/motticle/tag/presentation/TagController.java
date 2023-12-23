@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hongxeob.motticle.article.application.ArticleService;
 import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.tag.application.TagService;
 import com.hongxeob.motticle.tag.application.dto.req.TagReq;
@@ -23,10 +24,11 @@ import lombok.RequiredArgsConstructor;
 public class TagController {
 
 	private final TagService tagService;
+	private final ArticleService articleService;
 
 	@PostMapping
 	@CurrentMemberId
-	public ResponseEntity<TagRes> register(Long memberId, @RequestBody TagReq req) {
+	public ResponseEntity<TagRes> add(Long memberId, @RequestBody TagReq req) {
 		TagRes tagRes = tagService.register(memberId, req);
 
 		return ResponseEntity.ok(tagRes);
@@ -34,7 +36,7 @@ public class TagController {
 
 	@GetMapping
 	@CurrentMemberId
-	public ResponseEntity<TagsRes> getAllByMemberId(Long memberId) {
+	public ResponseEntity<TagsRes> getAllTagByMemberId(Long memberId) {
 		TagsRes tagsRes = tagService.findAllByMemberId(memberId);
 
 		return ResponseEntity.ok(tagsRes);
@@ -42,8 +44,9 @@ public class TagController {
 
 	@DeleteMapping("/{id}")
 	@CurrentMemberId
-	public ResponseEntity<Void> delete(Long memberId, @PathVariable Long id) {
+	public ResponseEntity<Void> deleteTag(Long memberId, @PathVariable Long id) {
 		tagService.delete(memberId, id);
+		articleService.unTagArticleByTag(id, memberId);
 
 		return ResponseEntity
 			.noContent()
