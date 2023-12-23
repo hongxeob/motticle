@@ -59,13 +59,31 @@ public class ArticleController {
 	@CurrentMemberId
 	@GetMapping
 	public ResponseEntity<ArticlesOgRes> getArticlesByMemberId(Long memberId,
-													 @RequestParam(required = false, defaultValue = "0") int page,
-													 @RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size) {
+															   @RequestParam(required = false, defaultValue = "0") int page,
+															   @RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size) {
 		page = Math.max(page - 1, 0);
 		PageRequest pageable = PageRequest.of(page, size);
 		ArticlesOgRes articleResponse = articleService.findAllByMemberId(memberId, pageable);
 
 		return ResponseEntity.ok(articleResponse);
+	}
+
+	@CurrentMemberId
+	@GetMapping("/search")
+	public ResponseEntity<ArticlesOgRes> getArticlesByCondition(Long memberId,
+																@RequestParam(required = false) List<Long> tagIds,
+																@RequestParam(required = false) List<String> articleTypes,
+																@RequestParam(required = false) String keyword,
+																@RequestParam(required = false) String sortOrder,
+																@RequestParam(required = false, defaultValue = "0") int page,
+																@RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size
+	) {
+		page = Math.max(page - 1, 0);
+		PageRequest pageable = PageRequest.of(page, size);
+
+		ArticlesOgRes articleRes = articleService.findAllByCondition(memberId, tagIds, articleTypes, keyword, sortOrder, pageable);
+
+		return ResponseEntity.ok(articleRes);
 	}
 
 	@CurrentMemberId
