@@ -17,7 +17,7 @@ public record ArticleAddReq(
 	public static Article toArticle(ArticleAddReq req) {
 		return Article.builder()
 			.title(req.title)
-			.type(ArticleType.of(req.type))
+			.type(ArticleType.from(req.type))
 			.content(req.content())
 			.memo(req.memo)
 			.isPublic(req.isPublic)

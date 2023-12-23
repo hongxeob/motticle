@@ -189,6 +189,20 @@ public class ArticleService {
 		return generateArticlesOgResWithOpenGraph(articleList);
 	}
 
+	@Transactional(readOnly = true)
+	public ArticlesOgRes findAllByCondition(Long memberId, List<Long> tagIds, List<String> articleTypes,
+											String keyword, String sortOrder, Pageable pageable) {
+		Member member = memberService.getMember(memberId);
+
+		List<ArticleType> types = ArticleType.from(articleTypes);
+
+		Slice<Article> articleSliceRes = articleRepository.findByMemberIdWithTagIdAndArticleTypeAndKeyword(
+			member.getId(), tagIds, types,
+			keyword, sortOrder, pageable);
+
+		return generateArticlesOgResWithOpenGraph(articleSliceRes);
+	}
+
 	public void remove(Long memberId, Long id) {
 		Member member = memberService.getMember(memberId);
 

@@ -1,6 +1,7 @@
 package com.hongxeob.motticle.article.domain;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
@@ -13,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public enum ArticleType {
 	LINK, IMAGE, TEXT;
 
-	public static ArticleType of(String type) {
+	public static ArticleType from(String type) {
 		validateString(type);
 
 		return Arrays.stream(ArticleType.values())
@@ -23,6 +24,14 @@ public enum ArticleType {
 				log.warn("GET:READ:NOT_FOUND_ARTICLE_TYPE : {}", type);
 				return new BusinessException(ErrorCode.INVALID_ARTICLE_TYPE);
 			});
+	}
+
+	public static List<ArticleType> from(List<String> type) {
+		List<ArticleType> articleTypes =
+			type.stream()
+				.map(ArticleType::from)
+				.toList();
+		return articleTypes;
 	}
 
 	private static void validateString(String type) {
