@@ -1,0 +1,85 @@
+= REST Docs Tag API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[User-API]]
+== POST : 태그 등록
+
+=== /api/tags
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/tag/add-success/http-request.adoc[]
+
+include::{snippets}/tag/add-success/request-fields.adoc[]
+
+.request header
+include::{snippets}/tag/add-success/request-headers.adoc[]
+
+.Response Success - 성공
+include::{snippets}/tag/add-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/tag/add-success/response-fields.adoc[]
+
+---
+
+=== 실패 : 이미 등록된 태그
+
+.Request Fail - 입력되지 않은 상품 이름
+include::{snippets}/tag/add-fail-already-registered/http-request.adoc[]
+
+.request header
+include::{snippets}/tag/add-fail-already-registered/request-headers.adoc[]
+
+.request field
+include::{snippets}/tag/add-fail-already-registered/request-fields.adoc[]
+
+.Response Fail - 이미 등록된 태그
+include::{snippets}/tag/add-fail-already-registered/http-response.adoc[]
+
+include::{snippets}/tag/add-fail-already-registered/response-fields.adoc[]
+
+---
+== GET : 해당 유저의 태그 조회
+
+=== /api/tags
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/tag/get-all-by-member/http-request.adoc[]
+
+.request header
+include::{snippets}/tag/add-success/request-headers.adoc[]
+
+.Response Success - 성공
+include::{snippets}/tag/get-all-by-member/http-response.adoc[]
+
+.response fields
+include::{snippets}/tag/get-all-by-member/response-fields.adoc[]
+
+---
+== GET : 태그 삭제
+
+=== /api/tags/{tagId}
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/tag/delete-success/http-request.adoc[]
+
+.request header
+include::{snippets}/tag/delete-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/tag/delete-success/path-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/tag/delete-success/http-response.adoc[]
+
+---

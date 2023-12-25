@@ -17,12 +17,12 @@ public record TagRes(
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	LocalDateTime createdDatetime,
+	LocalDateTime createdAt,
 
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	LocalDateTime updatedDatetime
+	LocalDateTime updatedAt
 ) {
 
 	public static TagRes from(Tag tag) {

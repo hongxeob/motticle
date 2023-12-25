@@ -28,7 +28,7 @@ public class TagController {
 
 	@PostMapping
 	@CurrentMemberId
-	public ResponseEntity<TagRes> add(Long memberId, @RequestBody TagReq req) {
+	public ResponseEntity<TagRes> addTag(Long memberId, @RequestBody TagReq req) {
 		TagRes tagRes = tagService.register(memberId, req);
 
 		return ResponseEntity.ok(tagRes);

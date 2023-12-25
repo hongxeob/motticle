@@ -6,13 +6,12 @@ import java.util.Map;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.Role;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 @ToString
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 @Getter
 public class OAuth2Attribute {
 	private Map<String, Object> attributes; // 사용자 속성 정보를 담는 Map
