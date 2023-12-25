@@ -9,6 +9,7 @@ plugins {
     id 'org.springframework.boot' version '2.7.17'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
 group = 'com.hongxeob'
@@ -22,6 +23,7 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
@@ -40,6 +42,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'com.github.siyoon210:ogparser4j:1.0.1'
     implementation 'org.jsoup:jsoup:1.7.2'
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
     //querydsl 추가
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
@@ -49,10 +52,10 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.boot:security:spring-security-test'
-
-
+    testImplementation 'org.springframework.security:spring-security-test'
+//    testImplementation 'org.springframework.boot:security:spring-security-test'
 }
 
 tasks.named('bootBuildImage') {
@@ -83,3 +86,17 @@ configurations {
     querydsl.extendsFrom compileClasspath
 }
 //querydsl 추가 끝
+
+ext {
+    snippetsDir = file('build/generated-snippets')
+}
+
+test { // (6)
+    outputs.dir snippetsDir
+}
+
+asciidoctor { // (7)
+    inputs.dir snippetsDir // (8)
+    configurations 'asciidoctorExt' // (9)
+    dependsOn test // (10)
+}
