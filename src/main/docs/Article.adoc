@@ -1,0 +1,143 @@
+= REST Docs Article API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[User-API]]
+== POST : 아티클 등록
+
+=== /api/articles
+
+=== 성공 (글 or 링크)
+
+.Request Success - 성공
+include::{snippets}/article/add-success-link-or-text/http-request.adoc[]
+
+.request header
+include::{snippets}/article/add-success-link-or-text/request-headers.adoc[]
+
+.request multipart 구성
+include::{snippets}/article/add-success-link-or-text/request-parts.adoc[]
+
+.articleAddReq 구성
+include::{snippets}/article/add-success-link-or-text/request-part-articleAddReq-fields.adoc[]
+
+
+.Response Success - 성공
+include::{snippets}/article/add-success-link-or-text/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/add-success-link-or-text/response-fields.adoc[]
+
+---
+
+=== 성공 (이미지)
+.Request Success - 성공
+include::{snippets}/article/add-success-image/http-request.adoc[]
+
+.request header
+include::{snippets}/article/add-success-image/request-headers.adoc[]
+
+.request multipart 구성
+include::{snippets}/article/add-success-image/request-parts.adoc[]
+
+.articleAddReq 구성
+include::{snippets}/article/add-success-image/request-part-articleAddReq-fields.adoc[]
+
+
+.Response Success - 성공
+include::{snippets}/article/add-success-image/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/add-success-image/response-fields.adoc[]
+
+---
+
+== GET : 아티클 단건 조회
+
+=== /api/articles/{id}
+
+=== 성공 (글 or 이미지)
+
+.Request Success - 성공
+include::{snippets}/article/get-image-or-text-article-by-member-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/get-image-or-text-article-by-member-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/get-image-or-text-article-by-member-success/path-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/get-image-or-text-article-by-member-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/get-image-or-text-article-by-member-success/response-fields.adoc[]
+
+---
+
+=== 성공 (링크)
+
+.Request Success - 성공
+include::{snippets}/article/get-link-article-by-member-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/get-link-article-by-member-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/get-link-article-by-member-success/path-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/get-link-article-by-member-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/get-link-article-by-member-success/response-fields.adoc[]
+
+---
+
+== GET : 아티클 다건 조회
+
+=== /api/articles
+
+=== 성공 (글 or 이미지)
+
+.Request Success - 성공
+include::{snippets}/article/get-all-by-member-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/get-all-by-member-success/request-headers.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/get-all-by-member-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/get-all-by-member-success/response-fields.adoc[]
+
+---
+== PATCH : 아티클 수정
+
+=== /api/articles/{id}
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/article/update-article-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/update-article-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/update-article-success/path-parameters.adoc[]
+
+.articleModifyReq 구성
+include::{snippets}/article/update-article-success/request-fields.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/update-article-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/update-article-success/response-fields.adoc[]
+
+---

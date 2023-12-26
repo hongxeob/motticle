@@ -35,6 +35,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hongxeob.motticle.article.application.ArticleService;
+import com.hongxeob.motticle.article.presentation.ArticleController;
 import com.hongxeob.motticle.auth.AuthenticationCustomSuccessHandler;
 import com.hongxeob.motticle.auth.MyOAuth2member;
 import com.hongxeob.motticle.auth.OAuth2Attribute;
@@ -51,7 +52,7 @@ import com.hongxeob.motticle.tag.presentation.TagController;
 
 @WebMvcTest(
 	value = {
-		TagController.class
+		TagController.class, ArticleController.class
 	}
 )
 @Import(ControllerTestSupport.SecurityConfig.class)
