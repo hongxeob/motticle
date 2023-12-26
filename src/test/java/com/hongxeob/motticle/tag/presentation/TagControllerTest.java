@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
@@ -38,7 +37,6 @@ import com.hongxeob.motticle.tag.application.dto.req.TagReq;
 import com.hongxeob.motticle.tag.application.dto.res.TagRes;
 import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
 
-@WebMvcTest(TagController.class)
 class TagControllerTest extends ControllerTestSupport {
 
 	@Test
