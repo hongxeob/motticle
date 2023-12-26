@@ -40,10 +40,12 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PostMapping
-	public ResponseEntity<ArticleInfoRes> addArticle(Long memberId, @RequestPart @Validated ArticleAddReq req, @RequestPart(required = false) List<MultipartFile> image) throws IOException {
+	public ResponseEntity<ArticleInfoRes> addArticle(Long memberId,
+													 @RequestPart @Validated ArticleAddReq articleAddReq,
+													 @RequestPart(required = false) List<MultipartFile> image) throws IOException {
 		ImageUploadReq imageUploadReq = new ImageUploadReq(image);
 
-		ArticleInfoRes articleInfoRes = articleService.register(memberId, req, imageUploadReq);
+		ArticleInfoRes articleInfoRes = articleService.register(memberId, articleAddReq, imageUploadReq);
 
 		return ResponseEntity.ok(articleInfoRes);
 	}
@@ -88,10 +90,10 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PatchMapping("{id}")
-	public ResponseEntity<Long> updateArticle(@PathVariable Long id, Long memberId, @RequestBody ArticleModifyReq req) {
-		Long modifiedArticleId = articleService.modify(memberId, id, req);
+	public ResponseEntity<ArticleInfoRes> updateArticle(@PathVariable Long id, Long memberId, @RequestBody ArticleModifyReq req) {
+		ArticleInfoRes articleInfoRes = articleService.modify(memberId, id, req);
 
-		return ResponseEntity.ok(modifiedArticleId);
+		return ResponseEntity.ok(articleInfoRes);
 	}
 
 	@CurrentMemberId

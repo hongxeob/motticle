@@ -77,7 +77,7 @@ public class ArticleService {
 		return ArticleInfoRes.of(savedArticle, tags);
 	}
 
-	public Long modify(Long articleId, Long memberId, ArticleModifyReq req) {
+	public ArticleInfoRes modify(Long articleId, Long memberId, ArticleModifyReq req) {
 		Member member = memberService.getMember(memberId);
 
 		Article article = getArticle(articleId);
@@ -86,7 +86,7 @@ public class ArticleService {
 		Article modifiedArticle = ArticleModifyReq.toArticle(req);
 		article.updateInfo(modifiedArticle);
 
-		return article.getId();
+		return ArticleInfoRes.from(article);
 	}
 
 	public ImagesRes uploadImage(Long id, Long memberId, ImageUploadReq req) throws IOException {
@@ -178,7 +178,9 @@ public class ArticleService {
 			});
 
 		article.setFilePath(getFilePath(article.getType(), article.getContent()));
-		return ArticleOgRes.of(article, getOpenGraphResponse(article.getType(), article.getContent()));
+		OpenGraphResponse openGraphResponse = getOpenGraphResponse(article.getType(), article.getContent());
+
+		return ArticleOgRes.of(article, openGraphResponse);
 	}
 
 	@Transactional(readOnly = true)

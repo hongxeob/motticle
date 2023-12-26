@@ -1,5 +1,24 @@
 package com.hongxeob.motticle.article.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
@@ -19,24 +38,6 @@ import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.Role;
 import com.hongxeob.motticle.tag.application.TagService;
 import com.hongxeob.motticle.tag.domain.Tag;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -191,11 +192,11 @@ class ArticleServiceTest {
                 .thenReturn(Optional.of(article));
 
         //when
-        Long modifiedId = articleService.modify(member.getId(), article.getId(), articleModifyReq);
+        ArticleInfoRes res = articleService.modify(member.getId(), article.getId(), articleModifyReq);
 
         //then
         assertThat(article.getMemo()).isEqualTo(articleModifyReq.memo());
-        assertThat(modifiedId).isEqualTo(article.getId());
+        assertThat(res.id()).isEqualTo(article.getId());
     }
 
     @Test
