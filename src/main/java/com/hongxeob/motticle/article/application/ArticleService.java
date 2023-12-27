@@ -104,7 +104,7 @@ public class ArticleService {
 	}
 
 	// TODO: 12/19/23 동시성 고민(isolation = Isolation.SERIALIZABLE)
-	public Long tagArticle(Long memberId, Long id, Long tagId) {
+	public ArticleInfoRes tagArticle(Long memberId, Long id, Long tagId) {
 		Member member = memberService.getMember(memberId);
 
 		Article article = getArticle(id);
@@ -127,7 +127,7 @@ public class ArticleService {
 
 		article.addTag(articleTag);
 
-		return article.getId();
+		return ArticleInfoRes.from(article);
 	}
 
 	public void unTagArticle(Long memberId, Long id, Long tagId) {
@@ -144,6 +144,8 @@ public class ArticleService {
 				log.warn("GET:READ:NOT_FOUND_ARTICLE_WITH_TAG : articleId => {}, tagId => {} ", article.getId(), tag.getId());
 				return new EntityNotFoundException(ErrorCode.NOT_FOUND_REQUEST_TAG_IN_ARTICLE);
 			});
+
+		article.removeTag(articleTag);
 
 		articleTagRepository.delete(articleTag);
 	}
@@ -303,6 +305,7 @@ public class ArticleService {
 
 			return tags;
 		}
+
 		return null;
 	}
 

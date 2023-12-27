@@ -43,264 +43,266 @@ import com.hongxeob.motticle.tag.domain.Tag;
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
 
-    @Mock
-    private ArticleRepository articleRepository;
+	@Mock
+	private ArticleRepository articleRepository;
 
-    @Mock
-    private MemberService memberService;
+	@Mock
+	private MemberService memberService;
 
-    @Mock
-    private ImageService imageService;
+	@Mock
+	private ImageService imageService;
 
-    @Mock
-    ArticleTagRepository articleTagRepository;
+	@Mock
+	ArticleTagRepository articleTagRepository;
 
-    @Mock
-    private TagService tagService;
+	@Mock
+	private TagService tagService;
 
-    @Mock
-    private ArticleTagService articleTagService;
+	@Mock
+	private ArticleTagService articleTagService;
 
-    @InjectMocks
-    private ArticleService articleService;
+	@InjectMocks
+	private ArticleService articleService;
 
-    private Member member;
-    private Member member2;
-    private Article article;
-    private Article article2;
-    private Tag tag;
-    private ArticleTag articleTag;
+	private Member member;
+	private Member member2;
+	private Article article;
+	private Article article2;
+	private Tag tag;
+	private ArticleTag articleTag;
 
-    @BeforeEach
-    void setUp() {
-        member = Member.builder()
-                .id(1L)
-                .email("sjun2918@naver.com")
-                .nickname("호빵")
-                .role(Role.GUEST)
-                .genderType(null)
-                .build();
+	@BeforeEach
+	void setUp() {
+		member = Member.builder()
+			.id(1L)
+			.email("sjun2918@naver.com")
+			.nickname("호빵")
+			.role(Role.GUEST)
+			.genderType(null)
+			.build();
 
-        member2 = Member.builder()
-                .id(2L)
-                .email("sjun29128@naver.com")
-                .nickname("호빵2")
-                .role(Role.GUEST)
-                .genderType(GenderType.MALE)
-                .build();
+		member2 = Member.builder()
+			.id(2L)
+			.email("sjun29128@naver.com")
+			.nickname("호빵2")
+			.role(Role.GUEST)
+			.genderType(GenderType.MALE)
+			.build();
 
-        tag = Tag.builder()
-                .id(9L)
-                .name("미디어")
-                .member(member)
-                .build();
+		tag = Tag.builder()
+			.id(9L)
+			.name("미디어")
+			.member(member)
+			.build();
 
-        article = Article.builder()
-                .id(1L)
-                .title("제목")
-                .type(ArticleType.TEXT)
-                .content("내용")
-                .memo("메모")
-                .isPublic(true)
-                .member(member)
-                .build();
+		article = Article.builder()
+			.id(1L)
+			.title("제목")
+			.type(ArticleType.TEXT)
+			.content("내용")
+			.memo("메모")
+			.isPublic(true)
+			.member(member)
+			.build();
 
-        article2 = Article.builder()
-                .id(2L)
-                .title("제목")
-                .type(ArticleType.IMAGE)
-                .content("내용")
-                .memo("메모")
-                .isPublic(true)
-                .member(member)
-                .build();
+		article2 = Article.builder()
+			.id(2L)
+			.title("제목")
+			.type(ArticleType.IMAGE)
+			.content("내용")
+			.memo("메모")
+			.isPublic(true)
+			.member(member)
+			.build();
 
-        articleTag = ArticleTag.builder()
-                .article(article)
-                .tag(tag)
-                .build();
-    }
+		articleTag = ArticleTag.builder()
+			.article(article)
+			.tag(tag)
+			.build();
+	}
 
-    @Test
-    @DisplayName("아티클 등록 성공 - 글 or 링크")
-    void registerSuccessTest() throws Exception {
+	@Test
+	@DisplayName("아티클 등록 성공 - 글 or 링크")
+	void registerSuccessTest() throws Exception {
 
-        //given
-        List<Long> tagIds = List.of(9L);
-        ArticleAddReq articleAddReq = new ArticleAddReq("IT 관련", ArticleType.TEXT.name(), "좋은 글이다.",
-                "나중에 볼것", true, tagIds);
+		//given
+		List<Long> tagIds = List.of(9L);
+		ArticleAddReq articleAddReq = new ArticleAddReq("IT 관련", ArticleType.TEXT.name(), "좋은 글이다.",
+			"나중에 볼것", true, tagIds);
 
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.save(any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-        when(tagService.getTag(9L))
-                .thenReturn(tag);
-        when(articleTagService.save(any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.save(any()))
+			.thenAnswer(invocation -> invocation.getArgument(0));
+		when(tagService.getTag(9L))
+			.thenReturn(tag);
+		when(articleTagService.save(any()))
+			.thenAnswer(invocation -> invocation.getArgument(0));
 
-        //when
-        ArticleInfoRes articleInfoRes = articleService.register(member.getId(), articleAddReq, null);
+		//when
+		ArticleInfoRes articleInfoRes = articleService.register(member.getId(), articleAddReq, null);
 
-        //then
-        assertThat(articleInfoRes.title()).isEqualTo(articleAddReq.title());
-        assertThat(articleInfoRes.tagsRes().tagRes().get(0).name()).isEqualTo(tag.getName());
-    }
+		//then
+		assertThat(articleInfoRes.title()).isEqualTo(articleAddReq.title());
+		assertThat(articleInfoRes.tagsRes().tagRes().get(0).name()).isEqualTo(tag.getName());
+	}
 
-    @Test
-    @DisplayName("아티클 등록 성공 - 이미지")
-    void registerImageSuccessTest() throws Exception {
+	@Test
+	@DisplayName("아티클 등록 성공 - 이미지")
+	void registerImageSuccessTest() throws Exception {
 
-        // given
-        List<Long> tagIds = List.of(9L);
-        MultipartFile mockImage = mock(MultipartFile.class);
-        ImageUploadReq imageUploadReq = new ImageUploadReq(List.of(mockImage));
-        ArticleAddReq articleAddReq = new ArticleAddReq(
-                "IT 관련", ArticleType.IMAGE.name(), "좋은 이미지!", "나중에 볼 것", true, tagIds);
+		// given
+		List<Long> tagIds = List.of(9L);
+		MultipartFile mockImage = mock(MultipartFile.class);
+		ImageUploadReq imageUploadReq = new ImageUploadReq(List.of(mockImage));
+		ArticleAddReq articleAddReq = new ArticleAddReq(
+			"IT 관련", ArticleType.IMAGE.name(), "좋은 이미지!", "나중에 볼 것", true, tagIds);
 
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.save(any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.save(any()))
+			.thenAnswer(invocation -> invocation.getArgument(0));
 
-        when(tagService.getTag(9L))
-                .thenReturn(tag); // Mocking tag service
-        when(articleTagService.save(any()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
+		when(tagService.getTag(9L))
+			.thenReturn(tag); // Mocking tag service
+		when(articleTagService.save(any()))
+			.thenAnswer(invocation -> invocation.getArgument(0));
 
-        String imageFileName = "image_file_name";
-        when(imageService.add(any()))
-                .thenReturn(List.of(imageFileName)); // Mocking image service
+		String imageFileName = "image_file_name";
+		when(imageService.add(any()))
+			.thenReturn(List.of(imageFileName)); // Mocking image service
 
-        // when
-        ArticleInfoRes articleInfoRes = articleService.register(member.getId(), articleAddReq, imageUploadReq);
+		// when
+		ArticleInfoRes articleInfoRes = articleService.register(member.getId(), articleAddReq, imageUploadReq);
 
-        //then
-        assertThat(articleInfoRes.content()).isEqualTo(imageFileName);
-    }
+		//then
+		assertThat(articleInfoRes.content()).isEqualTo(imageFileName);
+	}
 
-    @Test
-    @DisplayName("아티클 수정 성공 - 텍스트/링크")
-    void modifySuccessTest() throws Exception {
+	@Test
+	@DisplayName("아티클 수정 성공 - 텍스트/링크")
+	void modifySuccessTest() throws Exception {
 
-        //given
-        ArticleModifyReq articleModifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모", false);
+		//given
+		ArticleModifyReq articleModifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모", false);
 
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.findById(article.getId()))
-                .thenReturn(Optional.of(article));
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.findById(article.getId()))
+			.thenReturn(Optional.of(article));
 
-        //when
-        ArticleInfoRes res = articleService.modify(member.getId(), article.getId(), articleModifyReq);
+		//when
+		ArticleInfoRes res = articleService.modify(member.getId(), article.getId(), articleModifyReq);
 
-        //then
-        assertThat(article.getMemo()).isEqualTo(articleModifyReq.memo());
-        assertThat(res.id()).isEqualTo(article.getId());
-    }
+		//then
+		assertThat(article.getMemo()).isEqualTo(articleModifyReq.memo());
+		assertThat(res.id()).isEqualTo(article.getId());
+	}
 
-    @Test
-    @DisplayName("아티클에 태그 연결 성공")
-    void tagArticleSuccessTest() throws Exception {
+	@Test
+	@DisplayName("아티클에 태그 연결 성공")
+	void tagArticleSuccessTest() throws Exception {
 
-        //given
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.findById(article.getId()))
-                .thenReturn(Optional.of(article));
-        when(tagService.getTag(tag.getId()))
-                .thenReturn(tag);
-        when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
-                .thenReturn(Optional.empty());
+		//given
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.findById(article.getId()))
+			.thenReturn(Optional.of(article));
+		when(tagService.getTag(tag.getId()))
+			.thenReturn(tag);
+		when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
+			.thenReturn(Optional.empty());
+		when(articleTagRepository.save(any(ArticleTag.class)))
+			.thenReturn(articleTag);
 
-        //when
-        Long taggedArticleId = articleService.tagArticle(member.getId(), article.getId(), tag.getId());
+		//when
+		ArticleInfoRes articleInfoRes = articleService.tagArticle(member.getId(), article.getId(), tag.getId());
 
-        //then
-        assertThat(taggedArticleId).isEqualTo(article.getId());
-    }
+		//then
+		assertThat(articleInfoRes.id()).isEqualTo(article.getId());
+	}
 
-    @Test
-    @DisplayName("아티클에 태그 등록 실패 - 이미 존재하는 태그")
-    void tagArticleFailTest_alreadyRegisteredTag() throws Exception {
+	@Test
+	@DisplayName("아티클에 태그 등록 실패 - 이미 존재하는 태그")
+	void tagArticleFailTest_alreadyRegisteredTag() throws Exception {
 
-        //given
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.findById(article.getId()))
-                .thenReturn(Optional.of(article));
-        when(tagService.getTag(tag.getId()))
-                .thenReturn(tag);
-        when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
-                .thenReturn(Optional.of(articleTag));
+		//given
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.findById(article.getId()))
+			.thenReturn(Optional.of(article));
+		when(tagService.getTag(tag.getId()))
+			.thenReturn(tag);
+		when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
+			.thenReturn(Optional.of(articleTag));
 
-        //when -> then
-        assertThrows(BusinessException.class,
-                () -> articleService.tagArticle(member.getId(), article.getId(), tag.getId()));
-    }
+		//when -> then
+		assertThrows(BusinessException.class,
+			() -> articleService.tagArticle(member.getId(), article.getId(), tag.getId()));
+	}
 
-    @Test
-    @DisplayName("아티클에 태그 해제 성공")
-    void unTagArticleSuccessTest() throws Exception {
+	@Test
+	@DisplayName("아티클에 태그 해제 성공")
+	void unTagArticleSuccessTest() throws Exception {
 
-        //given
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.findById(article.getId()))
-                .thenReturn(Optional.of(article));
-        when(tagService.getTag(tag.getId()))
-                .thenReturn(tag);
-        when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
-                .thenReturn(Optional.of(articleTag));
+		//given
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.findById(article.getId()))
+			.thenReturn(Optional.of(article));
+		when(tagService.getTag(tag.getId()))
+			.thenReturn(tag);
+		when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
+			.thenReturn(Optional.of(articleTag));
 
-        //when -> then
-        assertDoesNotThrow(() -> articleService.unTagArticle(member.getId(), article.getId(), tag.getId()));
-    }
+		//when -> then
+		assertDoesNotThrow(() -> articleService.unTagArticle(member.getId(), article.getId(), tag.getId()));
+	}
 
-    @Test
-    @DisplayName("아티클에 태그 해제 실패 - 해당 아티클에 태그 존재X")
-    void unTagArticleFailTest_notFoundArticleTag() throws Exception {
+	@Test
+	@DisplayName("아티클에 태그 해제 실패 - 해당 아티클에 태그 존재X")
+	void unTagArticleFailTest_notFoundArticleTag() throws Exception {
 
-        //given
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.findById(article.getId()))
-                .thenReturn(Optional.of(article));
-        when(tagService.getTag(tag.getId()))
-                .thenReturn(tag);
-        when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
-                .thenReturn(Optional.empty());
+		//given
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.findById(article.getId()))
+			.thenReturn(Optional.of(article));
+		when(tagService.getTag(tag.getId()))
+			.thenReturn(tag);
+		when(articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId()))
+			.thenReturn(Optional.empty());
 
-        //when -> then
-        assertThrows(EntityNotFoundException.class,
-                () -> articleService.unTagArticle(member.getId(), article.getId(), tag.getId()));
-    }
+		//when -> then
+		assertThrows(EntityNotFoundException.class,
+			() -> articleService.unTagArticle(member.getId(), article.getId(), tag.getId()));
+	}
 
-    @Test
-    @DisplayName("해당 아티클로 등록된 모든 태그 해제")
-    void unTagByArticleSuccessTest() throws Exception {
+	@Test
+	@DisplayName("해당 아티클로 등록된 모든 태그 해제")
+	void unTagByArticleSuccessTest() throws Exception {
 
-        //given
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(articleRepository.findById(article.getId()))
-                .thenReturn(Optional.of(article));
+		//given
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(articleRepository.findById(article.getId()))
+			.thenReturn(Optional.of(article));
 
-        //when -> then
-        assertDoesNotThrow(() -> articleService.unTagArticleByArticle(article.getId(), member.getId()));
-    }
+		//when -> then
+		assertDoesNotThrow(() -> articleService.unTagArticleByArticle(article.getId(), member.getId()));
+	}
 
-    @Test
-    @DisplayName("해당 태그로 등록된 모든 아티클에서 해제")
-    void unTagByTagSuccessTest() throws Exception {
+	@Test
+	@DisplayName("해당 태그로 등록된 모든 아티클에서 해제")
+	void unTagByTagSuccessTest() throws Exception {
 
-        //given
-        when(memberService.getMember(member.getId()))
-                .thenReturn(member);
-        when(tagService.getTag(tag.getId()))
-                .thenReturn(tag);
+		//given
+		when(memberService.getMember(member.getId()))
+			.thenReturn(member);
+		when(tagService.getTag(tag.getId()))
+			.thenReturn(tag);
 
-        //when -> then
-        assertDoesNotThrow(() -> articleService.unTagArticleByTag(tag.getId(), member.getId()));
-    }
+		//when -> then
+		assertDoesNotThrow(() -> articleService.unTagArticleByTag(tag.getId(), member.getId()));
+	}
 }

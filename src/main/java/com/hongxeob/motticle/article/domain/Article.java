@@ -1,7 +1,7 @@
 package com.hongxeob.motticle.article.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,7 +57,7 @@ public class Article extends BaseEntity {
 	private Member member;
 
 	@OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
-	private List<ArticleTag> articleTags = new ArrayList<>();
+	private Set<ArticleTag> articleTags = new HashSet<>();
 
 	@Builder
 	public Article(Long id, String title, ArticleType type, String content, String memo, boolean isPublic, Member member) {
@@ -75,7 +75,13 @@ public class Article extends BaseEntity {
 	}
 
 	public void addTag(ArticleTag tag) {
-		articleTags.add(tag);
+		if (!articleTags.contains(tag)) {
+            articleTags.add(tag);
+        }
+	}
+
+	public void removeTag(ArticleTag tag) {
+		articleTags.remove(tag);
 	}
 
 	public void setFilePath(String filePath) {

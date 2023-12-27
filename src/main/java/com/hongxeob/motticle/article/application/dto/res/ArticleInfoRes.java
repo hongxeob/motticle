@@ -38,9 +38,16 @@ public record ArticleInfoRes(
 
 	public static ArticleInfoRes of(Article article, List<Tag> tags) {
 		return new ArticleInfoRes(
-			article.getId(), article.getTitle(), article.getType().toString(),
-			article.getContent(), article.getMemo(), TagsRes.from(tags), article.isPublic(), article.getMember().getId(),
-			article.getCreatedAt(), article.getUpdatedAt()
+			article.getId(),
+			article.getTitle(),
+			article.getType().toString(),
+			article.getContent(),
+			article.getMemo(),
+			(tags != null) ? TagsRes.from(tags) : null,
+			article.isPublic(),
+			article.getMember().getId(),
+			article.getCreatedAt(),
+			article.getUpdatedAt()
 		);
 	}
 
