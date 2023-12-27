@@ -2,6 +2,8 @@ package com.hongxeob.motticle.article.presentation;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -40,6 +42,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
+import com.hongxeob.motticle.article.application.dto.req.ArticleTaqReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
@@ -477,6 +480,172 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("memberId").type(NUMBER).description("작성자 ID"),
 					fieldWithPath("createdAt").type(STRING).description("생성일자"),
 					fieldWithPath("updatedAt").type(STRING).description("수정일자")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("아티클에 태그 추가 성공")
+	void addTagToArticleSuccessTest() throws Exception {
+
+		//given
+		Long articleId = 1L;
+		ArticleTaqReq articleTaqReq = new ArticleTaqReq(2L);
+
+		TagsRes tagsRes = new TagsRes(List.of(
+			new TagRes(1L, "IT", 1L, LocalDateTime.now(), LocalDateTime.now()),
+			new TagRes(2L, "UI", 1L, LocalDateTime.now(), LocalDateTime.now())
+		));
+		ArticleInfoRes articleInfoRes = new ArticleInfoRes(1L, "제목", ArticleType.TEXT.name(),
+			"내용", "메모", tagsRes, true, 1L, LocalDateTime.now(), LocalDateTime.now());
+
+		given(articleService.tagArticle(any(), any(), any()))
+			.willReturn(articleInfoRes);
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/{id}/tags", articleId)
+				.with(csrf().asHeader())
+				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
+				.contentType(APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(articleTaqReq)))
+			.andExpect(status().isOk())
+			.andDo(document("article/add-tag-success",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName("Authorization").description("Access Token")
+				),
+				pathParameters(
+					parameterWithName("id").description("태그 추가할 아티클 ID")
+				),
+				requestFields(
+					fieldWithPath("tagId").description("추가할 태그 ID")
+				),
+				responseFields(
+					fieldWithPath("id").type(NUMBER).description("아티클 ID"),
+					fieldWithPath("title").type(STRING).description("아티클 제목"),
+					fieldWithPath("type").type(STRING).description("아티클 유형"),
+					fieldWithPath("content").type(STRING).description("아티클 내용"),
+					fieldWithPath("memo").type(STRING).description("아티클 메모"),
+					fieldWithPath("tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
+					fieldWithPath("tagsRes.tagRes[].name").type(STRING).description("태그 이름"),
+					fieldWithPath("tagsRes.tagRes[].memberId").type(NUMBER).description("유저 ID"),
+					fieldWithPath("tagsRes.tagRes[].createdAt").type(STRING).description("태그 생성일자"),
+					fieldWithPath("tagsRes.tagRes[].updatedAt").type(STRING).description("태그 수정일자"),
+					fieldWithPath("isPublic").type(BOOLEAN).description("공개 여부"),
+					fieldWithPath("memberId").type(NUMBER).description("작성자 ID"),
+					fieldWithPath("createdAt").type(STRING).description("생성일자"),
+					fieldWithPath("updatedAt").type(STRING).description("수정일자")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("아티클에 태그 추가 실패 - 아티클에 이미 존재하는 태그")
+	void addTagToArticleFailTest_already_registered() throws Exception {
+
+		//given
+		Long articleId = 1L;
+		ArticleTaqReq articleTaqReq = new ArticleTaqReq(2L);
+
+		given(articleService.tagArticle(any(), any(), any()))
+			.willThrow(new BusinessException(ErrorCode.ALREADY_REGISTERED_BY_TAG_IN_ARTICLE));
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/api/articles/{id}/tags", articleId)
+				.with(csrf().asHeader())
+				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
+				.contentType(APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(articleTaqReq)))
+			.andExpect(status().isBadRequest())
+			.andDo(document("article/add-tag-fail-already-registered",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName("Authorization").description("Access Token")
+				),
+				pathParameters(
+					parameterWithName("id").description("태그 등록할 아티클 ID")
+				),
+				requestFields(
+					fieldWithPath("tagId").description("추가할 태그 ID")
+				),
+				responseFields(
+					fieldWithPath("timestamp").type(STRING).description("예외 시간"),
+					fieldWithPath("code").type(STRING).description("오류 코드"),
+					fieldWithPath("errors").type(ARRAY).description("오류 목록"),
+					fieldWithPath("message").type(STRING).description("오류 메시지")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("아티클에 태그 해제 성공")
+	void deleteTagFromArticleSuccessTest() throws Exception {
+
+		//given
+		Long tagId = 2L;
+		Long articleId = 1L;
+
+		doNothing().when(articleService).unTagArticle(any(), any(), any());
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/{id}/un-tags", articleId)
+				.param("tag", String.valueOf(tagId))
+				.with(csrf().asHeader())
+				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isNoContent())
+			.andDo(document("article/remove-tag-success",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName("Authorization").description("Access Token")
+				),
+				pathParameters(
+					parameterWithName("id").description("태그 삭제할 아티클 ID")
+				),
+				requestParameters(
+					parameterWithName("tag").description("삭제할 태그 ID")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("아티클에 태그 해제 실패 - 해당 아티클에 존재하지 않는 태그")
+	void deleteTagFromArticleFailTest_notFound() throws Exception {
+
+		//given
+		Long tagId = 2L;
+		Long articleId = 1L;
+
+		doThrow(new BusinessException(ErrorCode.NOT_FOUND_REQUEST_TAG_IN_ARTICLE))
+			.when(articleService).unTagArticle(any(), any(), any());
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/{id}/un-tags", articleId)
+				.param("tag", String.valueOf(tagId))
+				.with(csrf().asHeader())
+				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andDo(document("article/remove-tag-fail-not-found-tag",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName("Authorization").description("Access Token")
+				),
+				pathParameters(
+					parameterWithName("id").description("태그 삭제할 아티클 ID")
+				),
+				requestParameters(
+					parameterWithName("tag").description("삭제할 태그 ID")
+				),
+				responseFields(
+					fieldWithPath("timestamp").type(STRING).description("예외 시간"),
+					fieldWithPath("code").type(STRING).description("오류 코드"),
+					fieldWithPath("errors").type(ARRAY).description("오류 목록"),
+					fieldWithPath("message").type(STRING).description("오류 메시지")
 				)
 			));
 	}

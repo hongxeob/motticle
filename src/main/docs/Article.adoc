@@ -141,3 +141,89 @@ include::{snippets}/article/update-article-success/http-response.adoc[]
 include::{snippets}/article/update-article-success/response-fields.adoc[]
 
 ---
+
+== POST : 아티클에 태그 추가
+
+=== /api/articles/{id}/tags
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/article/add-tag-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/add-tag-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/add-tag-success/path-parameters.adoc[]
+
+.request QueryString
+include::{snippets}/article/add-tag-success/request-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/add-tag-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/add-tag-success/response-fields.adoc[]
+
+=== 실패 : 아티클에 이미 태깅된 태그
+
+.Request Success - 실패
+include::{snippets}/article/add-tag-fail-already-registered/http-request.adoc[]
+
+.request header
+include::{snippets}/article/add-tag-fail-already-registered/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/add-tag-fail-already-registered/path-parameters.adoc[]
+
+.request QueryString
+include::{snippets}/article/add-tag-fail-already-registered/request-parameters.adoc[]
+
+.Response Success - 실패
+include::{snippets}/article/add-tag-fail-already-registered/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/add-tag-fail-already-registered/response-fields.adoc[]
+
+---
+
+== DELETE : 아티클에 태그 제거
+
+=== /api/articles/{id}/un-tags?tag={tagId}
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/article/remove-tag-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/remove-tag-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/remove-tag-success/path-parameters.adoc[]
+
+.request QueryString
+include::{snippets}/article/remove-tag-success/request-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/remove-tag-success/http-response.adoc[]
+
+=== 실패 : 해당 태그가 아티클에 존재하지 않음
+.Request Success - 실패
+include::{snippets}/article/remove-tag-fail-not-found-tag/http-request.adoc[]
+
+.request header
+include::{snippets}/article/remove-tag-fail-not-found-tag/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/remove-tag-fail-not-found-tag/path-parameters.adoc[]
+
+.request QueryString
+include::{snippets}/article/remove-tag-fail-not-found-tag/request-parameters.adoc[]
+
+.Response Success - 실패
+include::{snippets}/article/remove-tag-fail-not-found-tag/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/remove-tag-fail-not-found-tag/response-fields.adoc[]
