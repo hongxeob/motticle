@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hongxeob.motticle.article.application.ArticleService;
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
+import com.hongxeob.motticle.article.application.dto.req.ArticleTaqReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
@@ -108,10 +109,10 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PostMapping("/{id}/tags")
-	public ResponseEntity<Long> addTagToArticle(@PathVariable Long id, @RequestParam(name = "tag") Long tagId, Long memberId) {
-		Long taggedArticleId = articleService.tagArticle(memberId, id, tagId);
+	public ResponseEntity<ArticleInfoRes> addTagToArticle(@PathVariable Long id, @RequestBody ArticleTaqReq articleTaqReq, Long memberId) {
+		ArticleInfoRes articleInfoRes = articleService.tagArticle(memberId, id, articleTaqReq.tagId());
 
-		return ResponseEntity.ok(taggedArticleId);
+		return ResponseEntity.ok(articleInfoRes);
 	}
 
 	@CurrentMemberId

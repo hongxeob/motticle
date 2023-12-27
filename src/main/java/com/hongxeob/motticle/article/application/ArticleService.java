@@ -142,7 +142,7 @@ public class ArticleService {
 		ArticleTag articleTag = articleTagRepository.findByArticleIdAndTagId(article.getId(), tag.getId())
 			.orElseThrow(() -> {
 				log.warn("GET:READ:NOT_FOUND_ARTICLE_WITH_TAG : articleId => {}, tagId => {} ", article.getId(), tag.getId());
-				return new EntityNotFoundException(ErrorCode.NOT_FOUND_REQUEST_TAG_IN_ARTICLE);
+				return new BusinessException(ErrorCode.NOT_FOUND_REQUEST_TAG_IN_ARTICLE);
 			});
 
 		article.removeTag(articleTag);
