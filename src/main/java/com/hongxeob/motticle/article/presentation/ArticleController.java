@@ -99,7 +99,8 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PostMapping("/images/{id}")
-	public ResponseEntity<ImagesRes> uploadImages(@PathVariable Long id, Long memberId, @RequestPart(required = false) List<MultipartFile> image) throws IOException {
+	public ResponseEntity<ImagesRes> uploadImages(@PathVariable Long id, Long memberId,
+												  @RequestPart(required = false) List<MultipartFile> image) throws IOException {
 		ImageUploadReq imageUploadReq = new ImageUploadReq(image);
 
 		ImagesRes imagesRes = articleService.uploadImage(id, memberId, imageUploadReq);
@@ -109,7 +110,7 @@ public class ArticleController {
 
 	@CurrentMemberId
 	@PostMapping("/{id}/tags")
-	public ResponseEntity<ArticleInfoRes> addTagToArticle(@PathVariable Long id, @RequestBody ArticleTaqReq articleTaqReq, Long memberId) {
+	public ResponseEntity<ArticleInfoRes> addTagToArticle(@PathVariable Long id, @RequestBody @Validated ArticleTaqReq articleTaqReq, Long memberId) {
 		ArticleInfoRes articleInfoRes = articleService.tagArticle(memberId, id, articleTaqReq.tagId());
 
 		return ResponseEntity.ok(articleInfoRes);

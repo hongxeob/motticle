@@ -29,7 +29,6 @@ import com.hongxeob.motticle.article_tag.application.ArticleTagService;
 import com.hongxeob.motticle.article_tag.domain.ArticleTag;
 import com.hongxeob.motticle.article_tag.domain.ArticleTagRepository;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
-import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
 import com.hongxeob.motticle.image.application.ImageService;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.member.application.MemberService;
@@ -274,7 +273,7 @@ class ArticleServiceTest {
 			.thenReturn(Optional.empty());
 
 		//when -> then
-		assertThrows(EntityNotFoundException.class,
+		assertThrows(BusinessException.class,
 			() -> articleService.unTagArticle(member.getId(), article.getId(), tag.getId()));
 	}
 

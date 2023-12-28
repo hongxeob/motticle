@@ -227,3 +227,37 @@ include::{snippets}/article/remove-tag-fail-not-found-tag/http-response.adoc[]
 
 .response fields
 include::{snippets}/article/remove-tag-fail-not-found-tag/response-fields.adoc[]
+
+== DELETE : 아티클에 제거
+
+=== /api/articles/{id}
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/article/remove-success/http-request.adoc[]
+
+.request header
+include::{snippets}/article/remove-success/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/remove-success/path-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/remove-success/http-response.adoc[]
+
+=== 실패 : 아티클 소유자와 요청자가 일치하지 않음
+.Request Success - 실패
+include::{snippets}/article/remove-fail-not-match-owner-and-requester/http-request.adoc[]
+
+.request header
+include::{snippets}/article/remove-fail-not-match-owner-and-requester/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/remove-fail-not-match-owner-and-requester/path-parameters.adoc[]
+
+.Response Success - 실패
+include::{snippets}/article/remove-fail-not-match-owner-and-requester/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/remove-fail-not-match-owner-and-requester/response-fields.adoc[]

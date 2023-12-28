@@ -587,7 +587,8 @@ class ArticleControllerTest extends ControllerTestSupport {
 		Long tagId = 2L;
 		Long articleId = 1L;
 
-		doNothing().when(articleService).unTagArticle(any(), any(), any());
+		doNothing().when(articleService)
+			.unTagArticle(any(), any(), any());
 
 		//when -> then
 		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/{id}/un-tags", articleId)
@@ -640,6 +641,65 @@ class ArticleControllerTest extends ControllerTestSupport {
 				),
 				requestParameters(
 					parameterWithName("tag").description("삭제할 태그 ID")
+				),
+				responseFields(
+					fieldWithPath("timestamp").type(STRING).description("예외 시간"),
+					fieldWithPath("code").type(STRING).description("오류 코드"),
+					fieldWithPath("errors").type(ARRAY).description("오류 목록"),
+					fieldWithPath("message").type(STRING).description("오류 메시지")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("아티클 삭제 성공")
+	void deleteArticleSuccessTest() throws Exception {
+
+		//given
+		doNothing().when(articleService).unTagArticleByArticle(any(), any());
+		doNothing().when(articleService).remove(any(), any());
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/{id}", 1L)
+				.with(csrf().asHeader())
+				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isNoContent())
+			.andDo(document("article/remove-success",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName("Authorization").description("Access Token")
+				),
+				pathParameters(
+					parameterWithName("id").description("삭제할 아티클 ID")
+				)
+			));
+	}
+
+	@Test
+	@DisplayName("아티클 삭제 실패 - 소유자와 요청자가 일치하지 않음")
+	void deleteArticleFailTest_notMatch() throws Exception {
+
+		//given
+		doThrow(new BusinessException(ErrorCode.TAG_OWNER_AND_REQUESTER_ARE_DIFFERENT))
+			.when(articleService).unTagArticleByArticle(any(), any());
+		doNothing().when(articleService).remove(any(), any());
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/articles/{id}", 1L)
+				.with(csrf().asHeader())
+				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isBadRequest())
+			.andDo(document("article/remove-fail-not-match-owner-and-requester",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestHeaders(
+					headerWithName("Authorization").description("Access Token")
+				),
+				pathParameters(
+					parameterWithName("id").description("삭제할 아티클 ID")
 				),
 				responseFields(
 					fieldWithPath("timestamp").type(STRING).description("예외 시간"),
