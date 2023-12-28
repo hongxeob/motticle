@@ -26,9 +26,10 @@ public class Member extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "nick_name")
+	@Column(nullable = false, unique = true, length = 30)
 	private String nickname;
 
+	@Column(nullable = false, unique = true, length = 100)
 	private String email;
 
 	@Enumerated(EnumType.STRING)
