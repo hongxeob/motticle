@@ -3,6 +3,7 @@ package com.hongxeob.motticle.auth.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hongxeob.motticle.auth.application.dto.TokenResponse;
 import com.hongxeob.motticle.auth.domain.RefreshToken;
 import com.hongxeob.motticle.auth.domain.RefreshTokenRepository;
 import com.hongxeob.motticle.auth.token.JwtUtil;
@@ -27,14 +28,14 @@ public class RefreshTokenService {
 		refreshTokenRepository.delete(token);
 	}
 
-	public String reissueToken(String accessToken) {
+	public TokenResponse reissueToken(String accessToken) {
 		RefreshToken token = checkAndGetRefreshToken(accessToken);
 		String role = jwtUtil.getRole(token.getRefreshToken());
 		String newAccessToken = jwtUtil.generateAccessToken(token.getId(), role);
 
 		token.updateAccessToken(newAccessToken);
 
-		return newAccessToken;
+		return TokenResponse.from(newAccessToken);
 	}
 
 	private RefreshToken checkAndGetRefreshToken(String accessToken) {
@@ -43,6 +44,7 @@ public class RefreshTokenService {
 				log.warn("GET:READ:NOT_FOUND_REFRESH_TOKEN_BY_ACCESS_TOKEN : {}", accessToken);
 				return new EntityNotFoundException(ErrorCode.INVALID_TOKEN);
 			});
+
 		return token;
 	}
 }
