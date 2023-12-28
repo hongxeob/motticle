@@ -712,7 +712,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 
 	@Test
 	@DisplayName("필터를 통한 내 아티클 검색 성공")
-	void getArticlesByConditionSuccessTest() throws Exception {
+	void getArticlesByMemberAndConditionSuccessTest() throws Exception {
 
 		//given
 		List<Long> tagIds = List.of(1L, 2L);
@@ -790,6 +790,83 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("hasNext").type(BOOLEAN).description("다음 페이지 존재 여부")
 				)
 			));
+	}
 
+	@Test
+	@DisplayName("필터를 통한 모든 아티클 조회 성공")
+	void getArticlesByConditionSuccessTest() throws Exception {
+
+		//given
+		List<Long> tagIds = List.of(1L, 2L);
+		TagsRes tagsRes = new TagsRes(List.of(
+			new TagRes(1L, "IT", 1L, LocalDateTime.now(), LocalDateTime.now()),
+			new TagRes(2L, "UI", 1L, LocalDateTime.now(), LocalDateTime.now())
+		));
+
+		OpenGraphResponse openGraphResponse = OpenGraphResponse.builder()
+			.code(200)
+			.description("링크 설명")
+			.title("링크 제목")
+			.url("링크")
+			.image("이미지")
+			.build();
+
+		List<ArticleOgRes> articleOgResList = List.of(
+			new ArticleOgRes(1L, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
+				LocalDateTime.now(), LocalDateTime.now()),
+			new ArticleOgRes(2L, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
+				LocalDateTime.now(), LocalDateTime.now())
+		);
+		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
+
+		given(articleService.findAllByCondition(any(), any(), any(), any(), any()))
+			.willReturn(articlesOgRes);
+
+		//when -> then
+		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/articles/explore")
+				.with(csrf().asHeader())
+				.param("tagIds", "1","2")
+				.param("articleTypes", "TEXT", "IMAGE")
+				.param("keyword", "제목")
+				.param("sortOrder", "oldest")
+				.param("size", String.valueOf(5))
+				.param("page", String.valueOf(1))
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andDo(document("article/explore-get-all-by-condition",
+				preprocessRequest(prettyPrint()),
+				preprocessResponse(prettyPrint()),
+				requestParameters(
+					parameterWithName("tagIds").description("필터링할 태그ID 목록"),
+					parameterWithName("articleTypes").description("필터링할 아티클 타입 목록"),
+							parameterWithName("keyword").description("검색할 키워드"),
+					parameterWithName("sortOrder").description("정렬 방법"),
+					parameterWithName("size").description("페이지 크기"),
+					parameterWithName("page").description("페이지 번호")
+				),
+				responseFields(
+					fieldWithPath("articleOgResList[].id").type(NUMBER).description("아티클 ID"),
+					fieldWithPath("articleOgResList[].title").type(STRING).description("아티클 제목"),
+					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
+					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
+					fieldWithPath("articleOgResList[].memo").type(STRING).description("아티클 메모"),
+					fieldWithPath("articleOgResList[].tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
+					fieldWithPath("articleOgResList[].tagsRes.tagRes[].name").type(STRING).description("태그 이름"),
+					fieldWithPath("articleOgResList[].tagsRes.tagRes[].memberId").type(NUMBER).description("유저 ID"),
+					fieldWithPath("articleOgResList[].tagsRes.tagRes[].createdAt").type(STRING).description("태그 생성일자"),
+					fieldWithPath("articleOgResList[].tagsRes.tagRes[].updatedAt").type(STRING).description("태그 수정일자"),
+					fieldWithPath("articleOgResList[].isPublic").type(BOOLEAN).description("공개 여부"),
+					fieldWithPath("articleOgResList[].memberId").type(NUMBER).description("작성자 ID"),
+					fieldWithPath("articleOgResList[].openGraphResponse").type(OBJECT).optional().description("링크 OpenGraph 응답"),
+					fieldWithPath("articleOgResList[].openGraphResponse.code").type(NUMBER).description("링크 파싱 여부 코드"),
+					fieldWithPath("articleOgResList[].openGraphResponse.description").type(STRING).description("링크 설명"),
+					fieldWithPath("articleOgResList[].openGraphResponse.title").type(STRING).description("링크 제목"),
+					fieldWithPath("articleOgResList[].openGraphResponse.url").type(STRING).description("링크 URL"),
+					fieldWithPath("articleOgResList[].openGraphResponse.image").type(STRING).description("링크 이미지"),
+					fieldWithPath("articleOgResList[].createdDatetime").type(STRING).description("생성일자"),
+					fieldWithPath("articleOgResList[].updatedDatetime").type(STRING).description("수정일자"),
+					fieldWithPath("hasNext").type(BOOLEAN).description("다음 페이지 존재 여부")
+				)
+			));
 	}
 }

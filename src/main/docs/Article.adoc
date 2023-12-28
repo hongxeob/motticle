@@ -134,7 +134,7 @@ include::{snippets}/article/get-all-by-member-success/response-fields.adoc[]
 
 ---
 
-== GET : 필터를 통한 아티클 조회
+== GET : 필터를 통한 해당 멤버의 아티클들 조회
 
 === /api/articles/search
 
@@ -154,6 +154,26 @@ include::{snippets}/article/search-all-by-condition/http-response.adoc[]
 
 .response fields
 include::{snippets}/article/search-all-by-condition/response-fields.adoc[]
+
+---
+
+== GET : 필터를 통한 모든 아티클들 조회
+
+=== /api/articles/explore
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/article/explore-get-all-by-condition/http-request.adoc[]
+
+.request QueryString
+include::{snippets}/article/explore-get-all-by-condition/request-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/explore-get-all-by-condition/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/explore-get-all-by-condition/response-fields.adoc[]
 
 ---
 == PATCH : 아티클 수정
