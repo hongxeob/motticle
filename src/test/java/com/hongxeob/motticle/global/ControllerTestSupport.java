@@ -47,12 +47,13 @@ import com.hongxeob.motticle.member.domain.GenderType;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.MemberRepository;
 import com.hongxeob.motticle.member.domain.Role;
+import com.hongxeob.motticle.member.presentation.MemberController;
 import com.hongxeob.motticle.tag.application.TagService;
 import com.hongxeob.motticle.tag.presentation.TagController;
 
 @WebMvcTest(
 	value = {
-		TagController.class, ArticleController.class
+		TagController.class, ArticleController.class, MemberController.class
 	}
 )
 @Import(ControllerTestSupport.SecurityConfig.class)
