@@ -65,7 +65,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 		BooleanExpression expression = qArticle.isPublic.isTrue();
 
 		if (!CollectionUtils.isEmpty(tagIds)) {
-			expression = qArticleTag.tag.id.in(tagIds);
+			expression = expression.and(qArticleTag.tag.id.in(tagIds));
 		}
 		if (!CollectionUtils.isEmpty(articleTypes)) {
 			expression = addExpression(expression, qArticle.type.in(articleTypes));
