@@ -26,15 +26,23 @@ public class MemberController {
 
 	@CurrentMemberId
 	@PatchMapping
-	public ResponseEntity<MemberInfoRes> registerInfo(Long memberId, @RequestBody @Validated MemberInfoReq req) {
+	public ResponseEntity<MemberInfoRes> addMemberInfo(Long memberId, @RequestBody @Validated MemberInfoReq req) {
 		MemberInfoRes memberInfoRes = memberService.registerInfo(memberId, req);
 
 		return ResponseEntity.ok(memberInfoRes);
 	}
 
 	@CurrentMemberId
+	@GetMapping
+	public ResponseEntity<MemberInfoRes> getMember(Long memberId) {
+		MemberInfoRes memberInfoRes = memberService.getInfo(memberId);
+
+		return ResponseEntity.ok(memberInfoRes);
+	}
+
+	@CurrentMemberId
 	@PatchMapping("/modify")
-	public ResponseEntity<Void> modifyNickname(Long memberId, @RequestBody @Validated MemberModifyReq req) {
+	public ResponseEntity<Void> updateNickname(Long memberId, @RequestBody @Validated MemberModifyReq req) {
 		memberService.changeNickname(memberId, req);
 
 		return ResponseEntity
@@ -53,7 +61,7 @@ public class MemberController {
 
 	@CurrentMemberId
 	@DeleteMapping
-	public ResponseEntity<Void> delete(Long memberId) {
+	public ResponseEntity<Void> deleteMember(Long memberId) {
 		memberService.delete(memberId);
 
 		return ResponseEntity

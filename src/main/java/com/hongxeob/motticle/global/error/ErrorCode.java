@@ -12,7 +12,7 @@ public enum ErrorCode {
 	UNABLE_TO_HANDLE_ERROR("S002", "처리할 수 없는 데이터입니다."),
 
 	//공용
-	INVALID_INPUT_VALUE("C001", "잘못된 값을 입력하셨습니다."),
+	INVALID_INPUT_VALUE("C001", "값이 비었거나, 잘못된 값을 입력하셨습니다."),
 	UNAUTHORIZED_REQUEST("C002", "해당 요청을 수행할 권한이 없습니다."),
 	INVALID_LIST_SORT_TYPE("C004", "유효하지 않은 정렬 조건입니다."),
 	REQUIRE_QUERY_PARAM("C005", "URL에 추가적인 요청 조건이 필요합니다."),
