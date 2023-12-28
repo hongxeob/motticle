@@ -95,6 +95,23 @@ include::{snippets}/article/get-link-article-by-member-success/http-response.ado
 .response fields
 include::{snippets}/article/get-link-article-by-member-success/response-fields.adoc[]
 
+=== 실패 : 멤버가 등록한 아티클이 존재하지 않음
+
+.Request Success - 성공
+include::{snippets}/article/get-fail-not-found-article-by-member/http-request.adoc[]
+
+.request header
+include::{snippets}/article/get-fail-not-found-article-by-member/request-headers.adoc[]
+
+.request parameter
+include::{snippets}/article/get-fail-not-found-article-by-member/path-parameters.adoc[]
+
+.Response Success - 성공
+include::{snippets}/article/get-fail-not-found-article-by-member/http-response.adoc[]
+
+.response fields
+include::{snippets}/article/get-fail-not-found-article-by-member/response-fields.adoc[]
+
 ---
 
 == GET : 아티클 다건 조회
