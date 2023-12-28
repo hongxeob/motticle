@@ -15,4 +15,12 @@ public interface ArticleRepositoryCustom {
 		String sortType,
 		Pageable pageable
 	);
+
+	Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(
+		Collection<Long> tagIds,
+		Collection<ArticleType> articleTypes,
+		String keyword,
+		String sortType,
+		Pageable pageable
+	);
 }

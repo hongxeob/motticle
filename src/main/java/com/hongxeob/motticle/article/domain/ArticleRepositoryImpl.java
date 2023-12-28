@@ -35,13 +35,43 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
 		BooleanExpression expression = qArticle.member.id.eq(memberId);
 		if (!CollectionUtils.isEmpty(tagIds)) {
-			expression = expression.and(qArticleTag.tag.id.in(tagIds));
+			expression = addExpression(expression, qArticleTag.tag.id.in(tagIds));
 		}
 		if (!CollectionUtils.isEmpty(articleTypes)) {
-			expression = expression.and(qArticle.type.in(articleTypes));
+			expression = addExpression(expression, qArticle.type.in(articleTypes));
 		}
 		if (StringUtils.hasText(keyword)) {
-			expression = expression.and(qArticle.title.containsIgnoreCase(keyword)
+			expression = addExpression(expression, qArticle.title.containsIgnoreCase(keyword))
+				.or(qArticle.content.containsIgnoreCase(keyword));
+		}
+
+		JPAQuery<Article> query = queryFactory.selectFrom(qArticle)
+			.leftJoin(qArticle.articleTags, qArticleTag)
+			.where(expression)
+			.distinct();
+
+		orderSpecifier(sortType, query);
+
+		// 페이징 적용
+		List<Article> result = query
+			.limit(pageable.getPageSize() + 1)
+			.fetch();
+
+		return checkLastPage(pageable, result);
+	}
+
+	@Override
+	public Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(Collection<Long> tagIds, Collection<ArticleType> articleTypes, String keyword, String sortType, Pageable pageable) {
+		BooleanExpression expression = null;
+
+		if (!CollectionUtils.isEmpty(tagIds)) {
+			expression = qArticleTag.tag.id.in(tagIds);
+		}
+		if (!CollectionUtils.isEmpty(articleTypes)) {
+			expression = addExpression(expression, qArticle.type.in(articleTypes));
+		}
+		if (StringUtils.hasText(keyword)) {
+			expression = addExpression(expression, qArticle.title.containsIgnoreCase(keyword)
 				.or(qArticle.content.containsIgnoreCase(keyword)));
 		}
 
@@ -50,13 +80,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 			.where(expression)
 			.distinct();
 
-		OrderSpecifier<?> orderSpecifier;
-		if ("oldest".equalsIgnoreCase(sortType)) {
-			orderSpecifier = qArticle.createdAt.asc();
-		} else {
-			orderSpecifier = qArticle.createdAt.desc();
-		}
-		query.orderBy(orderSpecifier);
+		orderSpecifier(sortType, query);
 
 		// 페이징 적용
 		List<Article> result = query
@@ -64,6 +88,24 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 			.fetch();
 
 		return checkLastPage(pageable, result);
+	}
+
+	private void orderSpecifier(String sortType, JPAQuery<Article> query) {
+		OrderSpecifier<?> orderSpecifier;
+		if ("oldest".equalsIgnoreCase(sortType)) {
+			orderSpecifier = qArticle.createdAt.asc();
+		} else {
+			orderSpecifier = qArticle.createdAt.desc();
+		}
+		query.orderBy(orderSpecifier);
+	}
+
+	private BooleanExpression addExpression(BooleanExpression existing, BooleanExpression additional) {
+		if (existing == null) {
+			return additional;
+		} else {
+			return existing.and(additional);
+		}
 	}
 
 	private Slice<Article> checkLastPage(Pageable pageable, List<Article> result) {
