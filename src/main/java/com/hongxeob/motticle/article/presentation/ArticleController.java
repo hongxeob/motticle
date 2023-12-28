@@ -84,7 +84,7 @@ public class ArticleController {
 		page = Math.max(page - 1, 0);
 		PageRequest pageable = PageRequest.of(page, size);
 
-		ArticlesOgRes articleRes = articleService.findAllByCondition(memberId, tagIds, articleTypes, keyword, sortOrder, pageable);
+		ArticlesOgRes articleRes = articleService.findAllByMemberAndCondition(memberId, tagIds, articleTypes, keyword, sortOrder, pageable);
 
 		return ResponseEntity.ok(articleRes);
 	}
