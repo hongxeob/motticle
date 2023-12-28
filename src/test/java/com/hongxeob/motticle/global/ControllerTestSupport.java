@@ -40,6 +40,8 @@ import com.hongxeob.motticle.auth.AuthenticationCustomSuccessHandler;
 import com.hongxeob.motticle.auth.MyOAuth2member;
 import com.hongxeob.motticle.auth.OAuth2Attribute;
 import com.hongxeob.motticle.auth.application.CustomOAuth2UserService;
+import com.hongxeob.motticle.auth.application.RefreshTokenService;
+import com.hongxeob.motticle.auth.presentation.AuthController;
 import com.hongxeob.motticle.auth.token.JwtUtil;
 import com.hongxeob.motticle.auth.token.filter.JwtAuthFilter;
 import com.hongxeob.motticle.member.application.MemberService;
@@ -53,7 +55,8 @@ import com.hongxeob.motticle.tag.presentation.TagController;
 
 @WebMvcTest(
 	value = {
-		TagController.class, ArticleController.class, MemberController.class
+		TagController.class, ArticleController.class, MemberController.class,
+		AuthController.class
 	}
 )
 @Import(ControllerTestSupport.SecurityConfig.class)
@@ -80,6 +83,9 @@ public abstract class ControllerTestSupport {
 
 	@MockBean
 	protected ArticleService articleService;
+
+	@MockBean
+	protected RefreshTokenService refreshTokenService;
 
 	@MockBean
 	protected MemberRepository memberRepository;

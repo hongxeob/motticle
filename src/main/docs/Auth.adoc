@@ -1,0 +1,44 @@
+= REST Docs Auth API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[User-API]]
+== DELETE : 로그아웃
+
+=== /api/auth/logout
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/auth/logout/http-request.adoc[]
+
+.request header
+include::{snippets}/auth/logout/request-headers.adoc[]
+
+
+.Response Success - 성공
+include::{snippets}/auth/logout/http-response.adoc[]
+
+---
+== PATCH : 토큰 재발급
+
+=== /api/auth/reissue
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/auth/reissue-token/http-request.adoc[]
+
+.request header
+include::{snippets}/auth/reissue-token/request-headers.adoc[]
+
+
+.Response Success - 성공
+include::{snippets}/auth/reissue-token/http-response.adoc[]
+
+.response fields
+include::{snippets}/auth/reissue-token/response-fields.adoc[]
+---
