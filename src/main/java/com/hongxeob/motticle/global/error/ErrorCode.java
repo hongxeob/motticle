@@ -51,6 +51,10 @@ public enum ErrorCode {
 	LINK_CANNOT_BE_EMPTY("OG001", "링크 타입은 URL이 비어있을 수 없습니다."),
 	LINK_TYPE_ONLY_USE("OG002", "링크 타입 아티클만 OpenGraph를 이용할 수 있습니다."),
 
+	//스크랩
+	ALREADY_SCRAPED_ARTICLE_BY_MEMBER("S001", "이미 스크랩된 아티클입니다."),
+	NOT_FOUND_SCRAP_ARTICLE("S002", "해당 아티클로 스크랩된 내역이 없습니다."),
+	ARTICLE_IS_PRIVATE("S003", "해당 아티클은 비공개 입니다."),
 	;
 
 	private final String code;
