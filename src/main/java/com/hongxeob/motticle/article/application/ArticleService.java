@@ -78,7 +78,7 @@ public class ArticleService {
 		return ArticleInfoRes.from(article);
 	}
 
-	// TODO: 12/29/23 공개 -> 비공개로 될 때 이미 스크랩 당한 아티클들 처리 고민
+	// TODO: 12/29/23 공개 -> 비공개로 될 때 이미 스크랩 당한 아티클들 처리 고민 (프론트 단에서?)
 	public void modifyPublicStatus(Long articleId, Long memberId) {
 		Article article = checkArticleWriterAndRequester(articleId, memberId);
 

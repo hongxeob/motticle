@@ -54,7 +54,7 @@ public enum ErrorCode {
 	//스크랩
 	ALREADY_SCRAPED_ARTICLE_BY_MEMBER("S001", "이미 스크랩된 아티클입니다."),
 	NOT_FOUND_SCRAP_ARTICLE("S002", "해당 아티클로 스크랩된 내역이 없습니다."),
-	ARTICLE_IS_PRIVATE("S003", "해당 아티클은 비공개 입니다."),
+	ARTICLE_IS_PRIVATE("S003", "해당 아티클은 비공개처리 되었습니다."),
 	;
 
 	private final String code;

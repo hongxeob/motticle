@@ -68,7 +68,7 @@ public class ScrapService {
 	}
 
 	@Transactional(readOnly = true)
-	public ArticlesOgRes getAllScrap(Long memberId) {
+	public ArticlesOgRes getAllScrapedArticle(Long memberId) {
 		Member member = memberService.getMember(memberId);
 
 		Slice<Article> articles = scrapRepository.findAllArticlesByMemberId(member.getId());

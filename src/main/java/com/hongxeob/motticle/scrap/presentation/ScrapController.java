@@ -46,7 +46,7 @@ public class ScrapController {
 	@CurrentMemberId
 	@GetMapping
 	public ResponseEntity<ArticlesOgRes> getScrapedArticles(Long memberId) {
-		ArticlesOgRes articlesOgRes = scrapService.getAllScrap(memberId);
+		ArticlesOgRes articlesOgRes = scrapService.getAllScrapedArticle(memberId);
 
 		return ResponseEntity.ok(articlesOgRes);
 	}
