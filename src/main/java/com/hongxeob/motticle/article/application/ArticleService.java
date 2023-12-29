@@ -2,16 +2,10 @@ package com.hongxeob.motticle.article.application;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,8 +19,7 @@ import com.hongxeob.motticle.article.application.dto.res.OpenGraphResponse;
 import com.hongxeob.motticle.article.domain.Article;
 import com.hongxeob.motticle.article.domain.ArticleRepository;
 import com.hongxeob.motticle.article.domain.ArticleType;
-import com.hongxeob.motticle.article.opengraph.OpenGraphService;
-import com.hongxeob.motticle.article.opengraph.OpenGraphVO;
+import com.hongxeob.motticle.article.opengraph.OpenGraphProcessor;
 import com.hongxeob.motticle.article_tag.application.ArticleTagService;
 import com.hongxeob.motticle.article_tag.domain.ArticleTag;
 import com.hongxeob.motticle.article_tag.domain.ArticleTagRepository;
@@ -56,8 +49,7 @@ public class ArticleService {
 	private final ArticleTagService articleTagService;
 	private final TagService tagService;
 	private final ArticleTagRepository articleTagRepository;
-	private final OpenGraphService openGraphService;
-	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+	private final OpenGraphProcessor openGraphProcessor;
 
 	public ArticleInfoRes register(Long memberId, ArticleAddReq req, ImageUploadReq imageReq) throws IOException {
 		Member member = memberService.getMember(memberId);
@@ -78,10 +70,7 @@ public class ArticleService {
 	}
 
 	public ArticleInfoRes modify(Long articleId, Long memberId, ArticleModifyReq req) {
-		Member member = memberService.getMember(memberId);
-
-		Article article = getArticle(articleId);
-		article.checkArticleOwnerWithRequesterId(member.getId());
+		Article article = checkArticleWriterAndRequester(articleId, memberId);
 
 		Article modifiedArticle = ArticleModifyReq.toArticle(req);
 		article.updateInfo(modifiedArticle);
@@ -89,10 +78,15 @@ public class ArticleService {
 		return ArticleInfoRes.from(article);
 	}
 
+	// TODO: 12/29/23 공개 -> 비공개로 될 때 이미 스크랩 당한 아티클들 처리 고민
+	public void modifyPublicStatus(Long articleId, Long memberId) {
+		Article article = checkArticleWriterAndRequester(articleId, memberId);
+
+		article.updatePublicStatus();
+	}
+
 	public ImagesRes uploadImage(Long id, Long memberId, ImageUploadReq req) throws IOException {
-		Member member = memberService.getMember(memberId);
-		Article article = getArticle(id);
-		article.checkArticleOwnerWithRequesterId(member.getId());
+		Article article = checkArticleWriterAndRequester(id, memberId);
 
 		if (article.getType() != ArticleType.IMAGE) {
 			throw new BusinessException(ErrorCode.ARTICLE_IS_NOT_IMAGE_TYPE);
@@ -104,6 +98,7 @@ public class ArticleService {
 	}
 
 	// TODO: 12/19/23 동시성 고민(isolation = Isolation.SERIALIZABLE)
+
 	public ArticleInfoRes tagArticle(Long memberId, Long id, Long tagId) {
 		Member member = memberService.getMember(memberId);
 
@@ -129,7 +124,6 @@ public class ArticleService {
 
 		return ArticleInfoRes.from(article);
 	}
-
 	public void unTagArticle(Long memberId, Long id, Long tagId) {
 		Member member = memberService.getMember(memberId);
 
@@ -179,8 +173,8 @@ public class ArticleService {
 				return new BusinessException(ErrorCode.NOT_FOUND_ARTICLE);
 			});
 
-		article.setFilePath(getFilePath(article.getType(), article.getContent()));
-		OpenGraphResponse openGraphResponse = getOpenGraphResponse(article.getType(), article.getContent());
+		article.setFilePath(openGraphProcessor.getFilePath(article.getType(), article.getContent()));
+		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(article.getType(), article.getContent());
 
 		return ArticleOgRes.of(article, openGraphResponse);
 	}
@@ -190,7 +184,7 @@ public class ArticleService {
 		Member member = memberService.getMember(memberId);
 		Slice<Article> articleList = articleRepository.findAllByMemberId(member.getId(), pageable);
 
-		return generateArticlesOgResWithOpenGraph(articleList);
+		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articleList);
 	}
 
 	@Transactional(readOnly = true)
@@ -204,7 +198,7 @@ public class ArticleService {
 			member.getId(), tagIds, types,
 			keyword, sortOrder, pageable);
 
-		return generateArticlesOgResWithOpenGraph(articleSliceRes);
+		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articleSliceRes);
 	}
 
 	@Transactional(readOnly = true)
@@ -214,7 +208,7 @@ public class ArticleService {
 
 		Slice<Article> articlesSliceRes = articleRepository.findAllWithTagIdAndArticleTypeAndKeyword(tagIds, types, keyword, sortOrder, pageable);
 
-		return generateArticlesOgResWithOpenGraph(articlesSliceRes);
+		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articlesSliceRes);
 	}
 
 	public void remove(Long memberId, Long id) {
@@ -226,62 +220,17 @@ public class ArticleService {
 		articleRepository.delete(article);
 	}
 
-	private ArticlesOgRes generateArticlesOgResWithOpenGraph(Slice<Article> articles) {
-		final Map<Long, OpenGraphResponse> inspirationOpenGraphMap = new ConcurrentHashMap<>();
-		// executor 에 작업 할당
-		final List<CompletableFuture<Void>> completableFutures =
-			articles.stream().map(
-				article -> CompletableFuture.runAsync(
-					() -> inspirationOpenGraphMap.put(
-						article.getId(),
-						getOpenGraphResponse(article.getType(), article.getContent())
-					),
-					threadPoolTaskExecutor
-				)
-			).toList();
-		// 비동기 작업 끝날때까지 대기
-		completableFutures.forEach(CompletableFuture::join);
 
-		List<ArticleOgRes> articleOgResList = articles.stream()
-			.peek(article -> article.setFilePath(getFilePath(article.getType(), article.getContent())))
-			.map(article -> ArticleOgRes.of(article, inspirationOpenGraphMap.get(article.getId())))
-			.collect(Collectors.toList());
+	private Article checkArticleWriterAndRequester(Long articleId, Long memberId) {
+		Member member = memberService.getMember(memberId);
 
-		return ArticlesOgRes.of(articleOgResList, articles);
+		Article article = getArticle(articleId);
+		article.checkArticleOwnerWithRequesterId(member.getId());
+		return article;
 	}
 
-	private String getFilePath(ArticleType type, String content) {
-		if (type == ArticleType.IMAGE) {
-			return imageService.getFilePath(content);
-		}
-		return content;
-	}
-
-	private OpenGraphResponse getOpenGraphResponse(ArticleType articleType, String link) {
-		if (articleType != ArticleType.LINK) {
-			return OpenGraphResponse.from(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-
-		Optional<OpenGraphVO> openGraphVoOptional = openGraphService.getMetadata(link);
-
-		if (openGraphVoOptional.isEmpty()) {
-			return OpenGraphResponse.from(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-
-		OpenGraphVO openGraphVo = openGraphVoOptional.get();
-
-		OpenGraphResponse openGraphResponse = OpenGraphResponse.of(
-			HttpStatus.OK.value(),
-			openGraphVo.getImage(),
-			openGraphVo.getTitle(),
-			openGraphVo.getUrl() != null ? openGraphVo.getUrl() : link,
-			openGraphVo.getDescription()
-		);
-
-		return openGraphResponse;
-	}
-
-	private Article getArticle(Long articleId) {
+	@Transactional(readOnly = true)
+	public Article getArticle(Long articleId) {
 		Article article = articleRepository.findById(articleId)
 			.orElseThrow(() -> {
 				log.warn("GET:READ:NOT_FOUND_ARTICLE_BY_ID : {}", articleId);

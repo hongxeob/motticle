@@ -76,8 +76,8 @@ public class Article extends BaseEntity {
 
 	public void addTag(ArticleTag tag) {
 		if (!articleTags.contains(tag)) {
-            articleTags.add(tag);
-        }
+			articleTags.add(tag);
+		}
 	}
 
 	public void removeTag(ArticleTag tag) {
@@ -102,6 +102,9 @@ public class Article extends BaseEntity {
 		this.title = article.title;
 		this.content = article.content;
 		this.memo = article.memo;
-		this.isPublic = article.isPublic;
+	}
+
+	public void updatePublicStatus() {
+		this.isPublic = !this.isPublic;
 	}
 }

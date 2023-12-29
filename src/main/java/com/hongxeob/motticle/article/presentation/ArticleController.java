@@ -114,6 +114,16 @@ public class ArticleController {
 	}
 
 	@CurrentMemberId
+	@PatchMapping("/status/{id}")
+	public ResponseEntity<Void> updateArticlePublicStatus(@PathVariable Long id, Long memberId) {
+		articleService.modifyPublicStatus(id, memberId);
+
+		return ResponseEntity
+			.noContent()
+			.build();
+	}
+
+	@CurrentMemberId
 	@PostMapping("/images/{id}")
 	public ResponseEntity<ImagesRes> uploadImages(@PathVariable Long id, Long memberId,
 												  @RequestPart(required = false) List<MultipartFile> image) throws IOException {
