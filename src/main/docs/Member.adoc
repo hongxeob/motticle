@@ -18,6 +18,9 @@ include::{snippets}/member/add-info-success/http-request.adoc[]
 .request header
 include::{snippets}/member/add-info-success/request-headers.adoc[]
 
+.request multipart 구성
+include::{snippets}/member/add-info-success/request-parts.adoc[]
+
 .memberInfoReq 구성
 include::{snippets}/member/add-info-success/request-fields.adoc[]
 
@@ -35,8 +38,11 @@ include::{snippets}/member/add-info-fail-blank-info/http-request.adoc[]
 .request header
 include::{snippets}/member/add-info-fail-blank-info/request-headers.adoc[]
 
+.request multipart 구성
+include::{snippets}/member/add-info-success/request-parts.adoc[]
+
 .memberInfoReq 구성
-include::{snippets}/member/add-info-fail-blank-info/request-fields.adoc[]
+include::{snippets}/member/add-info-success/request-fields.adoc[]
 
 .Response Success - 실패
 include::{snippets}/member/add-info-fail-blank-info/http-response.adoc[]
@@ -121,6 +127,41 @@ include::{snippets}/member/modify-nickname-success/request-fields.adoc[]
 .Response Success - 성공
 include::{snippets}/member/modify-nickname-success/http-response.adoc[]
 ---
+
+== PATCH : 프로필 이미지 수정
+
+=== /api/members/modify/image
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/member/update-profile-image/http-request.adoc[]
+
+.request header
+include::{snippets}/member/update-profile-image/request-headers.adoc[]
+
+.request multipart 구성
+include::{snippets}/member/update-profile-image/request-parts.adoc[]
+
+.Response Success - 성공
+include::{snippets}/member/update-profile-image/http-response.adoc[]
+---
+
+== DELETE : 프로필 이미지 삭제
+=== /api/members/modify/image
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/member/delete-profile-image/http-request.adoc[]
+
+.request header
+include::{snippets}/member/delete-profile-image/request-headers.adoc[]
+
+.Response Success - 성공
+include::{snippets}/member/delete-profile-image/http-response.adoc[]
+---
+
 == DELETE : 멤버 삭제
 
 === /api/members
