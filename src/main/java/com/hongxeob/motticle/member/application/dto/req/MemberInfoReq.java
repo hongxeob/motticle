@@ -14,11 +14,12 @@ public record MemberInfoReq(
 	String genderType
 ) {
 
-	public static Member toMember(MemberInfoReq req) {
+	public static Member toMember(MemberInfoReq req, String image) {
 		return Member.builder()
 			.nickname(req.nickname)
 			.genderType(GenderType.of(req.genderType()))
 			.role(Role.USER)
+			.image(image)
 			.build();
 	}
 }

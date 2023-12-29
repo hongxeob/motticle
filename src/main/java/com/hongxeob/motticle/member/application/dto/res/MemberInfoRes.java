@@ -7,10 +7,12 @@ public record MemberInfoRes(
 	String email,
 	String nickname,
 	String genderType,
-	String role
+	String role,
+	String image
 ) {
 
 	public static MemberInfoRes from(Member member) {
-		return new MemberInfoRes(member.getId(), member.getEmail(), member.getNickname(), member.getGenderType().name(), member.getRole().getKey());
+		return new MemberInfoRes(member.getId(), member.getEmail(), member.getNickname(),
+			member.getGenderType().name(), member.getRole().getKey(), member.getImage());
 	}
 }

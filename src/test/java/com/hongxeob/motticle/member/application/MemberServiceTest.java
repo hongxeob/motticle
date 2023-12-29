@@ -2,8 +2,11 @@ package com.hongxeob.motticle.member.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,9 +16,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
+import com.hongxeob.motticle.image.application.ImageService;
+import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberInfoReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberModifyReq;
 import com.hongxeob.motticle.member.application.dto.res.MemberInfoRes;
@@ -29,6 +35,9 @@ class MemberServiceTest {
 
 	@Mock
 	private MemberRepository memberRepository;
+
+	@Mock
+	private ImageService imageService;
 
 	@InjectMocks
 	private MemberService memberService;
@@ -60,13 +69,19 @@ class MemberServiceTest {
 	void registerSuccessTest() throws Exception {
 
 		//given
+		MultipartFile mockImage = mock(MultipartFile.class);
+
+		ImageUploadReq imageUploadReq = new ImageUploadReq(List.of(mockImage));
 		MemberInfoReq memberInfoReq = new MemberInfoReq("이호빵", "MALE");
 
+		String imageFileName = "image_file_name";
+		when(imageService.add(any()))
+			.thenReturn(List.of(imageFileName));
 		when(memberRepository.findById(member.getId()))
 			.thenReturn(Optional.of(member));
 
 		//when
-		MemberInfoRes memberInfoRes = memberService.registerInfo(member.getId(), memberInfoReq);
+		MemberInfoRes memberInfoRes = memberService.registerInfo(member.getId(), memberInfoReq, imageUploadReq);
 
 		//then
 		assertThat(memberInfoRes.genderType()).isEqualTo(GenderType.MALE.name());
