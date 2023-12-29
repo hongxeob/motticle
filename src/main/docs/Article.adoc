@@ -217,8 +217,8 @@ include::{snippets}/article/add-tag-success/request-headers.adoc[]
 .request parameter
 include::{snippets}/article/add-tag-success/path-parameters.adoc[]
 
-.request QueryString
-include::{snippets}/article/add-tag-success/request-parameters.adoc[]
+.articleTaqReq 구성
+include::{snippets}/article/add-tag-success/request-fields.adoc[]
 
 .Response Success - 성공
 include::{snippets}/article/add-tag-success/http-response.adoc[]
@@ -237,8 +237,8 @@ include::{snippets}/article/add-tag-fail-already-registered/request-headers.adoc
 .request parameter
 include::{snippets}/article/add-tag-fail-already-registered/path-parameters.adoc[]
 
-.request QueryString
-include::{snippets}/article/add-tag-fail-already-registered/request-parameters.adoc[]
+.articleTaqReq 구성
+include::{snippets}/article/add-tag-fail-already-registered/request-fields.adoc[]
 
 .Response Success - 실패
 include::{snippets}/article/add-tag-fail-already-registered/http-response.adoc[]

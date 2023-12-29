@@ -436,7 +436,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 			new TagRes(1L, "IT", 1L, LocalDateTime.now(), LocalDateTime.now()),
 			new TagRes(2L, "UI", 1L, LocalDateTime.now(), LocalDateTime.now())
 		));
-		ArticleModifyReq modifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모", true);
+		ArticleModifyReq modifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모");
 		ArticleInfoRes articleInfoRes = new ArticleInfoRes(1L, modifyReq.title(), ArticleType.TEXT.name(),
 			modifyReq.content(), modifyReq.memo(), tagsRes, true, 1L, LocalDateTime.now(), LocalDateTime.now());
 
@@ -462,8 +462,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 				requestFields(
 					fieldWithPath("title").type(STRING).description("수정할 제목"),
 					fieldWithPath("content").type(STRING).description("수정할 내용"),
-					fieldWithPath("memo").type(STRING).description("수정할 메모"),
-					fieldWithPath("isPublic").type(BOOLEAN).description("수정할 공개 여부")
+					fieldWithPath("memo").type(STRING).description("수정할 메모")
 				),
 				responseFields(
 					fieldWithPath("id").type(NUMBER).description("아티클 ID"),

@@ -169,7 +169,7 @@ class ArticleServiceTest {
 
 		String imageFileName = "image_file_name";
 		when(imageService.add(any()))
-			.thenReturn(List.of(imageFileName)); // Mocking image service
+			.thenReturn(List.of(imageFileName));
 
 		// when
 		ArticleInfoRes articleInfoRes = articleService.register(member.getId(), articleAddReq, imageUploadReq);
@@ -183,7 +183,7 @@ class ArticleServiceTest {
 	void modifySuccessTest() throws Exception {
 
 		//given
-		ArticleModifyReq articleModifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모", false);
+		ArticleModifyReq articleModifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모");
 
 		when(memberService.getMember(member.getId()))
 			.thenReturn(member);
