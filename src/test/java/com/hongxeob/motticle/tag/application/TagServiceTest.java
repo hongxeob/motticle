@@ -15,6 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.member.application.MemberService;
@@ -23,7 +27,7 @@ import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.Role;
 import com.hongxeob.motticle.tag.application.dto.req.TagReq;
 import com.hongxeob.motticle.tag.application.dto.res.TagRes;
-import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
+import com.hongxeob.motticle.tag.application.dto.res.TagsSliceRes;
 import com.hongxeob.motticle.tag.domain.Tag;
 import com.hongxeob.motticle.tag.domain.TagRepository;
 
@@ -125,17 +129,20 @@ class TagServiceTest {
 	void findAllByMemberIdSuccessTest() throws Exception {
 
 		//given
+		Pageable pageable = PageRequest.of(0, 20);
 		List<Tag> tagList = List.of(tag);
+		Slice<Tag> tagSlice = new PageImpl<>(tagList, pageable, tagList.size());
+
 		when(memberService.getMember(member.getId()))
 			.thenReturn(member);
-		when(tagRepository.findAllByMemberId(member.getId()))
-			.thenReturn(tagList);
+		when(tagRepository.findAllByMemberId(member.getId(), pageable))
+			.thenReturn(tagSlice);
 
 		//when
-		TagsRes tagsRes = tagService.findAllByMemberId(member.getId());
+		TagsSliceRes tagsRes = tagService.findAllByMemberId(member.getId(), pageable);
 
 		//then
-		assertThat(tagsRes.tagRes().get(0).name()).isEqualTo(tag.getName());
+		assertThat(tagsRes.tagSliceRes().get(0).name()).isEqualTo(tag.getName());
 	}
 
 	@Test

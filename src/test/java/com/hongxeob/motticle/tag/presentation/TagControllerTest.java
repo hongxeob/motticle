@@ -12,6 +12,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.JsonFieldType.ARRAY;
+import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -35,7 +36,8 @@ import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.tag.application.dto.req.TagReq;
 import com.hongxeob.motticle.tag.application.dto.res.TagRes;
-import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
+import com.hongxeob.motticle.tag.application.dto.res.TagSliceRes;
+import com.hongxeob.motticle.tag.application.dto.res.TagsSliceRes;
 
 class TagControllerTest extends ControllerTestSupport {
 
@@ -116,13 +118,13 @@ class TagControllerTest extends ControllerTestSupport {
 	void getAllTagByMemberSuccessTest() throws Exception {
 
 		//given
-		TagsRes tagsRes = new TagsRes(List.of(
-			new TagRes(1L, "IT", 1L, LocalDateTime.now(), LocalDateTime.now()),
-			new TagRes(2L, "UI", 1L, LocalDateTime.now(), LocalDateTime.now())
-		));
+		TagsSliceRes tagsSliceRes = new TagsSliceRes(List.of(
+			new TagSliceRes(1L, "IT", 1L, LocalDateTime.now(), LocalDateTime.now()),
+			new TagSliceRes(2L, "UI", 1L, LocalDateTime.now(), LocalDateTime.now())
+		), false);
 
-		given(tagService.findAllByMemberId(any()))
-			.willReturn(tagsRes);
+		given(tagService.findAllByMemberId(any(), any()))
+			.willReturn(tagsSliceRes);
 
 		//when -> then
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/tags")
@@ -137,12 +139,13 @@ class TagControllerTest extends ControllerTestSupport {
 					headerWithName("Authorization").description("Access Token")
 				),
 				responseFields(
-					fieldWithPath("tagRes").type(ARRAY).description("태그 목록"),
-					fieldWithPath("tagRes[].id").type(NUMBER).description("태그 ID"),
-					fieldWithPath("tagRes[].name").type(STRING).description("태그 이름"),
-					fieldWithPath("tagRes[].memberId").type(NUMBER).description("유저 ID"),
-					fieldWithPath("tagRes[].createdAt").type(STRING).description("생성일자"),
-					fieldWithPath("tagRes[].updatedAt").type(STRING).description("수정일자")
+					fieldWithPath("tagSliceRes").type(ARRAY).description("태그 목록"),
+					fieldWithPath("tagSliceRes[].id").type(NUMBER).description("태그 ID"),
+					fieldWithPath("tagSliceRes[].name").type(STRING).description("태그 이름"),
+					fieldWithPath("tagSliceRes[].memberId").type(NUMBER).description("유저 ID"),
+					fieldWithPath("tagSliceRes[].createdAt").type(STRING).description("생성일자"),
+					fieldWithPath("tagSliceRes[].updatedAt").type(STRING).description("수정일자"),
+					fieldWithPath("hasNext").type(BOOLEAN).description("다음 페이지 여부")
 				)
 			));
 	}
