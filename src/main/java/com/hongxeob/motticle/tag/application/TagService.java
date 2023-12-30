@@ -1,7 +1,7 @@
 package com.hongxeob.motticle.tag.application;
 
-import java.util.List;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +12,7 @@ import com.hongxeob.motticle.member.application.MemberService;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.tag.application.dto.req.TagReq;
 import com.hongxeob.motticle.tag.application.dto.res.TagRes;
-import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
+import com.hongxeob.motticle.tag.application.dto.res.TagsSliceRes;
 import com.hongxeob.motticle.tag.domain.Tag;
 import com.hongxeob.motticle.tag.domain.TagRepository;
 
@@ -53,12 +53,12 @@ public class TagService {
 	}
 
 	@Transactional(readOnly = true)
-	public TagsRes findAllByMemberId(Long memberId) {
+	public TagsSliceRes findAllByMemberId(Long memberId, Pageable pageable) {
 		Member member = memberService.getMember(memberId);
 
-		List<Tag> tagList = tagRepository.findAllByMemberId(member.getId());
+		Slice<Tag> tagSlice = tagRepository.findAllByMemberId(member.getId(), pageable);
 
-		return TagsRes.from(tagList);
+		return TagsSliceRes.from(tagSlice);
 	}
 
 	public void delete(Long memberId, Long id) {
