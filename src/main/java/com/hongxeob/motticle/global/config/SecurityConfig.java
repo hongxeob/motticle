@@ -11,6 +11,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.hongxeob.motticle.auth.AuthenticationCustomFailureHandler;
 import com.hongxeob.motticle.auth.AuthenticationCustomSuccessHandler;
 import com.hongxeob.motticle.auth.application.CustomOAuth2UserService;
+import com.hongxeob.motticle.auth.domain.CookieAuthorizationRequestRepository;
 import com.hongxeob.motticle.auth.token.filter.JwtAuthFilter;
 import com.hongxeob.motticle.auth.token.filter.JwtExceptionFilter;
 
@@ -25,6 +26,7 @@ public class SecurityConfig {
 	private final JwtAuthFilter jwtAuthFilter;
 	private final AuthenticationCustomFailureHandler oAuth2LoginFailureHandler;
 	private final JwtExceptionFilter jwtExceptionFilter;
+	private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -41,7 +43,7 @@ public class SecurityConfig {
 			.antMatchers("/**", "/css/**", "images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
-			.oauth2Login()
+		.oauth2Login()
 			.userInfoEndpoint().userService(customOAuth2UserService) // OAuth2 로그인시 사용자 정보를 가져오는 엔드포인트와 사용자 서비스를 설정
 			.and()
 			.failureHandler(oAuth2LoginFailureHandler)
