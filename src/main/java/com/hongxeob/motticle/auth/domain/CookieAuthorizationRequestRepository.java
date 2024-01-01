@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.web.AuthorizationRequestReposi
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 
+import com.hongxeob.motticle.global.util.CookieUtils;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 
 @Component

@@ -1,4 +1,4 @@
-package com.hongxeob.motticle.auth.domain;
+package com.hongxeob.motticle.global.util;
 
 import java.util.Arrays;
 import java.util.Base64;

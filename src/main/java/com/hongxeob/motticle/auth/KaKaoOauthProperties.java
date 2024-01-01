@@ -1,9 +1,9 @@
-package com.hongxeob.motticle.auth.kakao;
+package com.hongxeob.motticle.auth;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "spring.security.oauth2.client.registration.kakao")
-public record KaKaoOauthConfig(
+public record KaKaoOauthProperties(
 	String redirectUri,
 	String clientId,
 	String clientSecret,

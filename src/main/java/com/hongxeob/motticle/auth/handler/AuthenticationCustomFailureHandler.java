@@ -1,4 +1,4 @@
-package com.hongxeob.motticle.auth;
+package com.hongxeob.motticle.auth.handler;
 
 import java.io.IOException;
 

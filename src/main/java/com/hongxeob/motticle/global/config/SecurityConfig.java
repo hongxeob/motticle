@@ -8,10 +8,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.hongxeob.motticle.auth.AuthenticationCustomFailureHandler;
-import com.hongxeob.motticle.auth.AuthenticationCustomSuccessHandler;
 import com.hongxeob.motticle.auth.application.CustomOAuth2UserService;
 import com.hongxeob.motticle.auth.domain.CookieAuthorizationRequestRepository;
+import com.hongxeob.motticle.auth.handler.AuthenticationCustomFailureHandler;
+import com.hongxeob.motticle.auth.handler.AuthenticationCustomSuccessHandler;
 import com.hongxeob.motticle.auth.token.filter.JwtAuthFilter;
 import com.hongxeob.motticle.auth.token.filter.JwtExceptionFilter;
 
