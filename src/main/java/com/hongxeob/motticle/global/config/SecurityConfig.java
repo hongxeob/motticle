@@ -44,6 +44,7 @@ public class SecurityConfig {
 			.anyRequest().authenticated()
 			.and()
 		.oauth2Login()
+			.loginPage("/kakao")
 			.userInfoEndpoint().userService(customOAuth2UserService) // OAuth2 로그인시 사용자 정보를 가져오는 엔드포인트와 사용자 서비스를 설정
 			.and()
 			.failureHandler(oAuth2LoginFailureHandler)

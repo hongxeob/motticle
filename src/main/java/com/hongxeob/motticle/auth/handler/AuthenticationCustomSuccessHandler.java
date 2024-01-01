@@ -34,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthenticationCustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-	private final static String DEFAULT_PATH = "http://localhost:8080";
 	private static final String TOKEN = "accessToken";
 	private static final String REFRESH_TOKEN = "refreshToken";
 
@@ -46,7 +45,7 @@ public class AuthenticationCustomSuccessHandler extends SimpleUrlAuthenticationS
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
 		Member member = findMember(authentication);
-		GeneratedToken token = jwtUtil.generatedToken(member.getEmail(), member.getRole().getKey());
+		GeneratedToken token = jwtUtil.generatedToken(response, member.getEmail(), member.getRole().getKey());
 
 		String targetUrl = determineTargetUrl(request, response);
 

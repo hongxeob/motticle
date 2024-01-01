@@ -6,7 +6,9 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,23 +32,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtUtil {
 
+	private static final String TOKEN_HEADER = "Authorization";
+	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 1;
+	public static final Long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 6;
+
 	private final JwtProperties jwtProperties;
 	private final AccessTokenService tokenService;
 	private final MemberRepository memberRepository;
 	private String secretKey;
-
-	private static final String TOKEN_HEADER = "Authorization";
-	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 1;
-	public static final Long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 6;// Refresh 토큰 만료 시간 : 6시간
 
 	@PostConstruct
 	protected void init() {
 		secretKey = Base64.getEncoder().encodeToString(jwtProperties.getSecret().getBytes());
 	}
 
-	public GeneratedToken generatedToken(String email, String role) {
+	public GeneratedToken generatedToken(HttpServletResponse response, String email, String role) {
 		// refreshToken과 accessToken을 생성한다.
-		String refreshToken = generateRefreshToken(email, role);
+		String refreshToken = generateRefreshToken(response, email, role);
 		String accessToken = generateAccessToken(email, role);
 		long now = (new Date().getTime());
 		Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
@@ -56,7 +58,7 @@ public class JwtUtil {
 		return new GeneratedToken(accessToken, refreshToken, accessTokenExpiresIn.getTime());
 	}
 
-	public String generateRefreshToken(String email, String role) {
+	public String generateRefreshToken(HttpServletResponse response, String email, String role) {
 		// 토큰의 유효 기간을 밀리초 단위로 설정.
 		Long refreshPeriod = REFRESH_TOKEN_EXPIRE_TIME;
 
@@ -66,8 +68,7 @@ public class JwtUtil {
 
 		// 현재 시간과 날짜를 가져온다.
 		Date now = new Date();
-
-		return Jwts.builder()
+		String refreshToken = Jwts.builder()
 			// Payload를 구성하는 속성들을 정의한다.
 			.setClaims(claims)
 			// 발행일자를 넣는다.
@@ -77,6 +78,18 @@ public class JwtUtil {
 			// 지정된 서명 알고리즘과 비밀 키를 사용하여 토큰을 서명한다.
 			.signWith(SignatureAlgorithm.HS256, secretKey)
 			.compact();
+
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
+			.httpOnly(true)
+			.secure(true)
+			.sameSite("Lax")
+			.maxAge(REFRESH_TOKEN_EXPIRE_TIME / 1000)
+			.path("/")
+			.build();
+
+		response.addHeader("Set-Cookie", cookie.toString());
+
+		return refreshToken;
 	}
 
 	public String generateAccessToken(String email, String role) {
