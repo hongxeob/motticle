@@ -81,11 +81,9 @@ include::{snippets}/member/get-info-success/response-fields.adoc[]
 .Request Success - 성공
 include::{snippets}/member/check-duplicated-nickname-success/http-request.adoc[]
 
-.request header
-include::{snippets}/member/check-duplicated-nickname-success/request-headers.adoc[]
+.Request Query String
+include::{snippets}/member/check-duplicated-nickname-success/request-parameters.adoc[]
 
-.memberModifyReq 구성
-include::{snippets}/member/check-duplicated-nickname-success/request-fields.adoc[]
 
 .Response Success - 성공
 include::{snippets}/member/check-duplicated-nickname-success/http-response.adoc[]
@@ -95,11 +93,8 @@ include::{snippets}/member/check-duplicated-nickname-success/http-response.adoc[
 .Request Success - 실패
 include::{snippets}/member/check-duplicated-nickname-fail/http-request.adoc[]
 
-.request header
-include::{snippets}/member/check-duplicated-nickname-fail/request-headers.adoc[]
-
-.memberModifyReq 구성
-include::{snippets}/member/check-duplicated-nickname-fail/request-fields.adoc[]
+.request Query String
+include::{snippets}/member/check-duplicated-nickname-fail/request-parameters.adoc[]
 
 .Response Success - 실패
 include::{snippets}/member/check-duplicated-nickname-fail/http-response.adoc[]

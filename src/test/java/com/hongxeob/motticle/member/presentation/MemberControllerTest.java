@@ -18,7 +18,9 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -188,25 +190,21 @@ class MemberControllerTest extends ControllerTestSupport {
 	void checkDuplicatedNicknameSuccessTest() throws Exception {
 
 		//given
-		MemberModifyReq modifyReq = new MemberModifyReq("호빵전사");
 
-		doNothing().when(memberService).checkDuplicatedNickname(modifyReq);
+		String nickname = "호빵전사";
+		doNothing().when(memberService).checkDuplicatedNickname(nickname);
 
 		//when -> then
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/nickname")
 				.with(csrf().asHeader())
-				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
-				.contentType(APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(modifyReq)))
+				.param("nickname", nickname)
+				.contentType(APPLICATION_JSON))
 			.andExpect(status().isNoContent())
 			.andDo(document("member/check-duplicated-nickname-success",
 				preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
-				requestHeaders(
-					headerWithName("Authorization").description("Access Token")
-				),
-				requestFields(
-					fieldWithPath("nickname").type(STRING).description("닉네임")
+				requestParameters(
+					parameterWithName("nickname").description("닉네임")
 				)
 			));
 	}
@@ -216,26 +214,21 @@ class MemberControllerTest extends ControllerTestSupport {
 	void checkDuplicatedNicknameFailTest_duplicatedNickname() throws Exception {
 
 		//given
-		MemberModifyReq modifyReq = new MemberModifyReq("호빵전사");
-
+		String nickname = "호빵전사";
 		doThrow(new BusinessException(ErrorCode.DUPLICATED_NICKNAME))
-			.when(memberService).checkDuplicatedNickname(modifyReq);
+			.when(memberService).checkDuplicatedNickname(nickname);
 
 		//when -> then
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/nickname")
 				.with(csrf().asHeader())
-				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
-				.contentType(APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(modifyReq)))
+				.param("nickname", nickname)
+				.contentType(APPLICATION_JSON))
 			.andExpect(status().isBadRequest())
 			.andDo(document("member/check-duplicated-nickname-fail",
 				preprocessRequest(prettyPrint()),
 				preprocessResponse(prettyPrint()),
-				requestHeaders(
-					headerWithName("Authorization").description("Access Token")
-				),
-				requestFields(
-					fieldWithPath("nickname").type(STRING).description("닉네임")
+				requestParameters(
+					parameterWithName("nickname").description("닉네임")
 				),
 				responseFields(
 					fieldWithPath("timestamp").type(STRING).description("예외 시간"),

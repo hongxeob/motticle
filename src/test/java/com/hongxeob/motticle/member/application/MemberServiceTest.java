@@ -122,13 +122,12 @@ class MemberServiceTest {
 
 		//given
 		String requestNickname = "호빵2";
-		MemberModifyReq modifyReq = new MemberModifyReq(requestNickname);
 
 		when(memberRepository.findByNickname(requestNickname))
 			.thenReturn(Optional.of(member2));
 
 		//when -> then
-		assertThrows(BusinessException.class, () -> memberService.checkDuplicatedNickname(modifyReq));
+		assertThrows(BusinessException.class, () -> memberService.checkDuplicatedNickname(requestNickname));
 	}
 
 	@Test
