@@ -17,8 +17,8 @@ import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
 public record ArticleOgRes(
 	Long id,
 	String title,
-	String type,
 	String content,
+	String type,
 	String memo,
 	TagsRes tagsRes,
 	boolean isPublic,
