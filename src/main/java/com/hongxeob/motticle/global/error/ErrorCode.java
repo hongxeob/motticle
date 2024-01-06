@@ -24,6 +24,7 @@ public enum ErrorCode {
 	IMAGE_UPLOAD_FAILED("I001", "이미지 업로드에 실패 했습니다."),
 	IMAGE_DELETE_FAILED("I002", "이미지 삭제에 실패 했습니다."),
 	DEFAULT_IMAGE_ALREADY_SET("I003", "이미 기본 이미지는 삭제하실 수 없습니다"),
+	INVALID_IMAGE_FORMAT("I004", "잘못된 이미지 포맷입니다."),
 
 	//인증&인가
 	REQUIRED_AUTHENTICATION("AUTH006", "토큰이 필요한 접근입니다."),
