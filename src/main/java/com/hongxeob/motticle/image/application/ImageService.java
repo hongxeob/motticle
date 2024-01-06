@@ -5,11 +5,12 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.hongxeob.motticle.image.application.dto.FileDto;
+
 public interface ImageService {
 
-	List<String> add(List<MultipartFile> files) throws IOException;
+	List<FileDto> uploadFiles(List<MultipartFile> files) throws IOException;
 
-	void delete(String request);
+	void deleteFile(String requestUrl);
 
-	String getFilePath(String content);
 }

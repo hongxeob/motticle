@@ -1,7 +1,6 @@
 package com.hongxeob.motticle.member.application;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,6 +11,7 @@ import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
 import com.hongxeob.motticle.image.application.ImageService;
+import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
 import com.hongxeob.motticle.member.application.dto.req.MemberInfoReq;
@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberService {
 
-	private static final String DEFAULT_PATH = "/Users/hongxeob/Desktop/simple-user-default-icon-free-png.webp";
+	private static final String DEFAULT_IMAGE_PATH = "https://kr.object.ncloudstorage.com/motticle-file-storage/simple-user-default-icon-free-png.webp";
 
 	private final MemberRepository memberRepository;
 	private final ImageService imageService;
@@ -37,8 +37,8 @@ public class MemberService {
 	public MemberInfoRes registerInfo(Long id, MemberInfoReq req, ImageUploadReq imageUploadReq) throws IOException {
 		Member member = getMember(id);
 
-		List<String> image = saveImage(imageUploadReq);
-		Member updatedMember = MemberInfoReq.toMember(req, image.get(0));
+		String imageUrl = saveImage(imageUploadReq);
+		Member updatedMember = MemberInfoReq.toMember(req, imageUrl);
 
 		member.registerInfo(updatedMember);
 
@@ -62,24 +62,24 @@ public class MemberService {
 
 	public ImagesRes updateImage(Long memberId, ImageUploadReq imageUploadReq) throws IOException {
 		Member member = getMember(memberId);
-		List<String> image = saveImage(imageUploadReq);
+		String imageUrl = saveImage(imageUploadReq);
 
-		member.updateImage(image.get(0));
+		member.updateImage(imageUrl);
 
-		return ImagesRes.from(image);
+		return ImagesRes.from(imageUrl);
 	}
 
 	public void deleteImage(Long memberId) {
 		Member member = getMember(memberId);
-		String image = member.getImage();
+		String imageUrl = member.getImage();
 
-		if (Objects.equals(image, DEFAULT_PATH)) {
+		if (Objects.equals(imageUrl, DEFAULT_IMAGE_PATH)) {
 			log.warn("DELETE:DELETE:DEFAULT_IMAGE_ALREADY_SET : {}", member.getId());
 			throw new BusinessException(ErrorCode.DEFAULT_IMAGE_ALREADY_SET);
 		}
 
-		imageService.delete(image);
-		member.updateImage(DEFAULT_PATH);
+		imageService.deleteFile(imageUrl);
+		member.updateImage(DEFAULT_IMAGE_PATH);
 	}
 
 	public void delete(Long id) {
@@ -104,11 +104,13 @@ public class MemberService {
 		});
 	}
 
-	private List<String> saveImage(ImageUploadReq imageUploadReq) throws IOException {
+	private String saveImage(ImageUploadReq imageUploadReq) throws IOException {
 		if (imageUploadReq.file() != null) {
-			return imageService.add(imageUploadReq.file());
+			List<FileDto> fileDtos = imageService.uploadFiles(imageUploadReq.file());
+
+			return fileDtos.get(0).getUploadFileUrl();
 		}
 
-		return Collections.singletonList(DEFAULT_PATH);
+		return DEFAULT_IMAGE_PATH;
 	}
 }

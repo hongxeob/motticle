@@ -53,8 +53,8 @@ public class TagController {
 	@DeleteMapping("/{id}")
 	@CurrentMemberId
 	public ResponseEntity<Void> deleteTag(Long memberId, @PathVariable Long id) {
-		tagService.delete(memberId, id);
 		articleService.unTagArticleByTag(id, memberId);
+		tagService.delete(memberId, id);
 
 		return ResponseEntity
 			.noContent()

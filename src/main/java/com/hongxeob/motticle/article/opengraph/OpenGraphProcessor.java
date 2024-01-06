@@ -48,18 +48,11 @@ public class OpenGraphProcessor {
 		completableFutures.forEach(CompletableFuture::join);
 
 		List<ArticleOgRes> articleOgResList = articles.stream()
-			.peek(article -> article.setFilePath(getFilePath(article.getType(), article.getContent())))
+			.peek(article -> article.setFilePath(article.getContent()))
 			.map(article -> ArticleOgRes.of(article, inspirationOpenGraphMap.get(article.getId())))
 			.collect(Collectors.toList());
 
 		return ArticlesOgRes.of(articleOgResList, articles);
-	}
-
-	public String getFilePath(ArticleType type, String content) {
-		if (type == ArticleType.IMAGE) {
-			return imageService.getFilePath(content);
-		}
-		return content;
 	}
 
 	public OpenGraphResponse getOpenGraphResponse(ArticleType articleType, String link) {
