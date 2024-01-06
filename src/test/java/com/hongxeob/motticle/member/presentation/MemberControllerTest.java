@@ -25,8 +25,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.List;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +34,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import com.hongxeob.motticle.global.ControllerTestSupport;
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
+import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
 import com.hongxeob.motticle.member.application.dto.req.MemberInfoReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberModifyReq;
@@ -295,7 +294,13 @@ class MemberControllerTest extends ControllerTestSupport {
 
 		//given
 		MockMultipartFile file = new MockMultipartFile("image", "test.jpg", "image/jpeg", "file".getBytes());
-		ImagesRes imagesRes = new ImagesRes(List.of("image/path"));
+		FileDto fileDto = FileDto.builder()
+			.originalFileName("originalName")
+			.uploadFileName("uploadFileName")
+			.uploadFilePath("uploadFilePath")
+			.uploadFileUrl("uploadFileUrl")
+			.build();
+		ImagesRes imagesRes = new ImagesRes(fileDto.getUploadFileUrl());
 
 		given(memberService.updateImage(any(), any()))
 			.willReturn(imagesRes);
@@ -322,7 +327,7 @@ class MemberControllerTest extends ControllerTestSupport {
 				),
 				responseFields(
 
-					fieldWithPath("imageUrl[]").type(ARRAY).description("이미지 URL")
+					fieldWithPath("imageUrl").type(STRING).description("이미지 URL")
 				)
 			));
 	}

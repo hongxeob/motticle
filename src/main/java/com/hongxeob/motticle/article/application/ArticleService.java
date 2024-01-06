@@ -27,6 +27,7 @@ import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
 import com.hongxeob.motticle.image.application.ImageService;
+import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
 import com.hongxeob.motticle.member.application.MemberService;
@@ -92,9 +93,9 @@ public class ArticleService {
 			throw new BusinessException(ErrorCode.ARTICLE_IS_NOT_IMAGE_TYPE);
 		}
 
-		List<String> fileNames = imageService.add(req.file());
+		List<FileDto> fileDtos = imageService.uploadFiles(req.file());
 
-		return ImagesRes.from(fileNames);
+		return ImagesRes.from(fileDtos);
 	}
 
 	// TODO: 12/19/23 동시성 고민(isolation = Isolation.SERIALIZABLE)
@@ -124,6 +125,7 @@ public class ArticleService {
 
 		return ArticleInfoRes.from(article);
 	}
+
 	public void unTagArticle(Long memberId, Long id, Long tagId) {
 		Member member = memberService.getMember(memberId);
 
@@ -173,7 +175,7 @@ public class ArticleService {
 				return new BusinessException(ErrorCode.NOT_FOUND_ARTICLE);
 			});
 
-		article.setFilePath(openGraphProcessor.getFilePath(article.getType(), article.getContent()));
+		article.setFilePath(article.getContent());
 		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(article.getType(), article.getContent());
 
 		return ArticleOgRes.of(article, openGraphResponse);
@@ -241,9 +243,10 @@ public class ArticleService {
 	}
 
 	private void fileUpload(Article article, ImageUploadReq req) throws IOException {
-		List<String> fileNames = imageService.add(req.file());
-		if (!fileNames.isEmpty()) {
-			article.setFilePath(fileNames.get(0));
+		List<FileDto> fileDtos = imageService.uploadFiles(req.file());
+
+		if (!fileDtos.get(0).getUploadFileName().isEmpty()) {
+			article.setFilePath(fileDtos.get(0).getUploadFileUrl());
 		}
 	}
 

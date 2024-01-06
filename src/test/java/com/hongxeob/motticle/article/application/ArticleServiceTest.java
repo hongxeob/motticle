@@ -30,6 +30,7 @@ import com.hongxeob.motticle.article_tag.domain.ArticleTag;
 import com.hongxeob.motticle.article_tag.domain.ArticleTagRepository;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.image.application.ImageService;
+import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.member.application.MemberService;
 import com.hongxeob.motticle.member.domain.GenderType;
@@ -156,26 +157,30 @@ class ArticleServiceTest {
 		ImageUploadReq imageUploadReq = new ImageUploadReq(List.of(mockImage));
 		ArticleAddReq articleAddReq = new ArticleAddReq(
 			"IT 관련", ArticleType.IMAGE.name(), "좋은 이미지!", "나중에 볼 것", true, tagIds);
+		FileDto fileDto = FileDto.builder()
+			.originalFileName("originalName")
+			.uploadFileName("uploadFileName")
+			.uploadFilePath("uploadFilePath")
+			.uploadFileUrl("uploadFileUrl")
+			.build();
 
 		when(memberService.getMember(member.getId()))
 			.thenReturn(member);
 		when(articleRepository.save(any()))
 			.thenAnswer(invocation -> invocation.getArgument(0));
-
 		when(tagService.getTag(9L))
 			.thenReturn(tag); // Mocking tag service
 		when(articleTagService.save(any()))
 			.thenAnswer(invocation -> invocation.getArgument(0));
 
-		String imageFileName = "image_file_name";
-		when(imageService.add(any()))
-			.thenReturn(List.of(imageFileName));
+		when(imageService.uploadFiles(any()))
+			.thenReturn(List.of(fileDto));
 
 		// when
 		ArticleInfoRes articleInfoRes = articleService.register(member.getId(), articleAddReq, imageUploadReq);
 
 		//then
-		assertThat(articleInfoRes.content()).isEqualTo(imageFileName);
+		assertThat(articleInfoRes.content()).isEqualTo(fileDto.getUploadFileUrl());
 	}
 
 	@Test

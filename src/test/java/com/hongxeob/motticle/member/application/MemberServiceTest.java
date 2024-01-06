@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
 import com.hongxeob.motticle.image.application.ImageService;
+import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberInfoReq;
 import com.hongxeob.motticle.member.application.dto.req.MemberModifyReq;
@@ -74,9 +75,15 @@ class MemberServiceTest {
 		ImageUploadReq imageUploadReq = new ImageUploadReq(List.of(mockImage));
 		MemberInfoReq memberInfoReq = new MemberInfoReq("이호빵", "MALE");
 
-		String imageFileName = "image_file_name";
-		when(imageService.add(any()))
-			.thenReturn(List.of(imageFileName));
+		FileDto fileDto = FileDto.builder()
+			.originalFileName("originalName")
+			.uploadFileName("uploadFileName")
+			.uploadFilePath("uploadFilePath")
+			.uploadFileUrl("uploadFileUrl")
+			.build();
+
+		when(imageService.uploadFiles(any()))
+			.thenReturn(List.of(fileDto));
 		when(memberRepository.findById(member.getId()))
 			.thenReturn(Optional.of(member));
 
