@@ -184,7 +184,7 @@ public class ArticleService {
 	@Transactional(readOnly = true)
 	public ArticlesOgRes findAllByMemberId(Long memberId, Pageable pageable) {
 		Member member = memberService.getMember(memberId);
-		Slice<Article> articleList = articleRepository.findAllByMemberId(member.getId(), pageable);
+		Slice<Article> articleList = articleRepository.findAllByMemberIdOrderByCreatedAtDesc(member.getId(), pageable);
 
 		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articleList);
 	}

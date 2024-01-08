@@ -10,5 +10,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
 	Optional<Article> findByMemberIdAndId(Long memberId, Long id);
 
-	Slice<Article> findAllByMemberId(Long memberId, Pageable pageable);
+	Slice<Article> findAllByMemberIdOrderByCreatedAtDesc(Long memberId, Pageable pageable);
 }

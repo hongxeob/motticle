@@ -24,6 +24,7 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 
 		List<Tag> result = query
 			.limit(pageable.getPageSize() + 1)
+			.orderBy(qTag.createdAt.desc())
 			.fetch();
 
 		return checkLastPage(pageable, result);
