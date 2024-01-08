@@ -34,8 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthenticationCustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-	private static final String TOKEN = "accessToken";
-	private static final String REFRESH_TOKEN = "refreshToken";
+	private static final String ACCESS_TOKEN = "accessToken";
 
 	private final KaKaoOauthProperties kaKaoOauthProperties;
 	private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
@@ -85,15 +84,13 @@ public class AuthenticationCustomSuccessHandler extends SimpleUrlAuthenticationS
 	private String getRedirectUrl(Member member, String targetUrl, GeneratedToken token) {
 		if (member.getNickname() != null && member.getGenderType() != null) {
 			return UriComponentsBuilder.fromUriString(targetUrl)
-				.path("/home")
-				.queryParam(TOKEN, token.accessToken())
-				.queryParam(REFRESH_TOKEN, token.refreshToken())
+				.path("/")
+				.queryParam(ACCESS_TOKEN, token.accessToken())
 				.build().toUriString();
 		} else {
 			return UriComponentsBuilder.fromUriString(targetUrl)
 				.path("/joinForm")
-				.queryParam(TOKEN, token.accessToken())
-				.queryParam(REFRESH_TOKEN, token.refreshToken())
+				.queryParam(ACCESS_TOKEN, token.accessToken())
 				.build().toUriString();
 		}
 	}

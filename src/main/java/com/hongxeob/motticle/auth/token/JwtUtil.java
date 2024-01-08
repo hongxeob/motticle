@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtUtil {
 
 	private static final String TOKEN_HEADER = "Authorization";
-	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 1;
+	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 3;
 	public static final Long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 6;
 
 	private final JwtProperties jwtProperties;
