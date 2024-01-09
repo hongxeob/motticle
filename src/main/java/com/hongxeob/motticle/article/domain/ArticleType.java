@@ -1,6 +1,7 @@
 package com.hongxeob.motticle.article.domain;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import com.hongxeob.motticle.global.error.ErrorCode;
@@ -27,6 +28,9 @@ public enum ArticleType {
 	}
 
 	public static List<ArticleType> from(List<String> type) {
+		if (type == null || type.isEmpty()) {
+			return Collections.emptyList();
+		}
 		List<ArticleType> articleTypes =
 			type.stream()
 				.map(ArticleType::from)
