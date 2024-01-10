@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        .addTagButton {
+            margin-left: 4px;
+            margin-right: 8px;
+            height: 34px;
+            line-height: 1px;
+        }
+
+        #tagContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-top: 22px;
+            margin-left: 5.25px;
+        }
+
+        #tagNameInput {
+            width: 359px;
+            margin-bottom: 10px;
+        }
+
+        #tagList {
+            display: grid;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        #tagList p {
+            osition: relative;
+            margin: 0;
+            margin-bottom: 15px;
+            font-size: 17px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-left: 6.3px;
+            margin-right: auto;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #tagList p span {
+            cursor: pointer;
+            position: absolute;
+            margin-left: 413px;
+        }
+
+        #tagList div {
+            background-color: #e0e0e0;
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <button onclick="goBack()"><</button>
+    <div class="header-line"></div>
+    <div style="margin-left: 12px; margin-right: 12px">
+        <div id="tagContainer">
+            <input type="text" id="tagNameInput" placeholder="태그 이름 입력">
+            <button onclick="registerTag()" class="addTagButton">태그 등록</button>
+        </div>
+        <div id="tagList">
+        </div>
+    </div>
+
+</div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchAndDisplayTags();
+    });
+
+    function fetchAndDisplayTags() {
+        fetch('/api/tags', {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken
+            }
+        })
+            .then(response => response.json())
+            .then(tags => {
+                const tagListContainer = document.getElementById('tagList');
+                tagListContainer.innerHTML = '';
+                const tagSliceRes = tags.tagSliceRes;
+                tagSliceRes.forEach(tag => {
+                    const tagItem = document.createElement('p');
+                    tagItem.innerText = tag.name;
+
+                    const deleteButton = document.createElement('span');
+                    deleteButton.innerText = 'X';
+                    deleteButton.addEventListener('click', function () {
+                        deleteTag(tag.id);
+                    });
+
+                    tagItem.appendChild(deleteButton);
+                    tagListContainer.appendChild(tagItem);
+                });
+            })
+            .catch(error => console.error('태그를 가져오는 중 에러 발생:', error));
+    }
+
+    function registerTag() {
+        const tagNameInput = document.getElementById('tagNameInput');
+        const tagName = tagNameInput.value;
+
+        if (tagName.trim() === '') {
+            alert('태그 이름을 입력하세요.');
+            return;
+        }
+
+        fetch('/api/tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': accessToken
+            },
+            body: JSON.stringify({
+                name: tagName,
+            }),
+        })
+            .then(response => {
+                if (response.status === 400) {
+                    alert('이미 중복된 태그가 있습니다.');
+                    throw new Error('Duplicate tag');
+                }
+                return response.json();
+            })
+            .then(() => {
+                fetchAndDisplayTags();
+                tagNameInput.value = '';
+            })
+            .catch(error => {
+                if (error.message !== 'Duplicate tag') {
+                    console.error('태그 등록 중 에러 발생:', error);
+                }
+            });
+    }
+
+    function deleteTag(tagId) {
+        fetch(`/api/tags/${tagId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': accessToken
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`태그 삭제 실패: ${response.status} ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(() => {
+                fetchAndDisplayTags();
+            })
+            .catch(error => console.error('태그 삭제 중 에러 발생:', error))
+    }
+</script>
+</body>
+</html>
