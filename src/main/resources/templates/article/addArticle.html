@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        .tag-button {
+            background-color: white; /* 기본 버튼 배경색 */
+            color: #4caf50; /* 기본 버튼 텍스트 색상 */
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px; /* 버튼 간격 조절 */
+            border: 1px solid #4caf50;
+            height: 23px;
+            line-height: 2px;
+        }
+
+        .tag-button.selected {
+            background-color: #4caf50; /* 선택된 상태의 배경색 */
+            color: white; /* 선택된 상태의 텍스트 색상 */
+        }
+
+        #tagButtonsContainer {
+            overflow-x: auto; /* Enable horizontal scrolling */
+            overflow-y: hidden; /* Hide vertical scrollbar */
+            white-space: nowrap; /* Prevent tags from wrapping to the next line */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            max-height: 50px; /* Keep the initial height */
+            transition: max-height 0.5s ease; /* Sliding effect transition */
+        }
+
+        #tagButtonsContainer::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px; /* Adjust the width to make it thinner */
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; /* Adjust the height of the slider handle */
+            width: 16px; /* Adjust the width of the slider handle */
+            left: 2px; /* Adjust the left position of the slider handle */
+            bottom: 2px; /* Adjust the bottom position of the slider handle */
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4caf50;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #4caf50;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(16px);
+            -ms-transform: translateX(16px);
+            transform: translateX(16px);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100%;
+            margin-top: auto;
+        }
+
+        .registerButton {
+            width: 481px;
+            align-self: flex-end;
+            position: fixed;
+            bottom: 0px;
+            right: 112px;
+        }
+
+        .articleTitle {
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <button onclick="goBack()" style="margin-left: 5px; padding-right: 15px;"><</button>
+    <button id="deleteArticleButton" style="margin-right: 15px;">삭제</button>
+    <div class="header-line"></div>
+    <div class="article-registration" id="articleRegistration">
+        <label for="articleTitle"></label>
+        <input type="text" id="articleTitle" placeholder="제목을 입력하세요.">
+        <label for="articleContent"></label>
+        <textarea id="articleContent" placeholder="내용을 입력하세요."></textarea>
+        <div id="imagePreviewContainer"></div>
+        <label for="articleImage">Image:</label>
+        <input type="file" id="articleImage" accept="image/*" onchange="addImagePreview()">
+        <div id="tagButtonsContainer"></div>
+        <textarea id="articleMemo" placeholder="메모를 입력하세요." style="margin-top: 15px; height: 100px;"></textarea>
+        <span>공개여부</span>
+        <label for="isPublic" class="toggle-switch">
+            <input type="checkbox" id="isPublic">
+            <span class="slider"></span>
+        </label>
+        <div class="button-container" style="margin-top: 20px;">
+            <button class="registerButton" onclick="registerArticle()">등록하기</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    const isPublicCheckbox = document.getElementById('isPublic');
+
+    isPublicCheckbox.addEventListener('change', function () {
+        // Toggle switch logic
+        if (this.checked) {
+            // Handle when the switch is on
+            console.log('Switch is ON');
+        } else {
+            // Handle when the switch is off
+            console.log('Switch is OFF');
+        }
+    });
+    const accessToken = localStorage.getItem('accessToken');
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedType = urlParams.get('type');
+    const articleImageLabel = document.querySelector('label[for="articleImage"]');
+
+    function navigateToAddTag() {
+        window.location.href = '/addTag';
+    }
+
+    function updatePlaceholderAndFileInput() {
+        const articleContentInput = document.getElementById('articleContent');
+        const articleImageInput = document.getElementById('articleImage');
+
+        if (selectedType === 'IMAGE') {
+            articleContentInput.placeholder = '아래 파일 선택 버튼을 눌러 이미지를 첨부하세요.';
+            articleImageInput.style.display = 'block';
+            articleImageLabel.style.display = 'block';
+            articleContentInput.style.height = '300px';
+            articleContentInput.readOnly = true;
+        } else {
+            articleContentInput.placeholder = '내용을 입력하세요';
+            articleImageInput.style.display = 'none';
+            articleImageLabel.style.display = 'none';
+            articleContentInput.style.height = '350px';
+            articleContentInput.readOnly = false;
+        }
+    }
+
+    // 페이지 로드 시 호출
+    updatePlaceholderAndFileInput();
+
+    function addImagePreview() {
+        const imageInput = document.getElementById('articleImage');
+        const articleContent = document.getElementById('articleContent');
+
+        if (imageInput.files && imageInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                articleContent.style.backgroundImage = `url(${e.target.result})`;
+            };
+
+            reader.readAsDataURL(imageInput.files[0]);
+        }
+    }
+
+    function displayUserTags(tags) {
+        const tagButtonsContainer = document.getElementById('tagButtonsContainer');
+
+
+        if (!Array.isArray(tags)) {
+            console.error('Invalid response: tags is not an array', tags);
+            return;
+        }
+        if (tags.length === 0) {
+            const placeholderText = document.createElement('div');
+            placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
+            placeholderText.style.color = "#777"; // 플레이스홀더 텍스트 스타일링
+            tagButtonsContainer.appendChild(placeholderText);
+
+            tagButtonsContainer.addEventListener('click', function () {
+                navigateToAddTag(); // 플레이스홀더를 클릭하면 navigateToAddTag() 함수 호출
+            });
+
+            return;
+        }
+
+        tags.forEach(tag => {
+            const tagButton = document.createElement('button');
+            tagButton.type = 'button';
+            tagButton.id = `tag${tag.id}`;
+            tagButton.value = tag.id;
+            tagButton.className = 'tag-button'; // 버튼에 클래스 추가
+            tagButton.textContent = tag.name;
+
+            // 버튼 클릭 시 선택 상태 토글
+            tagButton.addEventListener('click', function () {
+                this.classList.toggle('selected');
+            });
+
+            tagButtonsContainer.appendChild(tagButton);
+            tagButtonsContainer.addEventListener('click', function (event) {
+                // 클릭이 태그 버튼이 아닌 빈 공간에서 발생했는지 확인
+                if (event.target === tagButtonsContainer) {
+                    navigateToAddTag();
+                }
+            });
+        });
+    }
+
+    fetch('/api/tags', {
+        method: 'GET',
+        headers: {
+            'Authorization': accessToken
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error fetching user tags: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(tags => {
+            // Process fetched tags, e.g., populate a dropdown or checkboxes
+            displayUserTags(tags.tagSliceRes);
+        })
+        .catch(error => console.error(error));
+
+    function registerArticle() {
+
+        const accessToken = localStorage.getItem('accessToken');
+        const title = document.getElementById('articleTitle').value;
+        const content = document.getElementById('articleContent').value;
+        const memo = document.getElementById('articleMemo').value;
+        const isPublic = document.getElementById('isPublic').checked;
+
+        const selectedTags = Array.from(document.querySelectorAll('.tag-button.selected'))
+            .map(button => parseInt(button.value));
+
+        const data = {
+            type: selectedType,
+            title: title,
+            content: content,
+            memo: memo,
+            isPublic: isPublic,
+            tagIds: selectedTags,
+
+        };
+
+        let formData = new FormData();
+        formData.append('articleAddReq', new Blob([JSON.stringify(data)], {
+            type: "application/json"
+        }));
+
+        if (selectedType === 'IMAGE') {
+            // 입력 필드에서 이미지 파일 가져오기
+            const imageInput = document.getElementById('articleImage');
+            const imageFile = imageInput.files[0];
+
+            // FormData에 이미지 파일 추가
+            formData.append('image', imageFile);
+        }
+        fetch('/api/articles', {
+            method: 'POST',
+            headers: {
+                'Authorization': accessToken
+            },
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(articleInfoRes => {
+                // 아티클 등록 후 페이지 이동 또는 다른 작업 수행
+                console.log('아티클이 성공적으로 등록되었습니다:', articleInfoRes);
+                alert("아티클이 등록 되었습니다!")
+                window.location.href = '/';
+            })
+            .catch(error => {
+                console.error('아티클 등록 중 오류 발생:', error);
+                // 오류 처리 로직 추가
+            });
+    }
+</script>
+</body>
+</html>
