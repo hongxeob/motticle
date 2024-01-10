@@ -3,10 +3,16 @@ package com.hongxeob.motticle.view;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class ViewController {
+
+	@GetMapping("/")
+	public String home() {
+		return "home";
+	}
 
 	@GetMapping("/kakao")
 	public String login() {
@@ -18,11 +24,6 @@ public class ViewController {
 		return "member/joinForm";
 	}
 
-	@GetMapping("/home")
-	public String home() {
-		return "home";
-	}
-
 	@GetMapping("/addArticle")
 	public String addArticle(@RequestParam(name = "type") String articleType, Model model) {
 		model.addAttribute("articleType", articleType);
@@ -32,5 +33,10 @@ public class ViewController {
 	@GetMapping("/addTag")
 	public String addTag() {
 		return "tag/addTag";
+	}
+
+	@GetMapping("/article/{id}")
+	public String articleDetails(@PathVariable Long id) {
+		return "article/articleDetails";
 	}
 }

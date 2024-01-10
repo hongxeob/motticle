@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Title</title>
+</head>
+<body>
+<div class=view>
+    <div style="
+    background-color: rgba(255, 255, 255, 1);
+    max-width: 480px;
+    height: 741px;
+    position: relative;
+    margin: 0px auto;
+    width: 100%;
+    padding-left: 0;
+    border-right-width: 16px;
+    padding-right: 0;">
+        <div class="e1_44"></div>
+        <span class="e1_45"><</span><span class="e1_46">회원가입</span>
+
+        <span class="e1_6">닉네임</span>
+        <div class=e1_12>
+            <input class="requestNickname" type="text" id="nickname" placeholder="닉네임을 입력하세요.">
+        </div>
+
+        <button type="submit" class="checkNickname" onclick="checkNickname()">중복검사</button>
+
+        <div class=e39_8><span class="e1_47">성별</span>
+            <div class=e1_48>
+                <select class="requestGenderType" name="gender" required>
+                    <option value="" disabled selected hidden>성별을 선택하세요</option>
+                    <option value="FEMALE">여성</option>
+                    <option value="MALE">남성</option>
+                </select>
+            </div>
+            <div class=e1_60>
+                <div class="e1_61"></div>
+                <div class="e1_62"></div>
+            </div>
+        </div>
+        <div class=e1_40>
+            <div class="e1_41"></div>
+            <div class="e1_42"></div>
+        </div>
+        <div class=e1_51>
+            <button type="submit" class="e1_52" onclick="startRegistration()">시작하기</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const uriParams = new URLSearchParams(location.search)
+    const accessToken = uriParams.get('accessToken');
+    console.log(accessToken);
+
+    // 추출한 accessToken을 사용합니다.
+    console.log('AccessToken:', accessToken);
+
+    function startRegistration() {
+        // 입력된 닉네임과 성별 값을 가져옵니다.
+        const nickname = document.getElementById('nickname').value;
+        const genderType = document.querySelector('.requestGenderType').value;
+
+        // API 호출을 위한 데이터를 생성합니다.
+        const requestData = {
+            nickname: nickname,
+            genderType: genderType
+        };
+
+        let formData = new FormData();
+        formData.append('memberInfoReq', new Blob([JSON.stringify(requestData)], {
+            type: "application/json"
+        }));
+
+        fetch('/api/members', {
+            method: 'PATCH',
+            headers: {
+                'Authorization': accessToken
+            },
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('API 호출 결과:', data);
+                localStorage.setItem('accessToken', accessToken);
+                window.location.href = '/';
+            })
+            .catch(error => {
+                console.error('API 호출 에러:', error);
+                window.location.href = '/kakao';
+            });
+    }
+
+    function checkNickname() {
+        const nickname = document.getElementById('nickname').value.trim();
+        if (nickname === "") {
+            alert("닉네임을 입력해주세요.");
+            return;
+        }
+
+        fetch(`/api/members/nickname?nickname=${nickname}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                // 응답이 성공적이면, 사용 가능한 닉네임이라는 메시지를 표시
+                alert("닉네임이 사용 가능합니다.");
+            })
+            .catch(error => {
+                // 에러가 발생하면, 닉네임이 중복되었다는 메시지를 표시
+                alert("닉네임이 중복됩니다. 다른 닉네임을 입력해주세요.");
+            });
+    }
+
+</script>
+</body>
+</html>
