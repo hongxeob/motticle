@@ -28,6 +28,7 @@ import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
 import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
+import com.sun.xml.bind.v2.TODO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -71,6 +72,7 @@ public class ArticleController {
 		return ResponseEntity.ok(articleResponse);
 	}
 
+	//TODO: 1/14/24 쿼리 스트링 필드들 객체로 묶기
 	@CurrentMemberId
 	@GetMapping("/search")
 	public ResponseEntity<ArticlesOgRes> getArticlesByMemberAndCondition(Long memberId,
