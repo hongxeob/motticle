@@ -3,6 +3,8 @@ package com.hongxeob.motticle.article.presentation;
 import java.io.IOException;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
+
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,10 +27,12 @@ import com.hongxeob.motticle.article.application.dto.req.ArticleTaqReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
+import com.hongxeob.motticle.article.application.dto.res.OpenGraphResponse;
+import com.hongxeob.motticle.article.domain.ArticleType;
+import com.hongxeob.motticle.article.opengraph.OpenGraphProcessor;
 import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
-import com.sun.xml.bind.v2.TODO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,6 +43,7 @@ public class ArticleController {
 
 	private final ArticleService articleService;
 	private static final String DEFAULT_PAGING_SIZE = "10";
+	private final OpenGraphProcessor openGraphProcessor;
 
 	@CurrentMemberId
 	@PostMapping
@@ -162,5 +167,12 @@ public class ArticleController {
 
 		return ResponseEntity.noContent()
 			.build();
+	}
+
+	@GetMapping("/validation")
+	public ResponseEntity<OpenGraphResponse> validationLink(@RequestParam @NotBlank String link) {
+		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(ArticleType.LINK, link);
+
+		return ResponseEntity.ok(openGraphResponse);
 	}
 }
