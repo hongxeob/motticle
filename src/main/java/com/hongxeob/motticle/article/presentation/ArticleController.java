@@ -29,7 +29,6 @@ import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
 import com.hongxeob.motticle.article.application.dto.res.OpenGraphResponse;
 import com.hongxeob.motticle.article.domain.ArticleType;
-import com.hongxeob.motticle.article.opengraph.OpenGraphProcessor;
 import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
@@ -43,7 +42,6 @@ public class ArticleController {
 
 	private final ArticleService articleService;
 	private static final String DEFAULT_PAGING_SIZE = "10";
-	private final OpenGraphProcessor openGraphProcessor;
 
 	@CurrentMemberId
 	@PostMapping
@@ -171,7 +169,7 @@ public class ArticleController {
 
 	@GetMapping("/validation")
 	public ResponseEntity<OpenGraphResponse> validationLink(@RequestParam @NotBlank String link) {
-		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(ArticleType.LINK, link);
+		OpenGraphResponse openGraphResponse = articleService.getOpenGraphResponse(ArticleType.LINK, link);
 
 		return ResponseEntity.ok(openGraphResponse);
 	}

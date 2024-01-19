@@ -221,7 +221,12 @@ public class ArticleService {
 
 		articleRepository.delete(article);
 	}
+	
+	public OpenGraphResponse getOpenGraphResponse(ArticleType articleType, String link) {
+		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(articleType, link);
 
+		return openGraphResponse;
+	}
 
 	private Article checkArticleWriterAndRequester(Long articleId, Long memberId) {
 		Member member = memberService.getMember(memberId);
