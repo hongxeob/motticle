@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        .modal {
+            z-index: 999;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .home-tag-button {
+            background-color: white;
+            color: #535353;
+            border: 1.4px solid #2DD197;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            height: 23px;
+            line-height: 2px;
+        }
+
+        .home-tag-button.selected {
+            background-color: #2DD197;
+            color: white;
+        }
+
+        #home-tagButtonsContainer {
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-top: 30px;
+        }
+
+        #home-tagButtonsContainer::-webkit-scrollbar {
+            display: none;
+        }
+
+        .content-container {
+            margin-top: 100px;
+        }
+
+        .homeFooter {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            position: absolute;
+            top: 781px;
+            z-index: 999;
+        }
+
+        .article-image-container {
+            flex: 1;
+            width: 180px;
+            height: 180px;
+            min-width: 180px;
+            min-height: 180px;
+            overflow: hidden;
+        }
+
+        .article-details {
+            flex: 2;
+            padding: 15px;
+        }
+
+        .article-tags {
+            white-space: nowrap;
+            display: flex;
+            max-width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .home-article-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .type-text-content {
+            font-size: 12px;
+            padding: 6px;
+            line-height: 150%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        footer {
+            width: 100%;
+            height: 80px;
+            bottom: 0px;
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div class=view>
+    <a class="homeButton" href="http://localhost:8080/home">MOTTICLE</a>
+    <div id="home-tagButtonsContainer">
+    </div>
+    <section class="content-container">
+        <div class="line"></div>
+        <div class="line2"></div>
+        <label class="search">검색하기</label>
+        <span class="sort">최신순↕</span>
+        <div class="articleList" id="articleListContainer">
+        </div>
+    </section>
+    <footer>
+        <nav>
+            <section class="footer-box">
+                <button class="add" onclick="openModal()">Add Article</button>
+            </section>
+        </nav>
+    </footer>
+    <div class="modal" id="myModal">
+        <div class="modal-content">
+            <h2>Select Article Type</h2>
+            <button onclick="selectArticleType('LINK')">Link</button>
+            <button onclick="selectArticleType('IMAGE')">Image</button>
+            <button onclick="selectArticleType('TEXT')">Text</button>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const accessToken = localStorage.getItem('accessToken');
+    let allArticlesData;
+
+    if (accessToken === null) {
+        redirectToKakaoScreen();
+    }
+
+    function redirectToKakaoScreen() {
+        window.location.href = '/kakao';
+    }
+
+    async function fetchAndRenderData() {
+        const response = await fetch('/api/tags', {
+            headers: {
+                'Authorization': accessToken
+            }
+        });
+
+        if (response.status === 401) {
+            alert("다시 로그인해주세요.");
+            window.location.href = "/kakao";
+        } else {
+            const tags = await response.json().then(data => data.tagSliceRes);
+            renderTags(tags);
+        }
+
+        const selectedTags = Array.from(document.querySelectorAll('.home-tag-button.selected'))
+            .map(button => parseInt(button.value));
+
+        // 선택한 태그가 없으면 모든 아티클 가져오기
+        const articlesResponse = selectedTags.length === 0 ?
+            await fetch('/api/articles/search', {
+                headers: {
+                    'Authorization': accessToken
+                }
+            }) :
+            await fetch(`/api/articles/search?tagIds=${selectedTags.join(',')}`, {
+                headers: {
+                    'Authorization': accessToken
+                }
+            });
+        console.log(articlesResponse);
+
+        const articlesData = await articlesResponse.json();
+        console.log('Filtered Articles Data:', articlesData);
+        allArticlesData = articlesData;
+        renderArticles(articlesData);
+    }
+
+    fetchAndRenderData();
+
+    function renderTags(tags) {
+        const tagButtonsContainer = document.getElementById('home-tagButtonsContainer');
+
+        if (tags.length === 0) {
+            const placeholderText = document.createElement('div');
+            placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
+            placeholderText.style.color = "#777";
+            placeholderText.style.padding = "10px";
+            tagButtonsContainer.appendChild(placeholderText);
+
+            tagButtonsContainer.addEventListener('click', function () {
+                navigateToAddTag();
+            });
+
+            return;
+        }
+        tags.forEach(tag => {
+            const tagButton = document.createElement('button');
+            tagButton.type = 'button';
+            tagButton.id = `tag${tag.id}`;
+            tagButton.value = tag.id;
+            tagButton.className = 'home-tag-button';
+            tagButton.textContent = `#${tag.name}`;
+
+            tagButton.addEventListener('click', function () {
+                this.classList.toggle('selected');
+
+                fetchAndRenderArticles();
+            });
+            tagButtonsContainer.appendChild(tagButton);
+            tagButtonsContainer.addEventListener('click', function (event) {
+                if (event.target === tagButtonsContainer) {
+                    navigateToAddTag();
+                }
+            });
+        });
+    }
+
+    async function fetchAndRenderArticles() {
+        // 선택한 태그 가져오기
+        const articleListContainer = document.getElementById('articleListContainer');
+        articleListContainer.innerHTML = '';
+
+        // 선택한 태그 가져오기
+        const selectedTags = Array.from(document.querySelectorAll('.home-tag-button.selected'))
+            .map(button => parseInt(button.value));
+
+        // 선택한 태그를 기반으로 아티클을 가져오기
+        if (selectedTags.length > 0) {
+            const articlesResponse = await fetch(`/api/articles/search?tagIds=${selectedTags.join(',')}`, {
+                headers: {
+                    'Authorization': accessToken
+                }
+            });
+            const articlesData = await articlesResponse.json();
+            console.log('Filtered Articles Data:', articlesData);
+            renderArticles(articlesData);
+        } else {
+            renderArticles(allArticlesData);
+        }
+
+    }
+
+    function renderArticles(articlesData) {
+        const articleListContainer = document.getElementById('articleListContainer');
+        console.log(articlesData);
+
+        articlesData.articleOgResList.forEach(article => {
+            const articleCard = document.createElement('div');
+            articleCard.classList.add('article-card');
+
+            const articleImageContainer = document.createElement('div');
+            articleImageContainer.classList.add('article-image-container');
+
+            const articleDetails = document.createElement('div');
+            articleDetails.classList.add('article-details');
+
+            const articleTagName = article.tagsRes.tagRes.map(tag => `
+            <div class="article-tag-card">#${tag.name}</div>
+        `).join('');
+
+            let articleImageHTML = '';
+
+            if (article.type === 'IMAGE' && article.content) {
+                articleImageHTML = `<img src="${article.content}" alt="Article Image" class="home-article-image">`;
+            } else if (article.type === 'LINK' && article.openGraphResponse.image) {
+                articleImageHTML = `<img src="${article.openGraphResponse.image}" alt="OG Image" class="home-article-image">`;
+            } else {
+                articleImageHTML = `<p class="type-text-content">${article.content}</p>`;
+            }
+
+            articleDetails.innerHTML = `
+            <div class="article-title" onclick="moveArticlePage(${article.id})">${article.title}</div>
+
+            <div class="article-tags">${articleTagName}</div>
+        `;
+
+            articleImageContainer.innerHTML = articleImageHTML;
+            articleCard.appendChild(articleImageContainer);
+            articleCard.appendChild(articleDetails);
+
+            articleListContainer.appendChild(articleCard);
+        });
+    }
+
+    function moveArticlePage(articleId) {
+        window.location.href = `/article/${articleId}`;
+    }
+
+    let selectedArticleType;
+
+    function openModal() {
+        document.getElementById('myModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('myModal').style.display = 'none';
+    }
+
+    function selectArticleType(type) {
+        selectedArticleType = type;
+        console.log('Selected Article Type:', selectedArticleType);
+
+        closeModal();
+        window.location.href = `/addArticle?type=${selectedArticleType}`;
+    }
+
+    function navigateToAddTag() {
+        window.location.href = '/addTag';
+    }
+</script>
+</body>
+</html>
