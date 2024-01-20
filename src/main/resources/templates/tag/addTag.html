@@ -37,29 +37,7 @@
             gap: 5px;
         }
 
-        #tagList p {
-            osition: relative;
-            margin: 0;
-            margin-bottom: 15px;
-            font-size: 17px;
-            text-align: center;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 5px 10px;
-            margin-left: 6.3px;
-            margin-right: auto;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        #tagList p span {
-            cursor: pointer;
-            position: absolute;
-            margin-left: 413px;
-        }
-
         #tagList div {
-            background-color: #e0e0e0;
             padding: 5px;
             border-radius: 5px;
         }
@@ -67,8 +45,7 @@
 </head>
 <body>
 <div class="view">
-    <button onclick="goBack()"><</button>
-    <div class="header-line"></div>
+    <span onclick="goBack()" class="go-back"><</span>
     <div style="margin-left: 12px; margin-right: 12px">
         <div id="tagContainer">
             <input type="text" id="tagNameInput" placeholder="태그 이름 입력">
@@ -102,18 +79,24 @@
                 const tagListContainer = document.getElementById('tagList');
                 tagListContainer.innerHTML = '';
                 const tagSliceRes = tags.tagSliceRes;
+
                 tagSliceRes.forEach(tag => {
-                    const tagItem = document.createElement('p');
-                    tagItem.innerText = tag.name;
+                    const tagItem = document.createElement('button');
+                    tagItem.classList.add("tag-list-button");
+                    tagItem.textContent = `#${tag.name}`;
 
                     const deleteButton = document.createElement('span');
+                    deleteButton.classList.add("delete-tag-button")
                     deleteButton.innerText = 'X';
                     deleteButton.addEventListener('click', function () {
                         deleteTag(tag.id);
                     });
 
-                    tagItem.appendChild(deleteButton);
-                    tagListContainer.appendChild(tagItem);
+                    const tagContainer = document.createElement('div');
+                    tagContainer.appendChild(tagItem);
+                    tagContainer.appendChild(deleteButton);
+
+                    tagListContainer.appendChild(tagContainer);
                 });
             })
             .catch(error => console.error('태그를 가져오는 중 에러 발생:', error));
