@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        #tagContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-top: 22px;
+            margin-left: 5.25px;
+        }
+
+        #tagNameInput {
+            width: 359px;
+            margin-bottom: 10px;
+        }
+
+        #tagList {
+            display: grid;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        #tagList div {
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <span onclick="goBack()" class="go-back"><</span>
+    <div style="margin-left: 12px; margin-right: 12px">
+        <div id="tagContainer">
+            <input type="text" id="tagNameInput" placeholder="등록할 태그를 입력하세요.">
+            <button onclick="registerTag()" class="addTagButton">태그 등록</button>
+        </div>
+        <div id="tagList">
+        </div>
+    </div>
+</div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+    const urlParams = new URLSearchParams(window.location.search);
+    const articleId = urlParams.get('articleId');
+    const tagNameInput = document.getElementById('tagNameInput');
+
+    document.addEventListener('DOMContentLoaded', function () {
+        fetchAndDisplayTags();
+    });
+
+    function fetchAndDisplayTags() {
+        fetch('/api/tags', {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken
+            }
+        })
+            .then(response => {
+                if (response.status === 401) {
+                    window.location.href = '/kakao';
+                }
+                return response.json();
+            })
+            .then(tags => {
+                const tagListContainer = document.getElementById('tagList');
+
+                tagListContainer.innerHTML = '';
+                const tagSliceRes = tags.tagSliceRes;
+
+                tagSliceRes.forEach(tag => {
+                    const tagItem = document.createElement('button');
+                    tagItem.classList.add("tag-list-button");
+                    tagItem.textContent = `#${tag.name}`;
+                    tagItem.addEventListener('click', function () {
+                        tagNameInput.value = tag.name;
+                        tagging(tag.id);
+                    });
+
+                    const deleteButton = document.createElement('span');
+                    deleteButton.classList.add("delete-tag-button")
+                    deleteButton.innerText = 'X';
+                    deleteButton.addEventListener('click', function () {
+                        deleteTag(tag.id);
+                    });
+
+                    const tagContainer = document.createElement('div');
+                    tagContainer.appendChild(tagItem);
+                    tagContainer.appendChild(deleteButton);
+
+                    tagListContainer.appendChild(tagContainer);
+                });
+
+            })
+            .catch(error => console.error('태그를 가져오는 중 에러 발생:', error));
+    }
+
+    function tagging(tagId) {
+        fetch(`/api/articles/${articleId}/tags`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': accessToken
+            },
+            body: JSON.stringify({
+                tagId: tagId,
+            }),
+        })
+            .then(articleResponse => {
+                if (articleResponse.status === 400) {
+                    alert("이미 등록된 태그 입니다.")
+                    fetchAndDisplayTags();
+                    tagNameInput.value = '';
+                    return;
+                }
+                return articleResponse.json();
+            })
+            .then(articleInfoRes => {
+                if (articleInfoRes) {
+                    console.log('아티클에 태그가 추가되었습니다.', articleInfoRes);
+                    fetchAndDisplayTags();
+                    tagNameInput.value = '';
+                    alert("태그가 추가 되었습니다.")
+                }
+            })
+            .catch(error => console.error('아티클에 태그 추가 중 에러 발생:', error));
+    }
+
+    function registerTag() {
+        const tagNameInput = document.getElementById('tagNameInput');
+        const tagName = tagNameInput.value;
+
+        if (tagName.trim() === '') {
+            alert('태그 이름을 입력하세요.');
+            return;
+        }
+
+        fetch('/api/tags', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': accessToken
+            },
+            body: JSON.stringify({
+                name: tagName,
+            }),
+        })
+            .then(response => response.json())
+            .then(tag => {
+                const tagId = tag.id;
+
+                fetch(`/api/articles/${articleId}/tags`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': accessToken
+                    },
+                    body: JSON.stringify({
+                        tagId: tagId,
+                    }),
+                })
+                    .then(articleResponse => {
+                        if (articleResponse.status === 400) {
+                            alert("이미 등록된 태그 입니다.")
+                            fetchAndDisplayTags();
+                            tagNameInput.value = '';
+                            return;
+                        }
+                        return articleResponse.json();
+                    })
+                    .then(articleInfoRes => {
+                        if (articleInfoRes) {
+                            console.log('아티클에 태그가 추가되었습니다.', articleInfoRes);
+                            fetchAndDisplayTags();
+                            tagNameInput.value = '';
+                            alert("태그가 추가 되었습니다.")
+                        }
+                    })
+                    .catch(error => console.error('아티클에 태그 추가 중 에러 발생:', error));
+            })
+            .catch(error => {
+                if (error.message !== 'Duplicate tag') {
+                    console.error('태그 등록 중 에러 발생:', error);
+                }
+            });
+    }
+
+    function deleteTag(tagId) {
+        fetch(`/api/tags/${tagId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': accessToken
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`태그 삭제 실패: ${response.status} ${response.statusText}`);
+                }
+                return response.text();
+            })
+            .then(() => {
+                fetchAndDisplayTags();
+            })
+            .catch(error => console.error('태그 삭제 중 에러 발생:', error))
+    }
+</script>
+</body>
+</html>
