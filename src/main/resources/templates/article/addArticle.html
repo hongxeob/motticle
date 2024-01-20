@@ -11,39 +11,6 @@
     <link rel="stylesheet" href="/css/style.css">
     <title>흩어진 영감을 모으자!</title>
     <style>
-        .tag-button {
-            background-color: white; /* 기본 버튼 배경색 */
-            color: #4caf50; /* 기본 버튼 텍스트 색상 */
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 5px; /* 버튼 간격 조절 */
-            border: 1px solid #4caf50;
-            height: 23px;
-            line-height: 2px;
-        }
-
-        .tag-button.selected {
-            background-color: #4caf50; /* 선택된 상태의 배경색 */
-            color: white; /* 선택된 상태의 텍스트 색상 */
-        }
-
-        #tagButtonsContainer {
-            overflow-x: auto; /* Enable horizontal scrolling */
-            overflow-y: hidden; /* Hide vertical scrollbar */
-            white-space: nowrap; /* Prevent tags from wrapping to the next line */
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            max-height: 50px; /* Keep the initial height */
-            transition: max-height 0.5s ease; /* Sliding effect transition */
-        }
-
-        #tagButtonsContainer::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera*/
-        }
-
         .toggle-switch {
             position: relative;
             display: inline-block;
@@ -73,10 +40,10 @@
         .slider:before {
             position: absolute;
             content: "";
-            height: 16px; /* Adjust the height of the slider handle */
-            width: 16px; /* Adjust the width of the slider handle */
-            left: 2px; /* Adjust the left position of the slider handle */
-            bottom: 2px; /* Adjust the bottom position of the slider handle */
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
             background-color: white;
             -webkit-transition: .4s;
             transition: .4s;
@@ -84,7 +51,7 @@
         }
 
         input:checked + .slider {
-            background-color: #4caf50;
+            background-color: #2DD197;
         }
 
         input:focus + .slider {
@@ -94,7 +61,7 @@
         input:checked + .slider:before {
             -webkit-transform: translateX(16px);
             -ms-transform: translateX(16px);
-            transform: translateX(16px);
+            transform: translateX(20.5px);
         }
 
         .button-container {
@@ -102,47 +69,94 @@
             justify-content: center;
             align-items: flex-end;
             height: 100%;
-            margin-top: auto;
         }
 
         .registerButton {
-            width: 481px;
-            align-self: flex-end;
-            position: fixed;
-            bottom: 0px;
-            right: 112px;
+            background-color: #2DD197;
+            border: none;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 4px;
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgb(255 255 255);
         }
 
-        .articleTitle {
-            height: 40px;
+        .section1 {
+            margin-top: -10px;
+            flex-grow: 1;
+            -webkit-box-flex: 1;
+        }
+
+        .link-add-button {
+            position: absolute;
+            inset: 147px 15px auto auto;
+            width: 40px;
+            height: 32px;
+            padding-top: 3px;
+            border: 0;
+            border-radius: 0px 4px 4px 0px;
+            background-color: rgb(90, 103, 106);
+        }
+
+        #articleLink {
+            width: 100%;
+            height: 32px;
+            padding: 12px;
+            background: rgb(194, 203, 205);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: rgb(90, 103, 106);
+            opacity: 1;
+            appearance: none;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+            line-height: 2;
+            resize: none;
         }
     </style>
 </head>
 <body>
 <div class="view">
-    <button onclick="goBack()" style="margin-left: 5px; padding-right: 15px;"><</button>
-    <button id="deleteArticleButton" style="margin-right: 15px;">삭제</button>
-    <div class="header-line"></div>
-    <div class="article-registration" id="articleRegistration">
-        <label for="articleTitle"></label>
-        <input type="text" id="articleTitle" placeholder="제목을 입력하세요.">
-        <label for="articleContent"></label>
-        <textarea id="articleContent" placeholder="내용을 입력하세요."></textarea>
-        <div id="imagePreviewContainer"></div>
-        <label for="articleImage">Image:</label>
-        <input type="file" id="articleImage" accept="image/*" onchange="addImagePreview()">
-        <div id="tagButtonsContainer"></div>
-        <textarea id="articleMemo" placeholder="메모를 입력하세요." style="margin-top: 15px; height: 100px;"></textarea>
-        <span>공개여부</span>
-        <label for="isPublic" class="toggle-switch">
-            <input type="checkbox" id="isPublic">
-            <span class="slider"></span>
-        </label>
-        <div class="button-container" style="margin-top: 20px;">
-            <button class="registerButton" onclick="registerArticle()">등록하기</button>
-        </div>
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+    </nav>
 
+    <div class="article-registration" id="articleRegistration">
+        <section class="section1">
+            <input type="text" id="articleTitle" placeholder="제목을 입력하세요.">
+            <div id="linkInputContainer">
+                <label for="articleLink">링크:</label>
+                <input type="text" id="articleLink" placeholder="링크를 입력하세요">
+                <button onclick="validateLink()" class="link-add-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="linkPreviewContainer"></div>
+            <label for="articleContent"></label>
+            <textarea id="articleContent" placeholder="내용을 입력하세요."></textarea>
+            <div id="imagePreviewContainer"></div>
+            <label for="articleImage">Image:</label>
+            <input type="file" id="articleImage" accept="image/*" onchange="addImagePreview()">
+            <div id="tagButtonsContainer"></div>
+            <textarea id="articleMemo" placeholder="메모를 입력하세요." style="margin-top: 15px; height: 100px;"></textarea>
+            <span>공개여부</span>
+            <label for="isPublic" class="toggle-switch">
+                <input type="checkbox" id="isPublic">
+                <span class="slider"></span>
+            </label>
+        </section>
+        <section class="button-container">
+            <button class="registerButton" onclick="registerArticle()">등록하기</button>
+        </section>
     </div>
+
 </div>
 
 <script>
@@ -153,12 +167,9 @@
     const isPublicCheckbox = document.getElementById('isPublic');
 
     isPublicCheckbox.addEventListener('change', function () {
-        // Toggle switch logic
         if (this.checked) {
-            // Handle when the switch is on
             console.log('Switch is ON');
         } else {
-            // Handle when the switch is off
             console.log('Switch is OFF');
         }
     });
@@ -172,21 +183,28 @@
     }
 
     function updatePlaceholderAndFileInput() {
+        const linkInputContainer = document.getElementById('linkInputContainer');
         const articleContentInput = document.getElementById('articleContent');
         const articleImageInput = document.getElementById('articleImage');
+
+        articleContentInput.placeholder = '내용을 입력하세요';
+        articleImageInput.style.display = 'none';
+        articleImageLabel.style.display = 'none';
+        articleContentInput.style.height = '350px';
+        articleContentInput.readOnly = false;
 
         if (selectedType === 'IMAGE') {
             articleContentInput.placeholder = '아래 파일 선택 버튼을 눌러 이미지를 첨부하세요.';
             articleImageInput.style.display = 'block';
             articleImageLabel.style.display = 'block';
-            articleContentInput.style.height = '300px';
+            articleContentInput.style.height = '280px';
             articleContentInput.readOnly = true;
+            linkInputContainer.style.display = 'none';
+        } else if (selectedType === 'LINK') {
+            articleContentInput.style.display = 'none';
+            linkInputContainer.style.display = 'block';
         } else {
-            articleContentInput.placeholder = '내용을 입력하세요';
-            articleImageInput.style.display = 'none';
-            articleImageLabel.style.display = 'none';
-            articleContentInput.style.height = '350px';
-            articleContentInput.readOnly = false;
+            linkInputContainer.style.display = 'none';
         }
     }
 
@@ -220,6 +238,7 @@
             const placeholderText = document.createElement('div');
             placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
             placeholderText.style.color = "#777"; // 플레이스홀더 텍스트 스타일링
+            placeholderText.style.padding = "10px";
             tagButtonsContainer.appendChild(placeholderText);
 
             tagButtonsContainer.addEventListener('click', function () {
@@ -244,7 +263,6 @@
 
             tagButtonsContainer.appendChild(tagButton);
             tagButtonsContainer.addEventListener('click', function (event) {
-                // 클릭이 태그 버튼이 아닌 빈 공간에서 발생했는지 확인
                 if (event.target === tagButtonsContainer) {
                     navigateToAddTag();
                 }
@@ -270,11 +288,23 @@
         })
         .catch(error => console.error(error));
 
+
     function registerArticle() {
 
         const accessToken = localStorage.getItem('accessToken');
         const title = document.getElementById('articleTitle').value;
-        const content = document.getElementById('articleContent').value;
+
+        if (title.trim() === '') {
+            document.getElementById('articleTitle').style.borderColor = 'red';
+            alert('제목을 입력하세요.');
+            return;
+        } else {
+            document.getElementById('articleTitle').style.borderColor = '#ccc';
+        }
+
+        const isLinkType = selectedType === 'LINK';
+        const content = isLinkType ? document.getElementById('articleLink').value : document.getElementById('articleContent').value;
+        // const content = document.getElementById('articleContent').value;
         const memo = document.getElementById('articleMemo').value;
         const isPublic = document.getElementById('isPublic').checked;
 
@@ -322,6 +352,42 @@
                 console.error('아티클 등록 중 오류 발생:', error);
                 // 오류 처리 로직 추가
             });
+    }
+
+    function validateLink() {
+        const link = document.getElementById('articleLink').value;
+
+        fetch(`/api/articles/validation?link=${link}`)
+            .then(response => response.json())
+            .then(openGraphResponse => {
+                displayLinkPreview(openGraphResponse);
+            })
+            .catch(error => {
+                console.error('링크 확인 중 오류 발생:', error);
+                alert("유효하지 않은 링크입니다.");
+            });
+    }
+
+    function displayLinkPreview(openGraphResponse) {
+        const linkInputContainer = document.getElementById('linkInputContainer');
+        const linkPreviewContainer = document.getElementById('linkPreviewContainer');
+
+        linkInputContainer.style.display = 'none';
+
+        const articleDetails = {openGraphResponse};
+        linkPreviewContainer.innerHTML = `
+                <article class="article-box" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
+                    <section class="article-section">
+                        <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
+                        <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
+                    </section>
+                    <img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
+                </article>
+            `;
+    }
+
+    function openArticleLink(url) {
+        window.open(url, '_blank');
     }
 </script>
 </body>

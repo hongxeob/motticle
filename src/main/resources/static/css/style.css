@@ -4,7 +4,8 @@ html {
 }
 
 body {
-    background-color: rgba(255, 255, 255, 1);
+    min-height: calc(var(--var, 1vh) * 100);
+    background-color: #F7F7F7;
     max-width: 480px;
     height: 741px;
     /*padding-left: 16px;*/
@@ -411,10 +412,11 @@ home
 }
 
 .view {
-    background-color: rgba(255, 255, 255, 1);
+    min-height: calc(var(--var, 1vh) * 100);
+    background-color: #F7F7F7;
     max-width: 480px;
     height: 741px;
-    /* position: absolute; */
+    position: relative;
     margin: 0px auto;
     width: 100%;
 }
@@ -633,17 +635,15 @@ home
 }
 
 .homeButton {
-    color: rgba(0, 0, 0, 1);
-    width: 191px;
-    height: 50px;
+    color: #2DD197;
     position: relative;
     left: 8px;
-    top: 40px;
-    font-family: Inika;
+    top: 30px;
     text-align: left;
-    font-size: 38px;
+    font-size: 48px;
     letter-spacing: 0;
     text-decoration: none;
+    font-weight: 700;
 }
 
 .myPage {
@@ -835,20 +835,18 @@ home
 }
 
 .footer-box {
-    width: 479px;
+    width: 481px;
     height: 88px;
-    position: absolute;
-    left: 0px;
-    top: 764px;
-    background-color: aqua;
+    background-color: white;
+    padding-bottom: 110px;
 }
 
 .e2_166 {
     width: 38px;
     height: 38px;
-    position: relative;
+    position: absolute;
     left: 401px;
-    top: 789px;
+    top: 694px;
 }
 
 .e2_167 {
@@ -904,7 +902,7 @@ home
     height: 38px;
     position: absolute;
     left: 32px;
-    top: 789px;
+    top: 692px;
 }
 
 .e2_172 {
@@ -934,12 +932,13 @@ home
 .add {
     z-index: 999;
     width: 65px;
-    position: relative;
-    left: 210px;
-    top: 701px;
+    position: absolute;
+    left: 202px;
+    top: -29px;
     background-color: rgba(255, 255, 255, 1);
     height: 54.166664123535156px;
     border: 2px solid rgba(0, 0, 0, 1);
+    cursor: pointer;
 }
 
 .articleList {
@@ -947,7 +946,7 @@ home
     top: -48px;
     left: 0;
     right: 0;
-    max-height: 536px;
+    max-height: 520px;
     overflow-y: auto;
     padding-left: 10px;
     border-right-width: 10px;
@@ -976,54 +975,41 @@ home
 /*    margin-top: 74px;*/
 /*}*/
 
-.article-list {
-    max-height: 400px; /* 원하는 높이로 조절 */
-    overflow-y: auto;
-}
+/*.article-list {*/
+/*    max-height: 400px; !* 원하는 높이로 조절 *!*/
+/*    overflow-y: auto;*/
+/*}*/
 
 .article-card {
-    margin-bottom: 20px; /* 원하는 여백 값으로 조절 */
+    /*margin-bottom: 20px;*/
     padding: 10px;
-    border: 1px solid #ddd;
-    background-color: #f9f9f9;
-    border-radius: 8px;
     display: flex;
-    align-items: center;
-    padding-top: 40px;
-    padding-bottom: 40px;
+    /*padding-top: 40px;*/
 }
 
-.article-image {
-    width: 50%; /* 이미지의 너비 조절 */
-    height: auto;
-    margin-right: 10px; /* 이미지와 제목 간 여백 조절 */
-}
 
 .article-title {
-    flex: 1;
-    margin-bottom: 81px;
     white-space: nowrap;
+    font-size: large;
+    margin-left: 6px;
+    margin-top: -12px;
+    cursor: pointer;
 }
 
-.article-tags {
-    white-space: nowrap;
-    display: flex;
-    max-width: 100%;
-    margin-right: 146px;
-    margin-left: -48px;
-}
 
 .article-tag-card {
-    height: 15px;
-    margin: 5px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 3px;
-    text-align: center;
-    line-height: 17px;
+    padding-top: 9px;
+    background-color: #2DD197;
+    color: white;
+    border: 1.4px solid #2DD197;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 13px;
-    padding-right: 10px;
-    padding-left: 10px;
+    margin: 5px;
+    height: 19px;
+    line-height: 2px;
+    padding-right: 7px;
+    padding-left: 6px;
 }
 
 /* add Article */
@@ -1036,6 +1022,9 @@ home
 }
 
 .article-registration {
+    height: calc(calc(var(--var, 1vh) * 100) - 44px);
+    display: flex;
+    flex-direction: column;
     max-width: 480px;
     margin: 0 auto;
     margin-top: 22px;
@@ -1065,8 +1054,8 @@ input[type="checkbox"] {
     border-radius: 4px;
 }
 
-button {
-    background-color: #4caf50;
+.header-button {
+    background-color: #2DD197;
     color: white;
     padding: 10px;
     border: none;
@@ -1089,4 +1078,173 @@ button {
     box-sizing: border-box;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+.article-image {
+    width: 100%; /* Ensure the image takes the full width of its container */
+    height: 100%; /* Maintain aspect ratio */
+}
+
+.nav {
+    position: sticky;
+    top: 0px;
+    width: 100%;
+    height: 44px;
+    background-color: #F7F7F7;
+    display: flex;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    align-items: center;
+    z-index: 900;
+}
+
+.tag-button {
+    background-color: white;
+    color: #535353;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+    border: 1px solid #2DD197;
+    height: 23px;
+    line-height: 2px;
+}
+
+.tag-button.selected {
+    background-color: #2DD197; /* 선택된 상태의 배경색 */
+    color: white; /* 선택된 상태의 텍스트 색상 */
+}
+
+#tagButtonsContainer {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    overflow-y: hidden; /* Hide vertical scrollbar */
+    white-space: nowrap; /* Prevent tags from wrapping to the next line */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 50px; /* Keep the initial height */
+    min-height: 30px;
+    transition: max-height 0.5s ease; /* Sliding effect transition */
+    /*margin: 20px 0 20px 0px;*/
+}
+
+#tagButtonsContainer::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera*/
+}
+
+.article-box {
+    display: flex;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.article-section {
+    padding: 16px;
+    background-color: rgb(194, 203, 205);
+    width: calc(100% - 100px);
+}
+
+.link-article-title {
+    width: 100%;
+    font-size: 12px;
+    line-height: 150%;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 0px;
+}
+
+.article-url {
+    width: 100%;
+    font-size: 10px;
+    line-height: 150%;
+    color: rgb(163, 179, 186);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.link-type-image {
+    width: 100px;
+    height: 100%;
+    background-color: rgb(183, 198, 205);
+    object-fit: contain;
+}
+
+.image-type-image {
+    width: 100%;
+    height: 100%;
+    max-width: 448px;
+    max-height: 448px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: zoom-in;
+}
+
+:root * {
+    box-sizing: border-box;
+    font-family: inherit;
+    word-break: keep-all;
+    word-wrap: break-word;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.go-back {
+    color: black;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.addTagButton {
+    background-color: #2DD197;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 4px;
+    margin-right: 8px;
+    height: 34px;
+    line-height: 1px;
+}
+
+.tag-list-button {
+    border: 1px solid #9dffdc;
+    display: inline-flex;
+    flex-shrink: 0;
+    -webkit-box-align: center;
+    align-items: center;
+    height: 34px;
+    padding: 0px 8px;
+    border-radius: 4px;
+    background-color: #9dffdc;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 150%;
+    width: fit-content;
+    color: rgb(45, 45, 45);
+    cursor: pointer;
+}
+
+.delete-tag-button {
+    color: inherit;
+    padding: 0px;
+    line-height: 0;
+    margin-left: 4px;
+    font-size: smaller;
 }

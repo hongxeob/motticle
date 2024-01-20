@@ -35,6 +35,12 @@ public class ViewController {
 		return "tag/addTag";
 	}
 
+	@GetMapping("/tagging")
+	public String tagging(@RequestParam(name = "articleId") Long articleId) {
+		return "tag/extraAddTag";
+	}
+
+
 	@GetMapping("/article/{id}")
 	public String articleDetails(@PathVariable Long id) {
 		return "article/articleDetails";
