@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        .added-tag-button {
+            background-color: #2DD197;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            height: 23px;
+            line-height: 2px;
+        }
+
+        #articleDetailsContainer {
+            height: calc(calc(var(--var, 1vh) * 100) - 44px);
+            display: flex;
+            flex-direction: column;
+            max-width: 480px;
+            margin: 0 auto;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .memo-text {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+        }
+
+        #articleMemo {
+            position: relative;
+            width: 100%;
+            height: 140px;
+            background-image: initial;
+            background-position: initial;
+            background-size: initial;
+            background-repeat: initial;
+            background-attachment: initial;
+            background-origin: initial;
+            background-clip: initial;
+            border-radius: 4px;
+            color: rgb(0 0 0);
+            opacity: 1;
+            appearance: none;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+            line-height: 2;
+            resize: none;
+            padding: 0px;
+            border: 0px;
+            background-color: inherit;
+            overflow: scroll;
+        }
+
+        .tag-wrapper {
+            padding: 24px 0px;
+        }
+
+        .tag-text {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 5px;
+        }
+
+        #articleMemo::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera*/
+        }
+
+        .text-div1 {
+            box-sizing: border-box;
+            font-family: inherit;
+            word-break: keep-all;
+            word-wrap: break-word;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+
+        .text-div2 {
+            position: relative;
+        }
+
+        .text-details {
+            -webkit-text-fill-color: rgb(90, 103, 106);
+            width: 100%;
+            height: 300px;
+            background-image: initial;
+            background-position: initial;
+            background-size: initial;
+            background-repeat: initial;
+            background-attachment: initial;
+            background-origin: initial;
+            background-clip: initial;
+            border-radius: 4px;
+            color: rgb(90, 103, 106);
+            opacity: 1;
+            appearance: none;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+            line-height: 2;
+            resize: none;
+            border: 0px;
+            padding: 0px;
+            background-color: inherit;
+        }
+
+        .text-details::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+        <button id="deleteArticleButton" style="margin-right: 15px;" class="header-button" onclick="confirmDelete()">
+            삭제
+        </button>
+    </nav>
+
+    <div id="articleDetailsContainer">
+        <section style="flex-grow: 1; -webkit-box-flex: 1;">
+
+            <h1 id="articleTitle"></h1>
+            <div id="contentAndImageContainer">
+                <div id="articleDetails">
+                </div>
+            </div>
+            <div class="tag-wrapper">
+                <span class="tag-text">태그</span>
+                <div id="tagButtonsContainer">
+
+                    <a href="/">
+
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <label class="memo-text" for="input-:r5:">메모</label>
+            </div>
+            <div id="articleMemo"></div>
+        </section>
+    </div>
+</div>
+<script>
+    const accessToken = localStorage.getItem('accessToken');
+    const path = window.location.pathname;
+    let articleId;
+    fetchArticleDetails();
+
+    function fetchArticleDetails() {
+        articleId = path.substring(path.lastIndexOf('/') + 1);
+        // 경로에서 마지막 부분을 가져와서 articleId로 사용
+
+        fetch(`/api/articles/${articleId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching article details: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(articleDetails => {
+                displayArticleDetails(articleDetails);
+            })
+            .catch(error => console.error(error));
+    }
+
+    function displayArticleDetails(articleDetails) {
+
+        const articleTitleElement = document.getElementById('articleTitle');
+        const articleDetailsElement = document.getElementById('articleDetails');
+        const articleMemoElement = document.getElementById('articleMemo');
+
+        articleTitleElement.textContent = articleDetails.title;
+        articleDetailsElement.textContent = articleDetails.content;
+
+        let articleHTML = '';
+
+        if (articleDetails.type === 'IMAGE' && articleDetails.content) {
+            articleHTML = `<img src="${articleDetails.content}" alt="Article Image" class="image-type-image">`;
+
+        } else if (articleDetails.type === 'TEXT') {
+            articleHTML = `<div class="text-div1">
+<div class="text-div2">
+<textarea class="text-details">
+${articleDetails.content}
+</textarea>
+</div>
+</div>
+`
+        } else {
+            articleHTML = `
+            <article class="article-box" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
+            <section class="article-section">
+                    <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
+                    <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
+                </section>
+                <img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
+            </article>
+        `;
+        }
+        const tagContainer = document.querySelector('#tagButtonsContainer');
+        tagContainer.innerHTML = ''; // 기존 콘텐츠 지우기
+        displayUserTags(articleDetails.tagsRes.tagRes);
+        articleDetailsElement.innerHTML = articleHTML;
+
+        articleMemoElement.textContent = articleDetails.memo;
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+
+    function openArticleLink(url) {
+        window.open(url, '_blank');
+    }
+
+    function displayUserTags(tags) {
+        const tagButtonsContainer = document.getElementById('tagButtonsContainer');
+
+
+        if (!Array.isArray(tags)) {
+            console.error('Invalid response: tags is not an array', tags);
+            return;
+        }
+        if (tags.length === 0) {
+            const placeholderText = document.createElement('div');
+            placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
+            placeholderText.style.color = "#777";
+            placeholderText.style.padding = "10px";
+            tagButtonsContainer.appendChild(placeholderText);
+
+            tagButtonsContainer.addEventListener('click', function () {
+                navigateToAddTag(); // 플레이스홀더를 클릭하면 navigateToAddTag() 함수 호출
+            });
+
+            return;
+        }
+
+        tags.forEach(tag => {
+            const tagButton = document.createElement('button');
+            tagButton.type = 'button';
+            tagButton.id = `tag${tag.id}`;
+            tagButton.value = tag.id;
+            tagButton.className = 'added-tag-button';
+            tagButton.textContent = `#${tag.name}`;
+
+            tagButtonsContainer.appendChild(tagButton);
+            tagButtonsContainer.addEventListener('click', function (event) {
+                // 클릭이 태그 버튼이 아닌 빈 공간에서 발생했는지 확인
+                if (event.target === tagButtonsContainer) {
+                    navigateToAddTag();
+                }
+            });
+        });
+    }
+
+    function navigateToAddTag() {
+        window.location.href = `/tagging?articleId=${articleId}`;
+    }
+
+    function confirmDelete() {
+        if (confirm("정말 삭제하시겠습니까?")) {
+            deleteArticle();
+        }
+    }
+
+    function deleteArticle() {
+        const accessToken = localStorage.getItem('accessToken');
+        const path = window.location.pathname;
+        articleId = path.substring(path.lastIndexOf('/') + 1);
+
+        fetch(`/api/articles/${articleId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': accessToken
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error deleting article: ${response.statusText}`);
+                }
+                window.location.href = '/';
+            })
+            .catch(error => console.error(error));
+    }
+</script>
+</body>
+</html>
