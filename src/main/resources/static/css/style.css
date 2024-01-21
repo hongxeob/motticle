@@ -954,7 +954,7 @@ home
 }
 
 .articleList::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera*/
+    display: none;
 }
 
 .tag-card {

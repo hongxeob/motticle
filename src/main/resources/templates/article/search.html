@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        #keywordContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin-top: 22px;
+            margin-left: 5.25px;
+        }
+
+        #keywordInput {
+            width: 359px;
+            margin-bottom: 10px;
+        }
+
+        .article-image-container {
+            flex: 1;
+            width: 180px;
+            height: 180px;
+            min-width: 180px;
+            min-height: 180px;
+            overflow: hidden;
+        }
+
+        .article-details {
+            flex: 2;
+            padding: 15px;
+        }
+
+        .article-tags {
+            white-space: nowrap;
+            display: flex;
+            max-width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .home-article-image {
+            width: 180px;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .type-text-content {
+            font-size: 12px;
+            padding: 6px;
+            line-height: 150%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .searchButton {
+            width: 75px;
+            background-color: #2DD197;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 4px;
+            margin-right: 8px;
+            height: 34px;
+            line-height: 1px;
+        }
+
+        .searchArticleList {
+            position: relative;
+            top: -48px;
+            left: 0;
+            right: 0;
+            max-height: 630px;
+            overflow-y: auto;
+            padding-left: 10px;
+            border-right-width: 10px;
+            padding-right: 10px;
+        }
+
+        .searchArticleList::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <span onclick="goBack()" class="go-back"><</span>
+    <section id="keywordContainer">
+        <div style="margin-left: 12px; margin-right: 12px">
+            <input type="text" id="keywordInput" placeholder="검색어를 입력하세요.">
+            <button onclick="searchByKeyword();" class="searchButton">검색</button>
+        </div>
+    </section>
+    <section style="margin-top: 60px;">
+        <div class="searchArticleList" id="articleListContainer"></div>
+    </section>
+    <div id="tagList">
+    </div>
+</div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    function searchByKeyword() {
+        const keywordInput = document.getElementById('keywordInput').value;
+
+        fetch(`/api/articles/search?keyword=${keywordInput}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`검색 결과를 가져오는 중 오류 발생: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(searchResults => {
+                renderArticles(searchResults);
+            })
+            .catch(error => console.error(error));
+    }
+
+    function renderArticles(articlesData) {
+        const articleListContainer = document.getElementById('articleListContainer');
+        console.log(articlesData);
+
+        articlesData.articleOgResList.forEach(article => {
+            const articleCard = document.createElement('div');
+            articleCard.classList.add('article-card');
+
+            const articleImageContainer = document.createElement('div');
+            articleImageContainer.classList.add('article-image-container');
+
+            const articleDetails = document.createElement('div');
+            articleDetails.classList.add('article-details');
+
+            const articleTagName = article.tagsRes.tagRes.map(tag => `
+            <div class="article-tag-card">#${tag.name}</div>
+        `).join('');
+
+            let articleImageHTML = '';
+
+            if (article.type === 'IMAGE' && article.content) {
+                articleImageHTML = `<img src="${article.content}" alt="Article Image" class="home-article-image">`;
+            } else if (article.type === 'LINK' && article.openGraphResponse.image) {
+                articleImageHTML = `<img src="${article.openGraphResponse.image}" alt="OG Image" class="home-article-image">`;
+            } else {
+                articleImageHTML = `<p class="type-text-content">${article.content}</p>`;
+            }
+
+            articleDetails.innerHTML = `
+            <div class="article-title" onclick="moveArticlePage(${article.id})">${article.title}</div>
+
+            <div class="article-tags">${articleTagName}</div>
+        `;
+
+            articleImageContainer.innerHTML = articleImageHTML;
+            articleCard.appendChild(articleImageContainer);
+            articleCard.appendChild(articleDetails);
+
+            articleListContainer.appendChild(articleCard);
+        });
+    }
+
+    function moveArticlePage(articleId) {
+        window.location.href = `/article/${articleId}`;
+    }
+</script>
+</body>
+</html>

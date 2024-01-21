@@ -121,7 +121,7 @@
     <section class="content-container">
         <div class="line"></div>
         <div class="line2"></div>
-        <label class="search">검색하기</label>
+        <label class="search" onclick="moveSearchPage()" style="cursor: pointer">검색하기</label>
         <span class="sort">최신순↕</span>
         <div class="articleList" id="articleListContainer">
         </div>
@@ -325,6 +325,10 @@
 
     function navigateToAddTag() {
         window.location.href = '/addTag';
+    }
+
+    function moveSearchPage() {
+        window.location.href = '/search';
     }
 </script>
 </body>

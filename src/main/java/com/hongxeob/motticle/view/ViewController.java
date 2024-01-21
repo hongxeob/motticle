@@ -45,4 +45,9 @@ public class ViewController {
 	public String articleDetails(@PathVariable Long id) {
 		return "article/articleDetails";
 	}
+
+	@GetMapping("/search")
+	public String search() {
+		return "article/search";
+	}
 }
