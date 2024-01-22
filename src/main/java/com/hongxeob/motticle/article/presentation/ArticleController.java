@@ -113,7 +113,7 @@ public class ArticleController {
 	@CurrentMemberId
 	@PatchMapping("{id}")
 	public ResponseEntity<ArticleInfoRes> updateArticle(@PathVariable Long id, Long memberId, @RequestBody ArticleModifyReq req) {
-		ArticleInfoRes articleInfoRes = articleService.modify(memberId, id, req);
+		ArticleInfoRes articleInfoRes = articleService.modify(id, memberId, req);
 
 		return ResponseEntity.ok(articleInfoRes);
 	}
