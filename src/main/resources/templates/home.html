@@ -122,14 +122,47 @@
         <div class="line"></div>
         <div class="line2"></div>
         <label class="search" onclick="moveSearchPage()" style="cursor: pointer">검색하기</label>
-        <span class="sort">최신순↕</span>
+        <a class="sort" id="latestButton" onclick="changeSortOrder(null)" style="cursor: pointer;">최신순↕</a>
+        <a class="sort" id="oldestButton" onclick="changeSortOrder('oldest')" style="cursor: pointer;">오래된순↕</a>
+
         <div class="articleList" id="articleListContainer">
         </div>
     </section>
     <footer>
         <nav>
             <section class="footer-box">
-                <button class="add" onclick="openModal()">Add Article</button>
+                <div style="position: absolute; top: 17px; right: 369px;">
+                    <a href="/" style="cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" fill="none">
+                            <g clip-path="url(#a)">
+                                <path fill="#2DD197" fill-rule="evenodd"
+                                      d="M17.107 1.006C17.78.356 18.637 0 19.522 0c.886 0 1.743.357 2.416 1.006L33.69 12.34l4.613 4.154c.19.171.349.383.466.623a2.338 2.338 0 0 1 .157 1.588c-.068.264-.181.51-.334.724a1.93 1.93 0 0 1-.554.524 1.713 1.713 0 0 1-.69.247c-.242.03-.487.006-.721-.07a1.793 1.793 0 0 1-.643-.375l-1.623-1.462v16.531c0 1.107-.39 2.17-1.087 2.952C32.58 38.56 31.636 39 30.652 39h-7.42V28.563c0-1.108-.39-2.17-1.086-2.953-.696-.782-1.64-1.222-2.624-1.222-.984 0-1.927.44-2.623 1.222-.696.783-1.087 1.845-1.087 2.953V39h-7.42c-.983 0-1.927-.44-2.623-1.223-.696-.783-1.086-1.845-1.086-2.952V18.292L3.06 19.753a1.809 1.809 0 0 1-.646.403 1.66 1.66 0 0 1-1.44-.153 1.925 1.925 0 0 1-.567-.532 2.192 2.192 0 0 1-.337-.738 2.34 2.34 0 0 1-.055-.828 2.27 2.27 0 0 1 .236-.787 2.03 2.03 0 0 1 .49-.621l4.613-4.154L17.107 1.006Z"
+                                      clip-rule="evenodd"/>
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h39v39H0z"/>
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </a>
+                </div>
+                <div style="position: absolute; top: 17px; right: 77px;">
+                    <a href="/" style="cursor: pointer;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="39" fill="none">
+                            <path fill="#A6A6A6"
+                                  d="M7 0h4.875a6.5 6.5 0 0 1 6.5 6.5v4.875a6.5 6.5 0 0 1-6.5 6.5H7a6.5 6.5 0 0 1-6.5-6.5V6.5A6.5 6.5 0 0 1 7 0ZM28.125 0H33a6.5 6.5 0 0 1 6.5 6.5v4.875a6.5 6.5 0 0 1-6.5 6.5h-4.875a6.5 6.5 0 0 1-6.5-6.5V6.5a6.5 6.5 0 0 1 6.5-6.5ZM7 21.125h4.875a6.5 6.5 0 0 1 6.5 6.5V32.5a6.5 6.5 0 0 1-6.5 6.5H7a6.5 6.5 0 0 1-6.5-6.5v-4.875a6.5 6.5 0 0 1 6.5-6.5ZM28.125 21.125H33a6.5 6.5 0 0 1 6.5 6.5V32.5A6.5 6.5 0 0 1 33 39h-4.875a6.5 6.5 0 0 1-6.5-6.5v-4.875a6.5 6.5 0 0 1 6.5-6.5Z"/>
+                        </svg>
+                    </a>
+                </div>
+                <div style="position: absolute; top: -35px; right: 212px;">
+                    <a onclick="openModal()" style="cursor: pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="none">
+                            <path fill="#F8BD7E"
+                                  d="M32.5 0A32.5 32.5 0 1 0 65 32.5 32.535 32.535 0 0 0 32.5 0Zm10.833 35.208h-8.125v8.125a2.708 2.708 0 1 1-5.416 0v-8.125h-8.125a2.708 2.708 0 1 1 0-5.416h8.125v-8.125a2.708 2.708 0 1 1 5.416 0v8.125h8.125a2.708 2.708 0 1 1 0 5.416Z"/>
+                        </svg>
+                    </a>
+                </div>
             </section>
         </nav>
     </footer>
@@ -145,6 +178,9 @@
 </div>
 
 <script>
+    window.onload = function () {
+        document.getElementById('latestButton').click();
+    }
     const accessToken = localStorage.getItem('accessToken');
     let allArticlesData;
 
@@ -154,6 +190,26 @@
 
     function redirectToKakaoScreen() {
         window.location.href = '/kakao';
+    }
+
+    function changeSortOrder(order) {
+        const latestButton = document.getElementById('latestButton');
+        const oldestButton = document.getElementById('oldestButton');
+
+        if (order === 'oldest') {
+            // 오래된 순 버튼을 선택한 경우
+            oldestButton.style.display = 'none';
+            latestButton.style.display = 'inline';
+        } else {
+            // 최신순 버튼을 선택한 경우
+            latestButton.style.display = 'none';
+            oldestButton.style.display = 'inline';
+            oldestButton.style.left = '410px';
+        }
+
+        const sortOrder = order === 'oldest' ? 'oldest' : null;
+        console.log(sortOrder);
+        fetchAndRenderArticles(sortOrder);
     }
 
     async function fetchAndRenderData() {
@@ -234,7 +290,7 @@
         });
     }
 
-    async function fetchAndRenderArticles() {
+    async function fetchAndRenderArticles(sortOrder) {
         // 선택한 태그 가져오기
         const articleListContainer = document.getElementById('articleListContainer');
         articleListContainer.innerHTML = '';
@@ -244,18 +300,17 @@
             .map(button => parseInt(button.value));
 
         // 선택한 태그를 기반으로 아티클을 가져오기
-        if (selectedTags.length > 0) {
-            const articlesResponse = await fetch(`/api/articles/search?tagIds=${selectedTags.join(',')}`, {
-                headers: {
-                    'Authorization': accessToken
-                }
-            });
-            const articlesData = await articlesResponse.json();
-            console.log('Filtered Articles Data:', articlesData);
-            renderArticles(articlesData);
-        } else {
-            renderArticles(allArticlesData);
-        }
+        const tagIds = selectedTags.length === 0 ? '' : selectedTags.join(',');
+
+        const articlesResponse = await fetch(`/api/articles/search?tagIds=${tagIds}&sortOrder=${sortOrder}`, {
+            headers: {
+                'Authorization': accessToken
+            }
+        });
+
+        const articlesData = await articlesResponse.json();
+        console.log('Filtered Articles Data:', articlesData);
+        renderArticles(articlesData);
 
     }
 
