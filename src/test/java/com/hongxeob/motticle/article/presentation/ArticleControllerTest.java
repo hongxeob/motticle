@@ -436,7 +436,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 			new TagRes(1L, "IT", 1L, LocalDateTime.now(), LocalDateTime.now()),
 			new TagRes(2L, "UI", 1L, LocalDateTime.now(), LocalDateTime.now())
 		));
-		ArticleModifyReq modifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모");
+		ArticleModifyReq modifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모", true);
 		ArticleInfoRes articleInfoRes = new ArticleInfoRes(1L, modifyReq.title(), ArticleType.TEXT.name(),
 			modifyReq.content(), modifyReq.memo(), tagsRes, true, 1L, LocalDateTime.now(), LocalDateTime.now());
 
@@ -462,7 +462,8 @@ class ArticleControllerTest extends ControllerTestSupport {
 				requestFields(
 					fieldWithPath("title").type(STRING).description("수정할 제목"),
 					fieldWithPath("content").type(STRING).description("수정할 내용"),
-					fieldWithPath("memo").type(STRING).description("수정할 메모")
+					fieldWithPath("memo").type(STRING).description("수정할 메모"),
+					fieldWithPath("isPublic").type(BOOLEAN).description("공개여부 수정")
 				),
 				responseFields(
 					fieldWithPath("id").type(NUMBER).description("아티클 ID"),
@@ -743,7 +744,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/articles/search")
 				.with(csrf().asHeader())
 				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
-				.param("tagIds", "1","2")
+				.param("tagIds", "1", "2")
 				.param("articleTypes", "TEXT", "IMAGE")
 				.param("keyword", "제목")
 				.param("sortOrder", "oldest")
@@ -760,7 +761,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 				requestParameters(
 					parameterWithName("tagIds").description("필터링할 태그ID 목록"),
 					parameterWithName("articleTypes").description("필터링할 아티클 타입 목록"),
-							parameterWithName("keyword").description("검색할 키워드"),
+					parameterWithName("keyword").description("검색할 키워드"),
 					parameterWithName("sortOrder").description("정렬 방법"),
 					parameterWithName("size").description("페이지 크기"),
 					parameterWithName("page").description("페이지 번호")
@@ -824,7 +825,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 		//when -> then
 		mockMvc.perform(RestDocumentationRequestBuilders.get("/api/articles/explore")
 				.with(csrf().asHeader())
-				.param("tagIds", "1","2")
+				.param("tagIds", "1", "2")
 				.param("articleTypes", "TEXT", "IMAGE")
 				.param("keyword", "제목")
 				.param("sortOrder", "oldest")
@@ -838,7 +839,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 				requestParameters(
 					parameterWithName("tagIds").description("필터링할 태그ID 목록"),
 					parameterWithName("articleTypes").description("필터링할 아티클 타입 목록"),
-							parameterWithName("keyword").description("검색할 키워드"),
+					parameterWithName("keyword").description("검색할 키워드"),
 					parameterWithName("sortOrder").description("정렬 방법"),
 					parameterWithName("size").description("페이지 크기"),
 					parameterWithName("page").description("페이지 번호")

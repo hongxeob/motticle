@@ -188,7 +188,7 @@ class ArticleServiceTest {
 	void modifySuccessTest() throws Exception {
 
 		//given
-		ArticleModifyReq articleModifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모");
+		ArticleModifyReq articleModifyReq = new ArticleModifyReq("수정 제목", "수정 내용", "수정 메모", true);
 
 		when(memberService.getMember(member.getId()))
 			.thenReturn(member);
