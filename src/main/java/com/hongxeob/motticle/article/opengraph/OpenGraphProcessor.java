@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 public class OpenGraphProcessor {
 
 	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
-	private final ImageService imageService;
 	private final OpenGraphService openGraphService;
 
 	public ArticlesOgRes generateArticlesOgResWithOpenGraph(Slice<Article> articles) {
