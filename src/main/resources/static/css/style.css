@@ -934,7 +934,7 @@ home
     top: -48px;
     left: 0;
     right: 0;
-    max-height: 520px;
+    max-height: 440px;
     overflow-y: auto;
     padding-left: 10px;
     border-right-width: 10px;
@@ -1015,7 +1015,7 @@ home
     flex-direction: column;
     max-width: 480px;
     margin: 0 auto;
-    margin-top: 22px;
+    margin-top: 11px;
     padding-left: 16px;
     padding-right: 16px;
 }
@@ -1051,10 +1051,6 @@ input[type="checkbox"] {
     cursor: pointer;
     font-size: 16px;
 }
-
-/*button:hover {*/
-/*    background-color: #45a049;*/
-/*}*/
 
 #articleContent {
     height: 300px;
@@ -1102,20 +1098,19 @@ input[type="checkbox"] {
 }
 
 .tag-button.selected {
-    background-color: #2DD197; /* 선택된 상태의 배경색 */
-    color: white; /* 선택된 상태의 텍스트 색상 */
+    background-color: #2DD197;
+    color: white;
 }
 
 #tagButtonsContainer {
-    overflow-x: auto; /* Enable horizontal scrolling */
-    overflow-y: hidden; /* Hide vertical scrollbar */
-    white-space: nowrap; /* Prevent tags from wrapping to the next line */
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
     border: 1px solid #ccc;
     border-radius: 4px;
     max-height: 50px;
     min-height: 30px;
     transition: max-height 0.5s ease;
-    /*margin: 20px 0 0 0;*/
 }
 
 #tagButtonsContainer::-webkit-scrollbar {

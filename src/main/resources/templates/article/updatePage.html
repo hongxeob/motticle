@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>흩어진 영감을 모으자!</title>
+    <style>
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px; /* Adjust the width to make it thinner */
+            height: 20px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #2DD197;
+        }
+
+        input:focus + .slider {
+            box-shadow: 0 0 1px #4caf50;
+        }
+
+        input:checked + .slider:before {
+            -webkit-transform: translateX(16px);
+            -ms-transform: translateX(16px);
+            transform: translateX(20.5px);
+        }
+
+        .button-container {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 100%;
+        }
+
+        .updateButton {
+            background-color: #2DD197;
+            border: none;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 4px;
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgb(255 255 255);
+            display: none;
+        }
+
+        .section1 {
+            margin-top: -10px;
+            flex-grow: 1;
+            -webkit-box-flex: 1;
+        }
+
+        .link-add-button {
+            position: absolute;
+            inset: 112px 16px auto auto;
+            width: 40px;
+            height: 31.5px;
+            padding-top: 3px;
+            border: 0;
+            border-radius: 0px 4px 4px 0px;
+            background-color: rgb(90, 103, 106);
+        }
+
+        #articleLink {
+            width: 100%;
+            height: 32px;
+            padding: 12px;
+            background: rgb(194, 203, 205);
+            border: 1px solid transparent;
+            border-radius: 4px;
+            color: rgb(90, 103, 106);
+            opacity: 1;
+            appearance: none;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+            line-height: 2;
+            resize: none;
+            margin-top: 10px;
+        }
+
+        .tag-wrapper {
+            padding: 24px 0px;
+        }
+
+        .tag-text {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 5px;
+            padding-left: 4px;
+        }
+
+        .memo-text {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 0px;
+            padding-left: 4px;
+        }
+
+        #articleTitle,
+        #linkInputContainer,
+        #articleContent,
+        .go-back,
+        #memoContainer,
+        #isPublicContainer {
+            display: none;
+        }
+
+        #spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            margin-top: -70vh;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .articleContent {
+            display: none;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 0px;
+            padding-left: 4px;
+            margin-top: 7px;
+        }
+
+        .articleTitleText {
+            display: none;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 0px;
+            padding-left: 4px;
+            margin-bottom: 7px;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+    </nav>
+
+    <div class="article-registration" id="articleRegistration">
+        <section class="section1">
+            <label class="articleTitleText" for="input-:r5:">제목</label>
+            <input type="text" id="articleTitle" placeholder="제목을 입력하세요.">
+            <div id="linkInputContainer">
+                <input type="text" id="articleLink" placeholder="링크를 입력하세요">
+                <button onclick="validateLink()" class="link-add-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                        <path d="M18 12.998h-5v5a1 1 0 0 1-2 0v-5H6a1 1 0 0 1 0-2h5v-5a1 1 0 0 1 2 0v5h5a1 1 0 0 1 0 2z"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div id="linkPreviewContainer"></div>
+            <label class="articleContent" for="input-:r5:">내용</label>
+            <textarea id="articleContent" placeholder="내용을 입력하세요."></textarea>
+            <div id="imagePreviewContainer"></div>
+            <div id="memoContainer" style="">
+                <label class="memo-text" for="input-:r5:">메모</label>
+                <textarea id="articleMemo" placeholder="메모를 입력하세요." style="margin-top: 7px; height: 100px;"></textarea>
+            </div>
+            <div id="isPublicContainer">
+                <span>공개여부</span>
+                <label for="isPublic" class="toggle-switch">
+                    <input type="checkbox" id="isPublic">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </section>
+        <section class="button-container">
+            <button class="updateButton" onclick="updateArticle()">수정하기</button>
+        </section>
+    </div>
+    <div id="spinner" class="spinner"></div>
+</div>
+
+<script>
+    const accessToken = localStorage.getItem('accessToken');
+    const path = window.location.pathname;
+    const id = path.substring(path.lastIndexOf('/') + 1);
+    let selectedType;
+
+    function goBack() {
+        window.history.back();
+    }
+
+    const isPublicCheckbox = document.getElementById('isPublic');
+
+    isPublicCheckbox.addEventListener('change', function () {
+        if (this.checked) {
+            console.log('Switch is ON');
+        } else {
+            console.log('Switch is OFF');
+        }
+    });
+
+    function updatePlaceholderAndFileInput(type) {
+        selectedType = type;
+        console.log(selectedType)
+        const linkInputContainer = document.getElementById('linkInputContainer');
+        const articleContentInput = document.getElementById('articleContent');
+
+        // articleContentInput.placeholder = '내용을 입력하세요';
+        articleContentInput.style.height = '350px';
+        articleContentInput.readOnly = false;
+
+        if (selectedType === 'IMAGE') {
+            articleContentInput.style.height = '280px';
+            articleContentInput.readOnly = true;
+            linkInputContainer.style.display = 'none';
+        } else if (selectedType === 'LINK') {
+            articleContentInput.style.display = 'none';
+            linkInputContainer.style.display = 'block';
+        } else {
+            linkInputContainer.style.display = 'none';
+        }
+    }
+
+    function fetchDataAndUpdateUI() {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'block';
+
+        const articleTitle = document.getElementById('articleTitle');
+        const linkInputContainer = document.getElementById('linkInputContainer');
+        const memoContainer = document.getElementById('memoContainer');
+        const isPublicContainer = document.getElementById('isPublicContainer');
+        const articleContent = document.getElementById('articleContent');
+        const goBack = document.querySelector('.go-back');
+        const articleContentText = document.querySelector('.articleContent');
+        const articleTitleText = document.querySelector('.articleTitleText');
+        const updateButton = document.querySelector('.updateButton');
+
+        fetch(`/api/articles/${id}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': accessToken
+            },
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error fetching article information: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(articleInfo => {
+                // 기존 아티클 정보를 사용하여 인풋 필드 값 설정
+                document.getElementById('articleTitle').value = articleInfo.title;
+                document.getElementById('articleContent').value = articleInfo.content;
+                document.getElementById('articleLink').value = articleInfo.openGraphResponse.url;
+                document.getElementById('articleMemo').value = articleInfo.memo;
+                document.getElementById('isPublic').checked = articleInfo.isPublic;
+                if (articleInfo.type == 'IMAGE') {
+                    const articleContent = document.getElementById('articleContent');
+                    articleContent.style.backgroundImage = `url(${articleInfo.content})`;
+                    articleContent.value = '';
+                    articleContent.placeholder = '';
+                    goBack.style.display = 'block';
+                    articleTitle.style.display = 'block';
+                    linkInputContainer.style.display = 'none';
+                    memoContainer.style.display = 'block';
+                    isPublicContainer.style.display = 'block';
+                    articleContent.style.display = 'block';
+                    updateButton.style.display = 'block';
+                    articleContentText.style.display = 'block';
+                    articleTitleText.style.display = 'block';
+                }
+                const selectedType = articleInfo.type;
+                updatePlaceholderAndFileInput(selectedType);
+
+                if (articleInfo.type == 'TEXT') {
+                    goBack.style.display = 'block';
+                    articleTitle.style.display = 'block';
+                    linkInputContainer.style.display = 'none';
+                    memoContainer.style.display = 'block';
+                    isPublicContainer.style.display = 'block';
+                    articleContent.style.display = 'block';
+                    updateButton.style.display = 'block';
+                    articleContentText.style.display = 'block';
+                    articleTitleText.style.display = 'block';
+                } else if (articleInfo.type == 'LINK') {
+                    goBack.style.display = 'block';
+                    articleTitle.style.display = 'block';
+                    linkInputContainer.style.display = 'block';
+                    memoContainer.style.display = 'block';
+                    isPublicContainer.style.display = 'block';
+                    articleContent.style.display = 'none';
+                    updateButton.style.display = 'block';
+                    // articleContentText.style.display = 'none';
+                    articleTitleText.style.display = 'block';
+                    validateLink();
+                }
+
+            })
+            .catch(error => console.error(error))
+            .finally(() => {
+                spinner.style.display = 'none';
+            });
+    }
+
+    // 페이지 로드 시 호출
+    fetchDataAndUpdateUI();
+
+    function updateArticle() {
+        const accessToken = localStorage.getItem('accessToken');
+        const title = document.getElementById('articleTitle').value;
+
+        if (title.trim() === '') {
+            document.getElementById('articleTitle').style.borderColor = 'red';
+            alert('제목을 입력하세요.');
+            return;
+        } else {
+            document.getElementById('articleTitle').style.borderColor = '#ccc';
+        }
+
+        const isLinkType = selectedType === 'LINK';
+        const isImageType = selectedType === 'IMAGE';
+
+        let content;
+        if (isLinkType) {
+            content = document.getElementById('articleLink').value;
+        } else if (isImageType) {
+            const contentTextarea = document.getElementById('articleContent');
+            const backgroundImageStyle = contentTextarea.style.backgroundImage;
+            const imageUrlMatch = backgroundImageStyle.match(/url\(['"]?(.*?)['"]?\)/);
+            const imageUrl = imageUrlMatch ? imageUrlMatch[1] : '';
+
+            content = imageUrl;
+        } else {
+            content = document.getElementById('articleContent').value;
+        }
+
+        const memo = document.getElementById('articleMemo').value;
+        const isPublic = document.getElementById('isPublic').checked;
+
+        const data = {
+            title: title,
+            memo: memo,
+            content: content,
+            isPublic: isPublic,
+        };
+
+
+        fetch(`/api/articles/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(articleInfoRes => {
+                // 아티클 등록 후 페이지 이동 또는 다른 작업 수행
+                console.log('아티클이 성공적으로 수정되었습니다:', articleInfoRes);
+                alert("아티클이 수정 되었습니다!")
+                window.location.href = `/article/${id}`;
+            })
+            .catch(error => {
+                console.error('아티클 수정 중 오류 발생:', error);
+            });
+    }
+
+    function validateLink() {
+        const link = document.getElementById('articleLink').value;
+
+        fetch(`/api/articles/validation?link=${link}`)
+            .then(response => response.json())
+            .then(openGraphResponse => {
+                displayLinkPreview(openGraphResponse);
+            })
+            .catch(error => {
+                console.error('링크 확인 중 오류 발생:', error);
+                alert("유효하지 않은 링크입니다.");
+            });
+    }
+
+    function displayLinkPreview(openGraphResponse) {
+        const linkInputContainer = document.getElementById('linkInputContainer');
+        const linkPreviewContainer = document.getElementById('linkPreviewContainer');
+
+        // linkInputContainer.style.display = 'none';
+
+        const articleDetails = {openGraphResponse};
+        linkPreviewContainer.innerHTML = `
+                <article class="article-box" style="margin-bottom: 20px;" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
+                    <section class="article-section">
+                        <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
+                        <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
+                    </section>
+                    <img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
+                </article>
+            `;
+    }
+
+    function openArticleLink(url) {
+        window.open(url, '_blank');
+    }
+</script>
+</body>
+</html>
