@@ -82,7 +82,7 @@
         }
 
         #articleMemo::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera*/
+            display: none;
         }
 
         .text-div1 {
@@ -125,20 +125,62 @@
         .text-details::-webkit-scrollbar {
             display: none;
         }
+
+        #tagButtonsContainer,
+        #deleteArticleButton,
+        #deleteArticleButton,
+        #updateArticleButton,
+        .go-back,
+        .memo-text,
+        .tag-text {
+            display: none;
+        }
+
+        #spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            margin-top: -70vh;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
 <div class="view">
     <nav class="nav">
         <span onclick="goBack()" class="go-back"><</span>
-        <button id="deleteArticleButton" style="margin-right: 15px;" class="header-button" onclick="confirmDelete()">
-            삭제
-        </button>
     </nav>
 
     <div id="articleDetailsContainer">
         <section style="flex-grow: 1; -webkit-box-flex: 1;">
-
+            <div style="position: absolute; top: 60px; right: -3px;">
+                <a id="deleteArticleButton" style="margin-right: 15px;" onclick="confirmDelete()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none">
+                        <path stroke="#363636" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3.5 7h21M22.167 7v16.333a2.333 2.333 0 0 1-2.334 2.334H8.168a2.333 2.333 0 0 1-2.333-2.334V7m3.5 0V4.667a2.333 2.333 0 0 1 2.333-2.334h4.667a2.333 2.333 0 0 1 2.333 2.334V7M11.666 12.833v7M16.334 12.833v7"/>
+                    </svg>
+                </a>
+            </div>
+            <div style="position: absolute; top: 61px; right: 38px;">
+                <a id="updateArticleButton" style="margin-right: 15px;" onclick="moveUpdatePage()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="26" fill="none">
+                        <path fill="#363636"
+                              d="M23.892 1.207a3.791 3.791 0 0 0-5.357 0L1.532 18.211A5.194 5.194 0 0 0 0 21.907v2.146A1.045 1.045 0 0 0 1.045 25.1h2.147a5.193 5.193 0 0 0 3.696-1.53L23.892 6.562a3.791 3.791 0 0 0 0-5.356ZM5.41 22.09a3.16 3.16 0 0 1-2.217.918H2.09v-1.101a3.115 3.115 0 0 1 .919-2.218L15.914 6.785 18.32 9.19l-12.91 12.9ZM22.413 5.085l-2.62 2.621-2.405-2.4 2.621-2.62a1.697 1.697 0 0 1 2.768 1.854c-.085.205-.21.393-.368.55l.004-.005Z"/>
+                    </svg>
+                </a>
+            </div>
             <h1 id="articleTitle"></h1>
             <div id="contentAndImageContainer">
                 <div id="articleDetails">
@@ -156,16 +198,28 @@
             <div id="articleMemo"></div>
         </section>
     </div>
+    <div id="spinner" class="spinner"></div>
 </div>
 <script>
     const accessToken = localStorage.getItem('accessToken');
     const path = window.location.pathname;
-    let articleId;
+    const articleId = path.substring(path.lastIndexOf('/') + 1);
     fetchArticleDetails();
 
+    function moveUpdatePage() {
+        window.location.href = `/article/update/${articleId}`;
+    }
+
     function fetchArticleDetails() {
-        articleId = path.substring(path.lastIndexOf('/') + 1);
-        // 경로에서 마지막 부분을 가져와서 articleId로 사용
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'block';
+
+        const tagButtonsContainer = document.getElementById('tagButtonsContainer');
+        const updateArticleButton = document.getElementById('updateArticleButton');
+        const deleteArticleButton = document.getElementById('deleteArticleButton');
+        const memoLabel = document.querySelector('.memo-text');
+        const tagLabel = document.querySelector('.tag-text');
+        const goBack = document.querySelector('.go-back');
 
         fetch(`/api/articles/${articleId}`, {
             method: 'GET',
@@ -180,9 +234,19 @@
                 return response.json();
             })
             .then(articleDetails => {
+                tagButtonsContainer.style.display = 'block';
+                memoLabel.style.display = 'block';
+                tagLabel.style.display = 'block';
+                goBack.style.display = 'block';
+                deleteArticleButton.style.display = 'block';
+                updateArticleButton.style.display = 'block';
+
                 displayArticleDetails(articleDetails);
             })
-            .catch(error => console.error(error));
+            .catch(error => console.error(error))
+            .finally(() => {
+                spinner.style.display = 'none';
+            });
     }
 
     function displayArticleDetails(articleDetails) {
@@ -200,14 +264,13 @@
             articleHTML = `<img src="${articleDetails.content}" alt="Article Image" class="image-type-image">`;
 
         } else if (articleDetails.type === 'TEXT') {
-            articleHTML = `<div class="text-div1">
-<div class="text-div2">
-<textarea class="text-details">
-${articleDetails.content}
-</textarea>
-</div>
-</div>
-`
+            articleHTML =
+                `<div class="text-div1">
+                    <div class="text-div2">
+                        <textarea class="text-details">${articleDetails.content}</textarea>
+                    </div>
+                </div>
+                `
         } else {
             articleHTML = `
             <article class="article-box" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
@@ -287,8 +350,6 @@ ${articleDetails.content}
 
     function deleteArticle() {
         const accessToken = localStorage.getItem('accessToken');
-        const path = window.location.pathname;
-        articleId = path.substring(path.lastIndexOf('/') + 1);
 
         fetch(`/api/articles/${articleId}`, {
             method: 'DELETE',

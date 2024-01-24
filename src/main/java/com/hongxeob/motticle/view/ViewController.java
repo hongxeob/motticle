@@ -1,5 +1,7 @@
 package com.hongxeob.motticle.view;
 
+import javax.swing.plaf.PanelUI;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,4 +52,10 @@ public class ViewController {
 	public String search() {
 		return "article/search";
 	}
+
+	@GetMapping("/article/update/{id}")
+	public String updateArticle(@PathVariable Long id) {
+		return "article/updatePage";
+	}
+
 }
