@@ -21,6 +21,11 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 		if (openGraph.getAllProperties().isEmpty()) {
 			return Optional.empty();
 		}
+
+		return buildOpenGraphVO(openGraph);
+	}
+
+	private Optional<OpenGraphVO> buildOpenGraphVO(OpenGraph openGraph) {
 		return Optional.of(
 			OpenGraphVO.builder()
 				.image(getValueSafely(openGraph, "image"))
@@ -32,12 +37,7 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 	}
 
 	private String getValueSafely(OpenGraph openGraph, String property) {
-		final OpenGraph.Content content;
-		try {
-			content = openGraph.getContentOf(property);
-		} catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
-			return null;
-		}
-		return content.getValue();
+		OpenGraph.Content content = openGraph.getContentOf(property);
+		return content != null ? content.getValue() : null;
 	}
 }

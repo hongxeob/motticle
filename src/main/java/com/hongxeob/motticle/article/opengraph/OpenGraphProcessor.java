@@ -49,7 +49,7 @@ public class OpenGraphProcessor {
 		List<ArticleOgRes> articleOgResList = articles.stream()
 			.peek(article -> article.setFilePath(article.getContent()))
 			.map(article -> ArticleOgRes.of(article, inspirationOpenGraphMap.get(article.getId())))
-			.collect(Collectors.toList());
+			.toList();
 
 		return ArticlesOgRes.of(articleOgResList, articles);
 	}
