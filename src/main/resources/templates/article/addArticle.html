@@ -65,6 +65,7 @@
         }
 
         .button-container {
+            margin-bottom: 30px;
             display: flex;
             justify-content: center;
             align-items: flex-end;
@@ -92,7 +93,7 @@
 
         .link-add-button {
             position: absolute;
-            inset: 130px 15px auto auto;
+            inset: 158px 17px auto auto;
             width: 40px;
             height: 31.5px;
             padding-top: 3px;
@@ -117,6 +118,60 @@
             line-height: 2;
             resize: none;
         }
+
+        .tag-wrapper {
+            padding-bottom: 12px;
+        }
+
+        .tag-text {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 5px;
+            padding-left: 4px;
+            margin-top: 7px;
+        }
+
+        .memo-text {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 0px;
+            padding-left: 4px;
+        }
+
+        .articleTitleText {
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 0px;
+            padding-left: 4px;
+            margin-bottom: 7px;
+        }
+
+        .link-text {
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 7px;
+            padding-left: 4px;
+            display: none;
+        }
+
+        .articleContent {
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 7px;
+            padding-left: 4px;
+        }
     </style>
 </head>
 <body>
@@ -127,9 +182,10 @@
 
     <div class="article-registration" id="articleRegistration">
         <section class="section1">
+            <label class="articleTitleText" for="input-:r5:">제목</label>
             <input type="text" id="articleTitle" placeholder="제목을 입력하세요.">
+            <label class="link-text" for="input-:r5:">링크</label>
             <div id="linkInputContainer">
-                <label for="articleLink">링크:</label>
                 <input type="text" id="articleLink" placeholder="링크를 입력하세요">
                 <button onclick="validateLink()" class="link-add-button">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="white">
@@ -139,13 +195,21 @@
             </div>
 
             <div id="linkPreviewContainer"></div>
-            <label for="articleContent"></label>
+            <label class="articleContent" for="input-:r5:">내용</label>
             <textarea id="articleContent" placeholder="내용을 입력하세요."></textarea>
             <div id="imagePreviewContainer"></div>
-            <label for="articleImage">Image:</label>
-            <input type="file" id="articleImage" accept="image/*" onchange="addImagePreview()">
-            <div id="tagButtonsContainer"></div>
-            <textarea id="articleMemo" placeholder="메모를 입력하세요." style="margin-top: 15px; height: 100px;"></textarea>
+            <input type="file" id="articleImage" accept="image/*" onchange="addImagePreview()"
+                   style="display: block; margin-bottom: 0px;">
+            <div class="tag-wrapper">
+                <span class="tag-text">태그</span>
+                <div id="tagButtonsContainer"></div>
+            </div>
+
+            <div>
+                <label class="memo-text" for="input-:r5:">메모</label>
+                <textarea id="articleMemo" placeholder="메모를 입력하세요." style="margin-top: 7px; height: 100px;"></textarea>
+            </div>
+
             <span>공개여부</span>
             <label for="isPublic" class="toggle-switch">
                 <input type="checkbox" id="isPublic">
@@ -176,7 +240,6 @@
     const accessToken = localStorage.getItem('accessToken');
     const urlParams = new URLSearchParams(window.location.search);
     const selectedType = urlParams.get('type');
-    const articleImageLabel = document.querySelector('label[for="articleImage"]');
 
     function navigateToAddTag() {
         window.location.href = '/addTag';
@@ -186,25 +249,30 @@
         const linkInputContainer = document.getElementById('linkInputContainer');
         const articleContentInput = document.getElementById('articleContent');
         const articleImageInput = document.getElementById('articleImage');
+        const articleContentText = document.querySelector('.articleContent');
+        const linkText = document.querySelector('.link-text');
 
         articleContentInput.placeholder = '내용을 입력하세요';
         articleImageInput.style.display = 'none';
-        articleImageLabel.style.display = 'none';
-        articleContentInput.style.height = '350px';
+        articleContentInput.style.height = '280px';
+        articleContentInput.style.margin = '0px 7px 0px 0px';
         articleContentInput.readOnly = false;
 
         if (selectedType === 'IMAGE') {
             articleContentInput.placeholder = '아래 파일 선택 버튼을 눌러 이미지를 첨부하세요.';
             articleImageInput.style.display = 'block';
-            articleImageLabel.style.display = 'block';
-            articleContentInput.style.height = '280px';
+            articleContentInput.style.height = '240px';
             articleContentInput.readOnly = true;
             linkInputContainer.style.display = 'none';
+            linkText.style.display = 'none';
         } else if (selectedType === 'LINK') {
             articleContentInput.style.display = 'none';
             linkInputContainer.style.display = 'block';
+            articleContentText.style.display = 'none';
+            linkText.style.display = 'block';
         } else {
             linkInputContainer.style.display = 'none';
+            linkText.style.display = 'none';
         }
     }
 
@@ -304,7 +372,6 @@
 
         const isLinkType = selectedType === 'LINK';
         const content = isLinkType ? document.getElementById('articleLink').value : document.getElementById('articleContent').value;
-        // const content = document.getElementById('articleContent').value;
         const memo = document.getElementById('articleMemo').value;
         const isPublic = document.getElementById('isPublic').checked;
 
@@ -376,7 +443,7 @@
 
         const articleDetails = {openGraphResponse};
         linkPreviewContainer.innerHTML = `
-                <article class="article-box" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
+                <article class="article-box" style="margin-bottom: 15px; onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
                     <section class="article-section">
                         <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
                         <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
