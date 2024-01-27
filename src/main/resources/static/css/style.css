@@ -701,3 +701,19 @@ input[type="checkbox"] {
     margin-top: 16px;
     padding: 0 16px 0 16px;
 }
+
+.update-nickName-button {
+    border: none;
+    font-size: 12px;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+    padding: 2px;
+    color: rgb(90, 103, 106);
+    background-color: inherit;
+    cursor: pointer;
+}

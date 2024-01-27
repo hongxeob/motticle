@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>모띠클 : 마이 페이지</title>
+    <style>
+        .profile {
+            flex: 1 1 0%;
+            overflow-y: auto;
+            margin-top: 67px;
+        }
+
+        .info {
+            display: flex;
+            flex-direction: column;
+            background-color: rgb(247 247 247);
+            border-radius: 4px;
+            height: 255px;
+            padding: 0px 16px 16px;
+        }
+
+        .info1 {
+            display: flex;
+            align-items: center;
+            height: 255px;
+            //padding: 16px 0px;
+            border-bottom: rgb(247 247 247);
+        }
+
+        .nameAndEmail {
+            flex: 1 1 0%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .name {
+            font-size: 16px;
+            line-height: 150%;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .email {
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            color: rgb(113, 125, 130);
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+
+        .accountMenu {
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            position: relative;
+            height: 54px;
+            padding: 16px 0px;
+            border-bottom: 1px solid rgb(194, 203, 205);
+        }
+
+        .accountMenuDetails {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: 0px;
+            display: block;
+        }
+
+        .MyAccountText {
+            font-size: 13px;
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 4px;
+            overflow: hidden;
+            padding-bottom: 0px;
+            margin-bottom: 7px;
+            margin-top: 7px;
+        }
+
+        .profile-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .updateImageButton {
+            background-color: #2DD197;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 4px 7px 4px 7px;
+            cursor: pointer;
+        }
+
+        .logout {
+            display: flex;
+            -webkit-box-align: center;
+            align-items: center;
+            -webkit-box-pack: justify;
+            justify-content: space-between;
+            position: relative;
+            height: 54px;
+            padding: 16px 0px;
+            color: rgb(194, 203, 205);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class=view>
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+        <h1 class="nav-text">마이 페이지</h1>
+    </nav>
+    <section class="profile">
+        <section class="info">
+            <li class="info1">
+                <div class="nameAndEmail">
+                    <button class="updateImageButton" onclick="changeImage()">대표사진 변경</button>
+                    <div class="profile-image-container">
+                    </div>
+                    <div style="display: flex">
+                        <span class="name"></span>
+                        <a href="/profile/update">
+                            <button class="update-nickName-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                     fill="currentColor">
+                                    <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83l3.75 3.75l1.83-1.83z"></path>
+                                </svg>
+                            </button>
+                        </a>
+                    </div>
+                    <span class="email"></span>
+                </div>
+            </li>
+        </section>
+    </section>
+    <ul class="menu">
+        <li label="내 계정" class="accountMenu">
+            <a href="/profile" class="accountMenuDetails"></a>
+            <span class="MyAccountText">내 계정</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="17" fill="none">
+                  <path fill="#2DD197"
+                        d="M.306 15.938c0-.282.112-.552.311-.751l5.435-5.435a1.77 1.77 0 0 0 0-2.504L.624 1.817A1.063 1.063 0 0 1 2.127.314l5.427 5.427a3.9 3.9 0 0 1 0 5.51L2.12 16.686a1.062 1.062 0 0 1-1.814-.748Z"/>
+              </svg>
+            </span>
+        </li>
+        <li label="스크랩북" class="accountMenu">
+            <a href="/scrapList" class="accountMenuDetails"></a>
+            <span class="MyAccountText">스크랩북</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="17" fill="none">
+                  <path fill="#2DD197"
+                        d="M.306 15.938c0-.282.112-.552.311-.751l5.435-5.435a1.77 1.77 0 0 0 0-2.504L.624 1.817A1.063 1.063 0 0 1 2.127.314l5.427 5.427a3.9 3.9 0 0 1 0 5.51L2.12 16.686a1.062 1.062 0 0 1-1.814-.748Z"/>
+              </svg>
+            </span>
+        </li>
+        <li label="태그관리" class="accountMenu">
+            <a href="/addTag" class="accountMenuDetails"></a>
+            <span class="MyAccountText">태그 관리</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="17" fill="none">
+                  <path fill="#2DD197"
+                        d="M.306 15.938c0-.282.112-.552.311-.751l5.435-5.435a1.77 1.77 0 0 0 0-2.504L.624 1.817A1.063 1.063 0 0 1 2.127.314l5.427 5.427a3.9 3.9 0 0 1 0 5.51L2.12 16.686a1.062 1.062 0 0 1-1.814-.748Z"/>
+              </svg>
+            </span>
+        </li>
+        <li label="이용약관" class="accountMenu">
+            <a class="accountMenuDetails"></a>
+            <span class="MyAccountText">이용약관 및 정책</span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="9" height="17" fill="none">
+                  <path fill="#2DD197"
+                        d="M.306 15.938c0-.282.112-.552.311-.751l5.435-5.435a1.77 1.77 0 0 0 0-2.504L.624 1.817A1.063 1.063 0 0 1 2.127.314l5.427 5.427a3.9 3.9 0 0 1 0 5.51L2.12 16.686a1.062 1.062 0 0 1-1.814-.748Z"/>
+              </svg>
+            </span>
+        </li>
+        <li label="로그아웃" class="logout" onclick="logout()">
+            <a class="accountMenuDetails"></a>
+            <span style="font-size: 12px">로그아웃</span>
+        </li>
+    </ul>
+</div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (accessToken === null) {
+        redirectToKakaoScreen();
+    }
+
+    function redirectToKakaoScreen() {
+        window.location.href = '/kakao';
+    }
+
+    fetch('/api/members', {
+        headers: {
+            'Authorization': accessToken
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const profileImageContainer = document.querySelector('.profile-image-container');
+            const profileImage = document.createElement('img');
+            profileImage.src = data.image;
+            profileImage.alt = 'Profile Image';
+            profileImage.style.width = '100%';
+            profileImage.style.height = '100%';
+            profileImage.style.objectFit = 'cover';
+
+            profileImageContainer.appendChild(profileImage);
+            document.querySelector('.name').innerText = data.nickname;
+            document.querySelector('.email').innerText = data.email;
+        })
+        .catch(error => console.error('Error:', error));
+
+    function changeImage() {
+        const inputElement = document.createElement('input');
+        inputElement.type = 'file';
+        inputElement.accept = 'image/*';
+        inputElement.addEventListener('change', handleImageChange);
+        inputElement.click();
+    }
+
+    function handleImageChange(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const formData = new FormData();
+            formData.append('image', file);
+
+
+            fetch(`/api/members/modify/image`, {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': accessToken,
+                },
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const profileImage = document.querySelector('.profile-image-container img');
+                    profileImage.src = URL.createObjectURL(file);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('accessToken');
+
+        fetch('/api/auth/logout', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': accessToken,
+            },
+        })
+            .then(response => {
+                if (response.ok) {
+                    deleteCookie('refreshToken');
+                    window.location.href = '/kakao';
+                } else {
+                    console.error('로그아웃 실패');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    function deleteCookie(name) {
+        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+</script>
+</body>
+</html>
