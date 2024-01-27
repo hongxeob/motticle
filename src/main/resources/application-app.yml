@@ -1,0 +1,3 @@
+spring:
+  jwt:
+    secret: 187f1a9af16bfb0b3bfbfda59d570848a08ac586d5061b5bcef72344d035a4cdbcd65fba20d9cc80121ba721fa2d072eda83e0f1f4e13df9c008a0e5548695e7
