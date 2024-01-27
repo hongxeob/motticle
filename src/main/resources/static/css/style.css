@@ -696,3 +696,8 @@ input[type="checkbox"] {
     color: rgb(90, 103, 106);
     font-size: 1rem;
 }
+
+.menu {
+    margin-top: 16px;
+    padding: 0 16px 0 16px;
+}

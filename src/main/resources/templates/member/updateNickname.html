@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta property="og:title" content="Your Page Title">
+    <meta property="og:description" content="Your Page Description">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="URL to Your Page">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>모띠클 : 회원 정보 수정</title>
+    <style>
+        .nicknameContainer {
+            margin-top: 32px;
+        }
+
+        .nicknameContainerDetails {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
+        .nicknameText {
+            display: block;
+            color: rgb(90, 103, 106);
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-bottom: 0px;
+            padding-left: 3px;
+        }
+
+        .nicknameFormDiv {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .nicknameForm {
+            width: 82%;
+            padding: 12px 40px 12px 12px;
+            background: rgb(255 255 255);
+            border: 1px solid #dadada;
+            border-radius: 4px;
+            color: rgb(90, 103, 106);
+            opacity: 1;
+            appearance: none;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+            resize: none;
+        }
+
+        .checkNicknameButton {
+            width: 16%;
+            background: #2DD197;
+            border: 1px solid #2DD197;
+            border-radius: 4px;
+            color: white;
+            opacity: 1;
+            appearance: none;
+            font-weight: 500;
+            font-size: 14px;
+            outline: none;
+            line-height: 2;
+            resize: none;
+            cursor: pointer;
+        }
+
+        .nicknameAlert {
+            color: rgb(163, 179, 186);
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .updateNicknameButton {
+            background-color: #2DD197;
+            border: none;
+            cursor: pointer;
+            padding: 4px 10px;
+            border-radius: 4px;
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgb(255 255 255);
+        }
+
+        .update-nickname-button-container {
+            position: relative;
+            margin-top: 521px;
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class=view>
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+        <h1 class="nav-text">닉네임 변경</h1>
+    </nav>
+    <form class="nicknameContainer">
+        <div class="nicknameContainerDetails">
+            <label for="input-:r2:" class="nicknameText">닉네임</label>
+            <div class="nicknameFormDiv">
+                <input id="input-:r2:" required class="nicknameForm">
+                <button required class="checkNicknameButton" onclick="checkNickname(event)">중복 확인</button>
+            </div>
+            <p class="nicknameAlert">변경할 닉네임을 입력해주세요.</p>
+        </div>
+    </form>
+    <section class="update-nickname-button-container">
+        <button class="updateNicknameButton" onclick="updateNickname()">수정하기</button>
+    </section>
+</div>
+
+<script>
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (accessToken === null) {
+        redirectToKakaoScreen();
+    }
+
+    function redirectToKakaoScreen() {
+        window.location.href = '/kakao';
+    }
+
+    function goBack() {
+        window.history.back();
+    }
+
+    fetch('/api/members', {
+        headers: {
+            'Authorization': accessToken
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('API 호출 실패');
+            }
+        })
+        .then(data => {
+            const nickname = data.nickname;
+            const inputElement = document.getElementById('input-:r2:');
+            inputElement.value = nickname;
+        })
+        .catch(error => console.error('Error:', error));
+
+    async function checkNickname(event) {
+        event.preventDefault();
+
+        const nicknameInput = document.getElementById('input-:r2:');
+        const nickname = nicknameInput.value.trim();
+        const nicknameAlert = document.querySelector('.nicknameAlert');
+
+        if (nickname === "") {
+            alert("닉네임을 입력해주세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/members/nickname?nickname=${nickname}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            nicknameInput.value = nickname;
+            nicknameAlert.textContent = "닉네임이 사용 가능합니다.";
+            nicknameAlert.style.color = "green";
+
+            nicknameInput.style.border = "1px solid #dadada";
+
+        } catch (error) {
+            nicknameAlert.textContent = "닉네임이 중복됩니다. 다른 닉네임을 입력해주세요.";
+            nicknameAlert.style.color = "red";
+            nicknameInput.style.border = "1px solid red";
+
+            nicknameInput.focus();
+        }
+    }
+
+    function updateNickname() {
+        const nickname = document.getElementById('input-:r2:').value;
+
+        if (nickname === "") {
+            alert("닉네임을 입력해주세요.");
+            document.getElementById('nickname').focus();
+            return;
+        }
+
+        const requestData = {
+            nickname: nickname,
+        };
+
+
+        fetch('/api/members/modify', {
+            method: 'PATCH',
+            headers: {
+                'Authorization': accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
+            .then(response => {
+                console.log('서버 응답 상태 코드:', response.status);
+
+                if (response.status === 204) {
+                    alert('닉네임이 수정되었습니다.');
+                    window.location.href = '/my-page';
+                } else {
+                    console.error('닉네임 수정에 실패했습니다.');
+                }
+            })
+            .catch(error => {
+                console.error('API 호출 에러:', error);
+            });
+    }
+</script>
+</body>
+</html>

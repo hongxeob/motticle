@@ -56,8 +56,18 @@ public class ViewController {
 		return "article/updateArticle";
 	}
 
+	@GetMapping("/my-page")
+	public String myPage() {
+		return "member/myPage";
+	}
+
 	@GetMapping("/profile")
 	public String profile() {
 		return "member/profile";
+	}
+
+	@GetMapping("/profile/update")
+	public String updateProfile() {
+		return "member/updateNickname";
 	}
 }
