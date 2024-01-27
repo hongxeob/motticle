@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MemberService {
 
-	private static final String DEFAULT_IMAGE_PATH = "https://kr.object.ncloudstorage.com/motticle-file-storage/simple-user-default-icon-free-png.webp";
+	private static final String DEFAULT_IMAGE_PATH = "https://kr.object.ncloudstorage.com/motticle-file-storage/Default-Profile-Picture-PNG-Download-Image.png";
 
 	private final MemberRepository memberRepository;
 	private final ImageService imageService;

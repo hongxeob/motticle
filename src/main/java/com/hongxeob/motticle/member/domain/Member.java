@@ -22,8 +22,6 @@ import lombok.NoArgsConstructor;
 @Table(name = "members")
 public class Member extends BaseEntity {
 
-	private static final String DEFAULT_PATH = "/Users/hongxeob/Desktop/simple-user-default-icon-free-png.webp";
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -62,7 +60,7 @@ public class Member extends BaseEntity {
 		this.nickname = member.getNickname();
 		this.genderType = member.getGenderType();
 		this.role = member.getRole();
-		this.image=member.getImage();
+		this.image = member.getImage();
 	}
 
 	public void updateRole(Role role) {
