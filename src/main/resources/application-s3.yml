@@ -1,0 +1,12 @@
+cloud:
+  aws:
+    credentials:
+      access-key: hHDiopPaCoQqDb3qXrcD
+      secret-key: cDK0LCKx41LCnIg93mmlAo8TVT0gH1uWBrqUC1VR
+    stack:
+      auto: false
+    region:
+      static: kr-standard
+    s3:
+      endpoint: https://kr.object.ncloudstorage.com
+      bucket: motticle-file-storage
