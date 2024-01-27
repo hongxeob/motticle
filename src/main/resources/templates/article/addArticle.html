@@ -9,7 +9,7 @@
     <meta property="og:url" content="URL to Your Page">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="/css/style.css">
-    <title>흩어진 영감을 모으자!</title>
+    <title>모띠클 : 아티클 등록</title>
     <style>
         .toggle-switch {
             position: relative;
@@ -93,7 +93,8 @@
 
         .link-add-button {
             position: absolute;
-            inset: 158px 17px auto auto;
+            inset: 147px 16px auto auto;
+
             width: 40px;
             height: 31.5px;
             padding-top: 3px;
@@ -178,6 +179,7 @@
 <div class="view">
     <nav class="nav">
         <span onclick="goBack()" class="go-back"><</span>
+        <h1 class="nav-text">아티클 등록</h1>
     </nav>
 
     <div class="article-registration" id="articleRegistration">
@@ -276,7 +278,6 @@
         }
     }
 
-    // 페이지 로드 시 호출
     updatePlaceholderAndFileInput();
 
     function addImagePreview() {
@@ -305,12 +306,12 @@
         if (tags.length === 0) {
             const placeholderText = document.createElement('div');
             placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
-            placeholderText.style.color = "#777"; // 플레이스홀더 텍스트 스타일링
+            placeholderText.style.color = "#777";
             placeholderText.style.padding = "10px";
             tagButtonsContainer.appendChild(placeholderText);
 
             tagButtonsContainer.addEventListener('click', function () {
-                navigateToAddTag(); // 플레이스홀더를 클릭하면 navigateToAddTag() 함수 호출
+                navigateToAddTag();
             });
 
             return;
@@ -321,10 +322,9 @@
             tagButton.type = 'button';
             tagButton.id = `tag${tag.id}`;
             tagButton.value = tag.id;
-            tagButton.className = 'tag-button'; // 버튼에 클래스 추가
+            tagButton.className = 'tag-button';
             tagButton.textContent = tag.name;
 
-            // 버튼 클릭 시 선택 상태 토글
             tagButton.addEventListener('click', function () {
                 this.classList.toggle('selected');
             });
@@ -351,7 +351,6 @@
             return response.json();
         })
         .then(tags => {
-            // Process fetched tags, e.g., populate a dropdown or checkboxes
             displayUserTags(tags.tagSliceRes);
         })
         .catch(error => console.error(error));
@@ -394,11 +393,9 @@
         }));
 
         if (selectedType === 'IMAGE') {
-            // 입력 필드에서 이미지 파일 가져오기
             const imageInput = document.getElementById('articleImage');
             const imageFile = imageInput.files[0];
 
-            // FormData에 이미지 파일 추가
             formData.append('image', imageFile);
         }
         fetch('/api/articles', {
@@ -410,14 +407,12 @@
         })
             .then(response => response.json())
             .then(articleInfoRes => {
-                // 아티클 등록 후 페이지 이동 또는 다른 작업 수행
                 console.log('아티클이 성공적으로 등록되었습니다:', articleInfoRes);
                 alert("아티클이 등록 되었습니다!")
                 window.location.href = '/';
             })
             .catch(error => {
                 console.error('아티클 등록 중 오류 발생:', error);
-                // 오류 처리 로직 추가
             });
     }
 

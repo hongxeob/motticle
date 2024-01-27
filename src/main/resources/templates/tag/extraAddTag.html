@@ -9,7 +9,7 @@
     <meta property="og:url" content="URL to Your Page">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="/css/style.css">
-    <title>흩어진 영감을 모으자!</title>
+    <title>모띠클 : 아티클 태깅</title>
     <style>
         #tagContainer {
             display: flex;
@@ -38,7 +38,10 @@
 </head>
 <body>
 <div class="view">
-    <span onclick="goBack()" class="go-back"><</span>
+      <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+        <h1 class="nav-text">아티클 태깅</h1>
+    </nav>
     <div style="margin-left: 12px; margin-right: 12px">
         <div id="tagContainer">
             <input type="text" id="tagNameInput" placeholder="등록할 태그를 입력하세요.">
@@ -133,7 +136,7 @@
                     console.log('아티클에 태그가 추가되었습니다.', articleInfoRes);
                     fetchAndDisplayTags();
                     tagNameInput.value = '';
-                    alert("태그가 추가 되었습니다.")
+                    alert("아티클에 태깅 되었습니다.")
                 }
             })
             .catch(error => console.error('아티클에 태그 추가 중 에러 발생:', error));
