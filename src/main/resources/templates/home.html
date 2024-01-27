@@ -131,11 +131,43 @@
                 transform: rotate(360deg);
             }
         }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .modal-content button {
+            margin: 5px;
+            font-size: 16px;
+            background-color: #2DD197;
+            color: white;
+            border: none;
+            padding: 10px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 <div class=view>
     <a class="homeButton" href="/">MOTTICLE</a>
+    <div style="position: absolute; top: 39px; right: 21px;">
+        <a href="/profile" style="cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
+                <g clip-path="url(#a)">
+                    <path fill="#535353"
+                          d="M20.667 24.542v5.554A15.4 15.4 0 0 1 15.5 31a15.4 15.4 0 0 1-5.167-.904v-5.554c0-.713.58-1.292 1.292-1.292h7.75c.712 0 1.292.579 1.292 1.292ZM15.5 10.333a2.586 2.586 0 0 0-2.583 2.584A2.586 2.586 0 0 0 15.5 15.5a2.586 2.586 0 0 0 2.583-2.583 2.586 2.586 0 0 0-2.583-2.584Zm7.75 18.57v-4.361a3.88 3.88 0 0 0-3.875-3.875h-7.75a3.88 3.88 0 0 0-3.875 3.875v4.36C3.125 26.218 0 21.222 0 15.5 0 6.953 6.953 0 15.5 0S31 6.953 31 15.5c0 5.722-3.125 10.718-7.75 13.402Zm-2.583-15.986A5.172 5.172 0 0 0 15.5 7.75a5.172 5.172 0 0 0-5.167 5.167 5.172 5.172 0 0 0 5.167 5.166 5.172 5.172 0 0 0 5.167-5.166Z"/>
+                    <path fill="#000" fill-opacity=".2"
+                          d="M20.667 24.542v5.554A15.4 15.4 0 0 1 15.5 31a15.4 15.4 0 0 1-5.167-.904v-5.554c0-.713.58-1.292 1.292-1.292h7.75c.712 0 1.292.579 1.292 1.292ZM15.5 10.333a2.586 2.586 0 0 0-2.583 2.584A2.586 2.586 0 0 0 15.5 15.5a2.586 2.586 0 0 0 2.583-2.583 2.586 2.586 0 0 0-2.583-2.584Zm7.75 18.57v-4.361a3.88 3.88 0 0 0-3.875-3.875h-7.75a3.88 3.88 0 0 0-3.875 3.875v4.36C3.125 26.218 0 21.222 0 15.5 0 6.953 6.953 0 15.5 0S31 6.953 31 15.5c0 5.722-3.125 10.718-7.75 13.402Zm-2.583-15.986A5.172 5.172 0 0 0 15.5 7.75a5.172 5.172 0 0 0-5.167 5.167 5.172 5.172 0 0 0 5.167 5.166 5.172 5.172 0 0 0 5.167-5.166Z"/>
+                </g>
+                <defs>
+                    <clipPath id="a">
+                        <path fill="#fff" d="M0 0h31v31H0z"/>
+                    </clipPath>
+                </defs>
+            </svg>
+        </a>
+    </div>
     <div id="home-tagButtonsContainer">
     </div>
     <section class="content-container">
@@ -153,15 +185,15 @@
             <section class="footer-box">
                 <div style="position: absolute; top: 17px; right: 369px;">
                     <a href="/" style="cursor: pointer;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
                             <g clip-path="url(#a)">
                                 <path fill="#2DD197" fill-rule="evenodd"
-                                      d="M17.107 1.006C17.78.356 18.637 0 19.522 0c.886 0 1.743.357 2.416 1.006L33.69 12.34l4.613 4.154c.19.171.349.383.466.623a2.338 2.338 0 0 1 .157 1.588c-.068.264-.181.51-.334.724a1.93 1.93 0 0 1-.554.524 1.713 1.713 0 0 1-.69.247c-.242.03-.487.006-.721-.07a1.793 1.793 0 0 1-.643-.375l-1.623-1.462v16.531c0 1.107-.39 2.17-1.087 2.952C32.58 38.56 31.636 39 30.652 39h-7.42V28.563c0-1.108-.39-2.17-1.086-2.953-.696-.782-1.64-1.222-2.624-1.222-.984 0-1.927.44-2.623 1.222-.696.783-1.087 1.845-1.087 2.953V39h-7.42c-.983 0-1.927-.44-2.623-1.223-.696-.783-1.086-1.845-1.086-2.952V18.292L3.06 19.753a1.809 1.809 0 0 1-.646.403 1.66 1.66 0 0 1-1.44-.153 1.925 1.925 0 0 1-.567-.532 2.192 2.192 0 0 1-.337-.738 2.34 2.34 0 0 1-.055-.828 2.27 2.27 0 0 1 .236-.787 2.03 2.03 0 0 1 .49-.621l4.613-4.154L17.107 1.006Z"
+                                      d="M13.598.8a2.763 2.763 0 0 1 1.92-.8c.704 0 1.385.284 1.92.8l9.342 9.01 3.667 3.301c.15.136.277.305.37.496a1.86 1.86 0 0 1 .125 1.263c-.054.209-.144.404-.265.574-.121.17-.271.312-.44.417a1.32 1.32 0 0 1-1.122.14 1.425 1.425 0 0 1-.511-.298l-1.29-1.161v13.14c0 .88-.311 1.724-.864 2.346-.553.622-1.303.972-2.085.972h-5.898v-8.296c0-.88-.311-1.725-.864-2.347-.553-.622-1.303-.972-2.085-.972s-1.532.35-2.086.972c-.553.622-.863 1.466-.863 2.347V31H6.67c-.782 0-1.532-.35-2.085-.972-.553-.622-.864-1.466-.864-2.347V14.54l-1.29 1.162c-.15.144-.325.253-.513.32A1.318 1.318 0 0 1 .774 15.9a1.531 1.531 0 0 1-.45-.423 1.744 1.744 0 0 1-.269-.587A1.86 1.86 0 0 1 .2 13.607c.1-.193.232-.36.39-.494l3.667-3.302L13.598.8Z"
                                       clip-rule="evenodd"/>
                             </g>
                             <defs>
                                 <clipPath id="a">
-                                    <path fill="#fff" d="M0 0h39v39H0z"/>
+                                    <path fill="#fff" d="M0 0h31v31H0z"/>
                                 </clipPath>
                             </defs>
                         </svg>
@@ -169,9 +201,15 @@
                 </div>
                 <div style="position: absolute; top: 17px; right: 77px;">
                     <a href="/" style="cursor: pointer;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="39" fill="none">
-                            <path fill="#A6A6A6"
-                                  d="M7 0h4.875a6.5 6.5 0 0 1 6.5 6.5v4.875a6.5 6.5 0 0 1-6.5 6.5H7a6.5 6.5 0 0 1-6.5-6.5V6.5A6.5 6.5 0 0 1 7 0ZM28.125 0H33a6.5 6.5 0 0 1 6.5 6.5v4.875a6.5 6.5 0 0 1-6.5 6.5h-4.875a6.5 6.5 0 0 1-6.5-6.5V6.5a6.5 6.5 0 0 1 6.5-6.5ZM7 21.125h4.875a6.5 6.5 0 0 1 6.5 6.5V32.5a6.5 6.5 0 0 1-6.5 6.5H7a6.5 6.5 0 0 1-6.5-6.5v-4.875a6.5 6.5 0 0 1 6.5-6.5ZM28.125 21.125H33a6.5 6.5 0 0 1 6.5 6.5V32.5A6.5 6.5 0 0 1 33 39h-4.875a6.5 6.5 0 0 1-6.5-6.5v-4.875a6.5 6.5 0 0 1 6.5-6.5Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
+                            <g fill="#A6A6A6" clip-path="url(#a)">
+                                <path d="M5.167 0h3.875a5.167 5.167 0 0 1 5.166 5.167v3.875a5.167 5.167 0 0 1-5.166 5.166H5.167A5.167 5.167 0 0 1 0 9.042V5.167A5.167 5.167 0 0 1 5.167 0ZM21.958 0h3.875A5.167 5.167 0 0 1 31 5.167v3.875a5.167 5.167 0 0 1-5.167 5.166h-3.875a5.167 5.167 0 0 1-5.166-5.166V5.167A5.167 5.167 0 0 1 21.957 0ZM5.167 16.792h3.875a5.167 5.167 0 0 1 5.166 5.166v3.875A5.167 5.167 0 0 1 9.042 31H5.167A5.166 5.166 0 0 1 0 25.834v-3.875a5.167 5.167 0 0 1 5.167-5.167ZM21.958 16.792h3.875A5.167 5.167 0 0 1 31 21.958v3.875A5.167 5.167 0 0 1 25.833 31h-3.875a5.167 5.167 0 0 1-5.166-5.166v-3.875a5.167 5.167 0 0 1 5.166-5.167Z"/>
+                            </g>
+                            <defs>
+                                <clipPath id="a">
+                                    <path fill="#fff" d="M0 0h31v31H0z"/>
+                                </clipPath>
+                            </defs>
                         </svg>
                     </a>
                 </div>
@@ -188,10 +226,10 @@
     </footer>
     <div class="modal" id="myModal">
         <div class="modal-content">
-            <h2>Select Article Type</h2>
-            <button onclick="selectArticleType('LINK')">Link</button>
-            <button onclick="selectArticleType('IMAGE')">Image</button>
-            <button onclick="selectArticleType('TEXT')">Text</button>
+            <h2>아티클 타입을 선택하세요</h2>
+            <button onclick="selectArticleType('LINK')">링크</button>
+            <button onclick="selectArticleType('IMAGE')">이미지</button>
+            <button onclick="selectArticleType('TEXT')">글귀</button>
             <button onclick="closeModal()">Close</button>
         </div>
     </div>
@@ -202,7 +240,24 @@
     window.onload = function () {
         document.getElementById('latestButton').click();
     }
-    const accessToken = localStorage.getItem('accessToken');
+
+    function getAccessTokenFromQuery() {
+        const uriParams = new URLSearchParams(location.search);
+        let accessToken;
+
+        if (uriParams.has('accessToken')) {
+            accessToken = uriParams.get('accessToken');
+            localStorage.setItem('accessToken', accessToken);
+            console.log(accessToken);
+        } else {
+            accessToken = localStorage.getItem('accessToken');
+            console.log(accessToken);
+        }
+
+        return accessToken;
+    }
+
+    const accessToken = getAccessTokenFromQuery();
 
     if (accessToken === null) {
         redirectToKakaoScreen();
@@ -290,16 +345,19 @@
 
     async function fetchAndRenderArticles(sortOrder) {
         const spinner = document.getElementById('spinner');
-        spinner.style.display = 'block'; // 스피너 표시
-        // 선택한 태그 가져오기
+        const sortButton = document.querySelector('.sort');
+
+        spinner.style.display = 'block';
+
         const articleListContainer = document.getElementById('articleListContainer');
+        const viewContainer = document.querySelector('.view');
         articleListContainer.innerHTML = '';
 
-        // 선택한 태그 가져오기
+
         const selectedTags = Array.from(document.querySelectorAll('.home-tag-button.selected'))
             .map(button => parseInt(button.value));
 
-        // 선택한 태그를 기반으로 아티클을 가져오기
+
         const tagIds = selectedTags.length === 0 ? '' : selectedTags.join(',');
 
         const articlesResponse = await fetch(`/api/articles/search?tagIds=${tagIds}&sortOrder=${sortOrder}`, {
@@ -311,7 +369,24 @@
 
         const articlesData = await articlesResponse.json();
         console.log('Filtered Articles Data:', articlesData);
-        renderArticles(articlesData);
+        if (articlesData.articleOgResList.length === 0) {
+            const noArticlesImage = `
+        <img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
+    `;
+            const noArticlesContainer = document.createElement('div');
+            noArticlesContainer.style.position = 'absolute';
+            noArticlesContainer.style.top = '302px';
+            noArticlesContainer.style.right = '102px';
+            noArticlesContainer.innerHTML = noArticlesImage;
+            viewContainer.appendChild(noArticlesContainer);
+
+            const latestButton = document.getElementById('latestButton');
+            const oldestButton = document.getElementById('oldestButton');
+            latestButton.style.display = 'none';
+            oldestButton.style.display = 'none';
+        } else {
+            renderArticles(articlesData);
+        }
     }
 
     function renderArticles(articlesData) {
