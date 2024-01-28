@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -17,7 +17,6 @@ import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
 import com.hongxeob.motticle.article.application.dto.res.OpenGraphResponse;
 import com.hongxeob.motticle.article.domain.Article;
 import com.hongxeob.motticle.article.domain.ArticleType;
-import com.hongxeob.motticle.image.application.ImageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class OpenGraphProcessor {
 
+	@Qualifier("threadPoolExecutor")
 	private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
 	private final OpenGraphService openGraphService;
 
@@ -34,15 +34,16 @@ public class OpenGraphProcessor {
 		final Map<Long, OpenGraphResponse> inspirationOpenGraphMap = new ConcurrentHashMap<>();
 		// executor 에 작업 할당
 		final List<CompletableFuture<Void>> completableFutures =
-			articles.stream().map(
-				article -> CompletableFuture.runAsync(
-					() -> inspirationOpenGraphMap.put(
-						article.getId(),
-						getOpenGraphResponse(article.getType(), article.getContent())
-					),
-					threadPoolTaskExecutor
-				)
-			).toList();
+			articles.stream()
+				.map(
+					article -> CompletableFuture.runAsync(
+						() -> inspirationOpenGraphMap.put(
+							article.getId(),
+							getOpenGraphResponse(article.getType(), article.getContent())
+						),
+						threadPoolTaskExecutor
+					)
+				).toList();
 		// 비동기 작업 끝날때까지 대기
 		completableFutures.forEach(CompletableFuture::join);
 

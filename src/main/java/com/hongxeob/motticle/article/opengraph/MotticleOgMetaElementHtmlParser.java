@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import com.github.siyoon210.ogparser4j.htmlparser.OgMetaElement;
+import com.github.siyoon210.ogparser4j.htmlparser.OgMetaElementHtmlParser;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OgMetaElementHtmlParser implements com.github.siyoon210.ogparser4j.htmlparser.OgMetaElementHtmlParser {
+public class MotticleOgMetaElementHtmlParser implements OgMetaElementHtmlParser {
 
 	@Override
 	public List<OgMetaElement> getOgMetaElementsFrom(String url) {

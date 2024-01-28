@@ -12,11 +12,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class OpenGraphServiceImpl implements OpenGraphService {
-	private final OgMetaElementHtmlParser ogMetaElementHtmlParser;
+	private final MotticleOgMetaElementHtmlParser motticleOgMetaElementHtmlParser;
 
 	@Override
 	public Optional<OpenGraphVO> getMetadata(String url) {
-		OgParser ogParser = new OgParser(ogMetaElementHtmlParser);
+		OgParser ogParser = new OgParser(motticleOgMetaElementHtmlParser);
 		OpenGraph openGraph = ogParser.getOpenGraphOf(url);
 		if (openGraph.getAllProperties().isEmpty()) {
 			return Optional.empty();
