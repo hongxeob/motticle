@@ -51,6 +51,9 @@ import com.hongxeob.motticle.article.domain.ArticleType;
 import com.hongxeob.motticle.global.ControllerTestSupport;
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
+import com.hongxeob.motticle.member.application.dto.res.MemberInfoRes;
+import com.hongxeob.motticle.member.domain.GenderType;
+import com.hongxeob.motticle.member.domain.Role;
 import com.hongxeob.motticle.tag.application.dto.res.TagRes;
 import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
 
@@ -208,8 +211,8 @@ class ArticleControllerTest extends ControllerTestSupport {
 			.url("링크")
 			.image("이미지")
 			.build();
-
-		ArticleOgRes articleOgRes = new ArticleOgRes(1L, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
+		MemberInfoRes memberInfoRes = new MemberInfoRes(1L, "test@test", "닉네임", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+		ArticleOgRes articleOgRes = new ArticleOgRes(1L, memberInfoRes, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
 			LocalDateTime.now(), LocalDateTime.now());
 
 		given(articleService.findByMemberId(any(), any()))
@@ -232,6 +235,12 @@ class ArticleControllerTest extends ControllerTestSupport {
 				),
 				responseFields(
 					fieldWithPath("id").type(NUMBER).description("아티클 ID"),
+					fieldWithPath("memberInfoRes.id").type(NUMBER).description("회원 ID"),
+					fieldWithPath("memberInfoRes.email").type(STRING).description("회원 이메일"),
+					fieldWithPath("memberInfoRes.nickname").type(STRING).description("회원 닉네임"),
+					fieldWithPath("memberInfoRes.genderType").type(STRING).description("회원 성별"),
+					fieldWithPath("memberInfoRes.role").type(STRING).description("회원 역할"),
+					fieldWithPath("memberInfoRes.image").type(STRING).description("회원 이미지 경로"),
 					fieldWithPath("title").type(STRING).description("아티클 제목"),
 					fieldWithPath("type").type(STRING).description("아티클 유형"),
 					fieldWithPath("content").type(STRING).description("아티클 내용 또는 이미지 경로"),
@@ -273,7 +282,8 @@ class ArticleControllerTest extends ControllerTestSupport {
 			.image(null)
 			.build();
 
-		ArticleOgRes articleOgRes = new ArticleOgRes(1L, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
+		MemberInfoRes memberInfoRes = new MemberInfoRes(1L, "test@test", "닉네임", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+		ArticleOgRes articleOgRes = new ArticleOgRes(1L, memberInfoRes, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
 			LocalDateTime.now(), LocalDateTime.now());
 
 		given(articleService.findByMemberId(any(), any()))
@@ -296,6 +306,12 @@ class ArticleControllerTest extends ControllerTestSupport {
 				),
 				responseFields(
 					fieldWithPath("id").type(NUMBER).description("아티클 ID"),
+					fieldWithPath("memberInfoRes.id").type(NUMBER).description("회원 ID"),
+					fieldWithPath("memberInfoRes.email").type(STRING).description("회원 이메일"),
+					fieldWithPath("memberInfoRes.nickname").type(STRING).description("회원 닉네임"),
+					fieldWithPath("memberInfoRes.genderType").type(STRING).description("회원 성별"),
+					fieldWithPath("memberInfoRes.role").type(STRING).description("회원 역할"),
+					fieldWithPath("memberInfoRes.image").type(STRING).description("회원 이미지 경로"),
 					fieldWithPath("title").type(STRING).description("아티클 제목"),
 					fieldWithPath("type").type(STRING).description("아티클 유형"),
 					fieldWithPath("content").type(STRING).description("아티클 내용 또는 이미지 경로"),
@@ -370,11 +386,13 @@ class ArticleControllerTest extends ControllerTestSupport {
 
 		int size = 5;
 		int page = 0;
+		MemberInfoRes memberInfoRes1 = new MemberInfoRes(1L, "test1@test", "닉네임1", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+		MemberInfoRes memberInfoRes2 = new MemberInfoRes(2L, "test2@test", "닉네임2", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
 
 		List<ArticleOgRes> articleOgResList = List.of(
-			new ArticleOgRes(1L, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, null,
+			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, null,
 				LocalDateTime.now(), LocalDateTime.now()),
-			new ArticleOgRes(2L, "제목2", "IMAGE", "이미지경로2", "메모2", new TagsRes(tagResList), true, 1L, openGraphResponse,
+			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", "메모2", new TagsRes(tagResList), true, 1L, openGraphResponse,
 				LocalDateTime.now(), LocalDateTime.now())
 		);
 
@@ -403,7 +421,13 @@ class ArticleControllerTest extends ControllerTestSupport {
 				),
 				responseFields(
 					fieldWithPath("articleOgResList[].id").type(NUMBER).description("아티클 ID"),
-					fieldWithPath("articleOgResList[].title").type(STRING).description("아티클 제목"),
+					subsectionWithPath("articleOgResList[].memberInfoRes").type(OBJECT).optional().description("작성자 정보"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.id").type(NUMBER).description("회원 ID"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.email").type(STRING).description("회원 이메일"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.nickname").type(STRING).description("회원 닉네임"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.genderType").type(STRING).description("회원 성별"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.role").type(STRING).description("회원 역할"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.image").type(STRING).description("회원 이미지 경로"), fieldWithPath("articleOgResList[].title").type(STRING).description("아티클 제목"),
 					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
 					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
 					fieldWithPath("articleOgResList[].memo").type(STRING).description("아티클 메모"),
@@ -729,10 +753,13 @@ class ArticleControllerTest extends ControllerTestSupport {
 			.image("이미지")
 			.build();
 
+		MemberInfoRes memberInfoRes1 = new MemberInfoRes(1L, "test1@test", "닉네임1", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+		MemberInfoRes memberInfoRes2 = new MemberInfoRes(2L, "test2@test", "닉네임2", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+
 		List<ArticleOgRes> articleOgResList = List.of(
-			new ArticleOgRes(1L, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
+			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
 				LocalDateTime.now(), LocalDateTime.now()),
-			new ArticleOgRes(2L, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
+			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
 				LocalDateTime.now(), LocalDateTime.now())
 		);
 		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
@@ -768,6 +795,13 @@ class ArticleControllerTest extends ControllerTestSupport {
 				),
 				responseFields(
 					fieldWithPath("articleOgResList[].id").type(NUMBER).description("아티클 ID"),
+					subsectionWithPath("articleOgResList[].memberInfoRes").type(OBJECT).optional().description("작성자 정보"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.id").type(NUMBER).description("회원 ID"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.email").type(STRING).description("회원 이메일"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.nickname").type(STRING).description("회원 닉네임"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.genderType").type(STRING).description("회원 성별"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.role").type(STRING).description("회원 역할"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.image").type(STRING).description("회원 이미지 경로"),
 					fieldWithPath("articleOgResList[].title").type(STRING).description("아티클 제목"),
 					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
 					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
@@ -811,15 +845,18 @@ class ArticleControllerTest extends ControllerTestSupport {
 			.image("이미지")
 			.build();
 
+		MemberInfoRes memberInfoRes1 = new MemberInfoRes(1L, "test1@test", "닉네임1", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+		MemberInfoRes memberInfoRes2 = new MemberInfoRes(2L, "test2@test", "닉네임2", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
+
 		List<ArticleOgRes> articleOgResList = List.of(
-			new ArticleOgRes(1L, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
+			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
 				LocalDateTime.now(), LocalDateTime.now()),
-			new ArticleOgRes(2L, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
+			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
 				LocalDateTime.now(), LocalDateTime.now())
 		);
 		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
 
-		given(articleService.findAllByCondition(any(), any(), any(), any(), any()))
+		given(articleService.findAllByCondition(any(), any(), any(), any(), any(), any()))
 			.willReturn(articlesOgRes);
 
 		//when -> then
@@ -846,7 +883,13 @@ class ArticleControllerTest extends ControllerTestSupport {
 				),
 				responseFields(
 					fieldWithPath("articleOgResList[].id").type(NUMBER).description("아티클 ID"),
-					fieldWithPath("articleOgResList[].title").type(STRING).description("아티클 제목"),
+					subsectionWithPath("articleOgResList[].memberInfoRes").type(OBJECT).optional().description("작성자 정보"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.id").type(NUMBER).description("회원 ID"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.email").type(STRING).description("회원 이메일"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.nickname").type(STRING).description("회원 닉네임"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.genderType").type(STRING).description("회원 성별"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.role").type(STRING).description("회원 역할"),
+					subsectionWithPath("articleOgResList[].memberInfoRes.image").type(STRING).description("회원 이미지 경로"), fieldWithPath("articleOgResList[].title").type(STRING).description("아티클 제목"),
 					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
 					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
 					fieldWithPath("articleOgResList[].memo").type(STRING).description("아티클 메모"),

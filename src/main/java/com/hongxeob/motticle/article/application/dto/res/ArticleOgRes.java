@@ -11,11 +11,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.hongxeob.motticle.article.domain.Article;
+import com.hongxeob.motticle.member.application.dto.res.MemberInfoRes;
 import com.hongxeob.motticle.tag.application.dto.res.TagRes;
 import com.hongxeob.motticle.tag.application.dto.res.TagsRes;
 
 public record ArticleOgRes(
 	Long id,
+	MemberInfoRes memberInfoRes,
 	String title,
 	String content,
 	String type,
@@ -45,7 +47,7 @@ public record ArticleOgRes(
 		TagsRes tagsRes = TagsRes.fromRes(tagResList);
 
 		return new ArticleOgRes(
-			article.getId(), article.getTitle(), article.getContent(),
+			article.getId(), MemberInfoRes.from(article.getMember()), article.getTitle(), article.getContent(),
 			article.getType().name(), article.getMemo(), tagsRes,
 			article.isPublic(), article.getMember().getId(),
 			openGraphResponse, article.getCreatedAt(), article.getUpdatedAt());
