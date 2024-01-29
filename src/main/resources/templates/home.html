@@ -331,6 +331,8 @@
         articlesData.articleOgResList.forEach(article => {
             const articleCard = document.createElement('div');
             articleCard.classList.add('article-card');
+            articleCard.style.cursor = 'pointer';
+            articleCard.setAttribute('onclick', `moveArticlePage(${article.id})`);
 
             const articleImageContainer = document.createElement('div');
             articleImageContainer.classList.add('article-image-container');
@@ -353,7 +355,7 @@
             }
 
             articleDetails.innerHTML = `
-            <div class="article-title" onclick="moveArticlePage(${article.id})">${article.title}</div>
+            <div class="article-title">${article.title}</div>
 
             <div class="article-tags">${articleTagName}</div>
         `;
