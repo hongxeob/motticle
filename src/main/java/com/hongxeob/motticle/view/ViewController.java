@@ -46,6 +46,11 @@ public class ViewController {
 		return "article/articleDetails";
 	}
 
+	@GetMapping("/article")
+	public String otherArticleDetails(@RequestParam Long id) {
+		return "article/otherArticleDetails";
+	}
+
 	@GetMapping("/search")
 	public String search() {
 		return "article/search";
@@ -55,6 +60,7 @@ public class ViewController {
 	public String updateArticle(@PathVariable Long id) {
 		return "article/updateArticle";
 	}
+
 
 	@GetMapping("/my-page")
 	public String myPage() {
@@ -69,5 +75,10 @@ public class ViewController {
 	@GetMapping("/profile/update")
 	public String updateProfile() {
 		return "member/updateNickname";
+	}
+
+	@GetMapping("/explore")
+	public String explore() {
+		return "explore";
 	}
 }
