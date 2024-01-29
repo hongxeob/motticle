@@ -17,7 +17,8 @@ public interface ArticleRepositoryCustom {
 	);
 
 	Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(
-		Collection<Long> tagIds,
+		Long memberId,
+		Collection<String> tagNames,
 		Collection<ArticleType> articleTypes,
 		String keyword,
 		String sortType,

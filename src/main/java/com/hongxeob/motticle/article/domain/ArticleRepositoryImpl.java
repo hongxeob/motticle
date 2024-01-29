@@ -61,11 +61,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 	}
 
 	@Override
-	public Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(Collection<Long> tagIds, Collection<ArticleType> articleTypes, String keyword, String sortType, Pageable pageable) {
+	public Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(Long memberId, Collection<String> tagNames, Collection<ArticleType> articleTypes, String keyword, String sortType, Pageable pageable) {
 		BooleanExpression expression = qArticle.isPublic.isTrue();
 
-		if (!CollectionUtils.isEmpty(tagIds)) {
-			expression = expression.and(qArticleTag.tag.id.in(tagIds));
+		if (memberId != null) {
+			expression = expression.and(qArticle.member.id.ne(memberId));
+		}
+		if (!CollectionUtils.isEmpty(tagNames)) {
+			expression = expression.and(qArticleTag.tag.name.in(tagNames));
 		}
 		if (!CollectionUtils.isEmpty(articleTypes)) {
 			expression = addExpression(expression, qArticle.type.in(articleTypes));
