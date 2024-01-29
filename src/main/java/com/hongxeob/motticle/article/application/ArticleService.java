@@ -182,6 +182,20 @@ public class ArticleService {
 	}
 
 	@Transactional(readOnly = true)
+	public ArticleOgRes findById(Long id) {
+
+		Article article = articleRepository.findById(id)
+			.orElseThrow(() -> {
+				log.warn("GET:READ:NOT_FOUND_ARTICLE : articleId => {} ", id);
+				return new BusinessException(ErrorCode.NOT_FOUND_ARTICLE);
+			});
+
+		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(article.getType(), article.getContent());
+
+		return ArticleOgRes.of(article, openGraphResponse);
+	}
+
+	@Transactional(readOnly = true)
 	public ArticlesOgRes findAllByMemberId(Long memberId, Pageable pageable) {
 		Member member = memberService.getMember(memberId);
 		Slice<Article> articleList = articleRepository.findAllByMemberIdOrderByCreatedAtDesc(member.getId(), pageable);
@@ -204,11 +218,11 @@ public class ArticleService {
 	}
 
 	@Transactional(readOnly = true)
-	public ArticlesOgRes findAllByCondition(List<Long> tagIds, List<String> articleTypes,
+	public ArticlesOgRes findAllByCondition(Long memberId, List<String> tagNames, List<String> articleTypes,
 											String keyword, String sortOrder, Pageable pageable) {
 		List<ArticleType> types = ArticleType.from(articleTypes);
 
-		Slice<Article> articlesSliceRes = articleRepository.findAllWithTagIdAndArticleTypeAndKeyword(tagIds, types, keyword, sortOrder, pageable);
+		Slice<Article> articlesSliceRes = articleRepository.findAllWithTagIdAndArticleTypeAndKeyword(memberId, tagNames, types, keyword, sortOrder, pageable);
 
 		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articlesSliceRes);
 	}
@@ -221,7 +235,7 @@ public class ArticleService {
 
 		articleRepository.delete(article);
 	}
-	
+
 	public OpenGraphResponse getOpenGraphResponse(ArticleType articleType, String link) {
 		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(articleType, link);
 

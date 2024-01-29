@@ -63,6 +63,13 @@ public class ArticleController {
 		return ResponseEntity.ok(articleOgRes);
 	}
 
+	@GetMapping("{articleId}/details")
+	public ResponseEntity<ArticleOgRes> getArticleById(@PathVariable Long articleId) {
+		ArticleOgRes articleOgRes = articleService.findById(articleId);
+
+		return ResponseEntity.ok(articleOgRes);
+	}
+
 	@CurrentMemberId
 	@GetMapping
 	public ResponseEntity<ArticlesOgRes> getArticlesByMemberId(Long memberId,
@@ -94,8 +101,10 @@ public class ArticleController {
 		return ResponseEntity.ok(articleRes);
 	}
 
+	@CurrentMemberId
 	@GetMapping("/explore")
-	public ResponseEntity<ArticlesOgRes> getArticlesByAndCondition(@RequestParam(required = false) List<Long> tagIds,
+	public ResponseEntity<ArticlesOgRes> getArticlesByAndCondition(Long memberId,
+																   @RequestParam(required = false) List<String> tagNames,
 																   @RequestParam(required = false) List<String> articleTypes,
 																   @RequestParam(required = false) String keyword,
 																   @RequestParam(required = false) String sortOrder,
@@ -105,7 +114,7 @@ public class ArticleController {
 		page = Math.max(page - 1, 0);
 		PageRequest pageable = PageRequest.of(page, size);
 
-		ArticlesOgRes articleRes = articleService.findAllByCondition(tagIds, articleTypes, keyword, sortOrder, pageable);
+		ArticlesOgRes articleRes = articleService.findAllByCondition(memberId, tagNames, articleTypes, keyword, sortOrder, pageable);
 
 		return ResponseEntity.ok(articleRes);
 	}
