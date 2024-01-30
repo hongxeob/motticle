@@ -52,24 +52,13 @@ class MemberControllerTest extends ControllerTestSupport {
 		MemberInfoRes memberInfoRes = new MemberInfoRes(1L, "h123@naver.com", "호빵", GenderType.FEMALE.name(), Role.USER.name(), "image.path");
 		MemberInfoReq memberInfoReq = new MemberInfoReq("호빵", GenderType.FEMALE.name());
 
-		MockMultipartFile file = new MockMultipartFile("image", "test.jpg", "image/jpeg", "file".getBytes());
-		MockMultipartFile request = new MockMultipartFile("memberInfoReq", "memberInfoReq",
-			"application/json",
-			objectMapper.writeValueAsString(memberInfoReq).getBytes());
-
-		given(memberService.registerInfo(any(), any(), any()))
+		given(memberService.registerInfo(any(), any()))
 			.willReturn(memberInfoRes);
 
-		mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/members")
-				.file(file)
-				.file(request)
-				.with(updateRequest -> {
-					updateRequest.setMethod("PATCH");
-					return updateRequest;
-				})
+		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/members")
 				.with(csrf().asHeader())
 				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
-				.contentType(MULTIPART_FORM_DATA)
+				.contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(memberInfoReq)))
 			.andExpect(status().isOk())
 			.andDo(document("member/add-info-success",
@@ -77,10 +66,6 @@ class MemberControllerTest extends ControllerTestSupport {
 				preprocessResponse(prettyPrint()),
 				requestHeaders(
 					headerWithName("Authorization").description("Access Token")
-				),
-				requestParts(
-					partWithName("image").description("이미지"),
-					partWithName("memberInfoReq").description("멤버 추가 정보 등록 내용")
 				),
 				requestFields(
 					fieldWithPath("nickname").type(STRING).description("닉네임"),
@@ -104,25 +89,14 @@ class MemberControllerTest extends ControllerTestSupport {
 		//given
 		MemberInfoReq memberInfoReq = new MemberInfoReq("", GenderType.FEMALE.name());
 
-		MockMultipartFile file = new MockMultipartFile("image", "test.jpg", "image/jpeg", "file".getBytes());
-		MockMultipartFile request = new MockMultipartFile("memberInfoReq", "memberInfoReq",
-			"application/json",
-			objectMapper.writeValueAsString(memberInfoReq).getBytes());
-
-		given(memberService.registerInfo(any(), any(), any()))
+		given(memberService.registerInfo(any(), any()))
 			.willThrow(new BusinessException(ErrorCode.INVALID_INPUT_VALUE));
 
 		//when -> then
-		mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/members")
-				.file(file)
-				.file(request)
-				.with(updateRequest -> {
-					updateRequest.setMethod("PATCH");
-					return updateRequest;
-				})
+		mockMvc.perform(RestDocumentationRequestBuilders.patch("/api/members")
 				.with(csrf().asHeader())
 				.header(HttpHeaders.AUTHORIZATION, "{AccessToken}")
-				.contentType(MULTIPART_FORM_DATA)
+				.contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(memberInfoReq)))
 			.andExpect(status().isBadRequest())
 			.andDo(document("member/add-info-fail-blank-info",
@@ -130,10 +104,6 @@ class MemberControllerTest extends ControllerTestSupport {
 				preprocessResponse(prettyPrint()),
 				requestHeaders(
 					headerWithName("Authorization").description("Access Token")
-				),
-				requestParts(
-					partWithName("image").description("이미지"),
-					partWithName("memberInfoReq").description("멤버 추가 정보 등록 내용")
 				),
 				requestFields(
 					fieldWithPath("nickname").type(STRING).description("닉네임"),

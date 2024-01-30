@@ -70,25 +70,13 @@ class MemberServiceTest {
 	void registerSuccessTest() throws Exception {
 
 		//given
-		MultipartFile mockImage = mock(MultipartFile.class);
-
-		ImageUploadReq imageUploadReq = new ImageUploadReq(List.of(mockImage));
 		MemberInfoReq memberInfoReq = new MemberInfoReq("이호빵", "MALE");
 
-		FileDto fileDto = FileDto.builder()
-			.originalFileName("originalName")
-			.uploadFileName("uploadFileName")
-			.uploadFilePath("uploadFilePath")
-			.uploadFileUrl("uploadFileUrl")
-			.build();
-
-		when(imageService.uploadFiles(any()))
-			.thenReturn(List.of(fileDto));
 		when(memberRepository.findById(member.getId()))
 			.thenReturn(Optional.of(member));
 
 		//when
-		MemberInfoRes memberInfoRes = memberService.registerInfo(member.getId(), memberInfoReq, imageUploadReq);
+		MemberInfoRes memberInfoRes = memberService.registerInfo(member.getId(), memberInfoReq);
 
 		//then
 		assertThat(memberInfoRes.genderType()).isEqualTo(GenderType.MALE.name());

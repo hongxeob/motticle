@@ -18,9 +18,6 @@ include::{snippets}/member/add-info-success/http-request.adoc[]
 .request header
 include::{snippets}/member/add-info-success/request-headers.adoc[]
 
-.request multipart 구성
-include::{snippets}/member/add-info-success/request-parts.adoc[]
-
 .memberInfoReq 구성
 include::{snippets}/member/add-info-success/request-fields.adoc[]
 
@@ -37,9 +34,6 @@ include::{snippets}/member/add-info-fail-blank-info/http-request.adoc[]
 
 .request header
 include::{snippets}/member/add-info-fail-blank-info/request-headers.adoc[]
-
-.request multipart 구성
-include::{snippets}/member/add-info-success/request-parts.adoc[]
 
 .memberInfoReq 구성
 include::{snippets}/member/add-info-success/request-fields.adoc[]
