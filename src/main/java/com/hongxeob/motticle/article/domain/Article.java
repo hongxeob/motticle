@@ -102,6 +102,7 @@ public class Article extends BaseEntity {
 		this.title = article.title;
 		this.content = article.content;
 		this.memo = article.memo;
+		this.isPublic = article.isPublic;
 	}
 
 	public void updatePublicStatus() {
