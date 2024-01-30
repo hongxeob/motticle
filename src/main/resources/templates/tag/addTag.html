@@ -28,7 +28,7 @@
 
         #tagNameInput {
             width: 359px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         #tagList {
@@ -41,11 +41,21 @@
             padding: 5px;
             border-radius: 5px;
         }
+
+        .tagAlert {
+            color: rgb(163, 179, 186);
+            font-size: 12px;
+            font-weight: 500;
+            line-height: 150%;
+            margin-top: 0px;
+            margin-bottom: 3px;
+            padding-left: 5px;
+        }
     </style>
 </head>
 <body>
 <div class="view">
-     <nav class="nav">
+    <nav class="nav">
         <span onclick="goBack()" class="go-back"><</span>
         <h1 class="nav-text">태그 관리</h1>
     </nav>
@@ -54,17 +64,26 @@
             <input type="text" id="tagNameInput" placeholder="태그 이름 입력">
             <button onclick="registerTag()" class="addTagButton">태그 등록</button>
         </div>
+        <p class="tagAlert">등록할 태그를 입력해주세요.</p>
         <div id="tagList">
         </div>
     </div>
-
 </div>
+<div class="toast" id="toast"></div>
 <script>
     function goBack() {
         window.history.back();
     }
 
     const accessToken = localStorage.getItem('accessToken');
+
+    if (accessToken === null) {
+        redirectToKakaoScreen();
+    }
+
+    function redirectToKakaoScreen() {
+        window.location.href = '/kakao';
+    }
 
     document.addEventListener('DOMContentLoaded', function () {
         fetchAndDisplayTags();
@@ -77,7 +96,17 @@
                 'Authorization': accessToken
             }
         })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        alert("다시 로그인해주세요.");
+                        window.location.href = '/kakao';
+                    } else {
+                        throw new Error(`Error fetching user tags: ${response.statusText}`);
+                    }
+                }
+                return response.json();
+            })
             .then(tags => {
                 const tagListContainer = document.getElementById('tagList');
                 tagListContainer.innerHTML = '';
@@ -108,9 +137,15 @@
     function registerTag() {
         const tagNameInput = document.getElementById('tagNameInput');
         const tagName = tagNameInput.value;
+        const tagAlert = document.querySelector('.tagAlert');
+
 
         if (tagName.trim() === '') {
-            alert('태그 이름을 입력하세요.');
+            tagAlert.textContent = "태그를 입력해주세요.";
+            tagAlert.style.color = "red";
+            tagNameInput.style.border = "1px solid red";
+
+            tagNameInput.focus();
             return;
         }
 
@@ -126,13 +161,22 @@
         })
             .then(response => {
                 if (response.status === 400) {
-                    alert('이미 중복된 태그가 있습니다.');
+                    tagAlert.textContent = "이미 등록된 태그입니다. 아래에서 확인해주세요.";
+                    tagAlert.style.color = "red";
+                    tagNameInput.style.border = "1px solid red";
+
+                    tagNameInput.focus();
                     throw new Error('Duplicate tag');
                 }
                 return response.json();
             })
             .then(() => {
+                tagAlert.textContent = "등록할 태그를 입력하세요.";
+                tagAlert.style.color = "rgb(163, 179, 186)";
+                tagNameInput.style.border = "none";
+
                 fetchAndDisplayTags();
+                showToast('태그가 등록 되었습니다. 연결할 태그를 아티클 등록 화면에서 클릭해주세요!', false);
                 tagNameInput.value = '';
             })
             .catch(error => {
@@ -159,6 +203,25 @@
                 fetchAndDisplayTags();
             })
             .catch(error => console.error('태그 삭제 중 에러 발생:', error))
+    }
+
+    function showToast(message, isError) {
+        const toastElement = document.getElementById('toast');
+
+        if (isError) {
+            toastElement.style.backgroundColor = '#e74c3c';
+            toastElement.style.color = '#fff';
+        } else {
+            toastElement.style.backgroundColor = '#2DD197';
+            toastElement.style.color = '#fff';
+        }
+
+        toastElement.textContent = message;
+        toastElement.style.display = 'block';
+
+        setTimeout(() => {
+            toastElement.style.display = 'none';
+        }, 3000);
     }
 </script>
 </body>
