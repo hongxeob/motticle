@@ -247,13 +247,6 @@
         const tagButtonsContainer = document.getElementById('home-tagButtonsContainer');
 
         if (tags.length === 0) {
-            const placeholderText = document.createElement('div');
-            placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
-            placeholderText.style.color = "#777";
-            placeholderText.style.padding = "10px";
-            placeholderText.style.cursor = "pointer"
-            tagButtonsContainer.appendChild(placeholderText);
-
             tagButtonsContainer.addEventListener('click', function () {
                 navigateToAddTag();
             });
@@ -284,8 +277,6 @@
 
     async function fetchAndRenderArticles(sortOrder) {
         const spinner = document.getElementById('spinner');
-        const sortButton = document.querySelector('.sort');
-
         spinner.style.display = 'block';
 
         const articleListContainer = document.getElementById('articleListContainer');

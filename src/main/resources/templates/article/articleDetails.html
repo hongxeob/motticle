@@ -269,7 +269,12 @@
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error(`Error fetching article details: ${response.statusText}`);
+                    if (response.status === 400) {
+                        alert('잘못된 접근입니다.');
+                        window.location.href = '/';
+                    } else {
+                        throw new Error(`Error fetching article details: ${response.statusText}`);
+                    }
                 }
                 return response.json();
             })

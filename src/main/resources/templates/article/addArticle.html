@@ -224,7 +224,7 @@
                 <span class="tag-text">태그</span>
                 <div id="tagButtonsContainer" style="cursor: pointer">
                     <button id="addTagButton" class="tag-button" onclick="navigateToAddTag()"
-                            style="border: 1px solid #cdcdcd; color: #818181; margin-right: 0px;">+태그등록
+                            style="border: 1px solid #cdcdcd; color: #818181; margin-right: 0px;">+태그추가
                     </button>
                 </div>
                 <p class="tagInfoAlert">등록된 태그를 선택하거나, 원하는 태그를 등록 후 선택하여 태깅해보세요!</p>
@@ -326,12 +326,6 @@
             return;
         }
         if (tags.length === 0) {
-            const placeholderText = document.createElement('div');
-            placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
-            placeholderText.style.color = "#777";
-            placeholderText.style.padding = "10px";
-            tagButtonsContainer.appendChild(placeholderText);
-
             tagButtonsContainer.addEventListener('click', function () {
                 navigateToAddTag();
             });
