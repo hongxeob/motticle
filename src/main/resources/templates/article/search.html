@@ -139,6 +139,7 @@
 
     function renderArticles(articlesData) {
         const articleListContainer = document.getElementById('articleListContainer');
+        articleListContainer.innerHTML = '';
         console.log(articlesData);
 
         articlesData.articleOgResList.forEach(article => {
