@@ -11,59 +11,6 @@
     <link rel="stylesheet" href="/css/style.css">
     <title>모띠클 : 아티클 수정</title>
     <style>
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 40px; /* Adjust the width to make it thinner */
-            height: 20px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            -webkit-transition: .4s;
-            transition: .4s;
-            border-radius: 20px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            -webkit-transition: .4s;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: #2DD197;
-        }
-
-        input:focus + .slider {
-            box-shadow: 0 0 1px #4caf50;
-        }
-
-        input:checked + .slider:before {
-            -webkit-transform: translateX(16px);
-            -ms-transform: translateX(16px);
-            transform: translateX(20.5px);
-        }
-
         .button-container {
             margin-bottom: 30px;
             display: flex;
@@ -266,7 +213,6 @@
         const linkInputContainer = document.getElementById('linkInputContainer');
         const articleContentInput = document.getElementById('articleContent');
 
-        // articleContentInput.placeholder = '내용을 입력하세요';
         articleContentInput.style.height = '350px';
         articleContentInput.readOnly = false;
 
