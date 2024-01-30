@@ -42,10 +42,18 @@
             line-height: 150%;
         }
 
+        #articleDetails {
+            position: relative;
+            width: 100%;
+            min-height: 100px;
+            overflow: hidden;
+            object-fit: cover;
+        }
+
         #articleMemo {
             position: relative;
             width: 100%;
-            height: 140px;
+            height: 100px;
             background-image: initial;
             background-position: initial;
             background-size: initial;
@@ -130,6 +138,7 @@
         #deleteArticleButton,
         #deleteArticleButton,
         #updateArticleButton,
+        #isPublicContainer,
         .go-back,
         .memo-text,
         .tag-text {
@@ -196,15 +205,27 @@
                 <label class="memo-text" for="input-:r5:">메모</label>
             </div>
             <div id="articleMemo"></div>
+            <div id="isPublicContainer">
+                <span>공개여부</span>
+                <label for="isPublic" class="toggle-switch">
+                    <input type="checkbox" id="isPublic">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </section>
     </div>
     <div id="spinner" class="spinner"></div>
 </div>
+<div class="toast" id="toast"></div>
 <script>
     const accessToken = localStorage.getItem('accessToken');
     const path = window.location.pathname;
     const articleId = path.substring(path.lastIndexOf('/') + 1);
+    let selectedType;
     fetchArticleDetails();
+
+    const isPublicCheckbox = document.getElementById('isPublic');
+    isPublicCheckbox.addEventListener('change', updateIsPublic);
 
     function moveUpdatePage() {
         window.location.href = `/article/update/${articleId}`;
@@ -214,12 +235,14 @@
         const spinner = document.getElementById('spinner');
         spinner.style.display = 'block';
 
+        const isPublicCheckbox = document.getElementById('isPublic');
         const tagButtonsContainer = document.getElementById('tagButtonsContainer');
         const updateArticleButton = document.getElementById('updateArticleButton');
         const deleteArticleButton = document.getElementById('deleteArticleButton');
         const memoLabel = document.querySelector('.memo-text');
         const tagLabel = document.querySelector('.tag-text');
         const goBack = document.querySelector('.go-back');
+        const isPublic = document.getElementById('isPublicContainer');
 
         fetch(`/api/articles/${articleId}`, {
             method: 'GET',
@@ -240,8 +263,11 @@
                 goBack.style.display = 'block';
                 deleteArticleButton.style.display = 'block';
                 updateArticleButton.style.display = 'block';
+                isPublic.style.display = 'block';
 
                 displayArticleDetails(articleDetails);
+                isPublicCheckbox.checked = articleDetails.isPublic;
+                selectedType = articleDetails.type;
             })
             .catch(error => console.error(error))
             .finally(() => {
@@ -364,6 +390,66 @@
                 window.location.href = '/';
             })
             .catch(error => console.error(error));
+    }
+
+    function updateIsPublic() {
+        const isPublic = document.getElementById('isPublic').checked;
+
+        const isLinkType = selectedType === 'LINK';
+        const isImageType = selectedType === 'IMAGE';
+        let content;
+        if (isLinkType) {
+            const linkSection = document.querySelector('.article-section');
+            content = linkSection.querySelector('.article-url').innerText;
+        } else if (isImageType) {
+            const contentImage = document.querySelector('.image-type-image');
+            const imageUrl = contentImage.src;
+
+            content = imageUrl;
+        } else {
+            content = document.querySelector('.text-details').value;
+        }
+        const title = document.getElementById('articleTitle').textContent;
+        const memo = document.getElementById('articleMemo').textContent;
+
+        console.log(title)
+
+        console.log(memo)
+
+        const data = {
+            title: title,
+            memo: memo,
+            content: content,
+            isPublic: isPublic,
+        };
+
+        fetch(`/api/articles/${articleId}`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': accessToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => response.json())
+            .then(articleInfoRes => {
+                console.log('공개 여부 수정 완료:', articleInfoRes.isPublic);
+                showToast("공개 여부가 수정되었습니다.");
+            })
+            .catch(error => {
+                console.error('아티클 수정 중 오류 발생:', error);
+            });
+    }
+
+    function showToast(message) {
+        const toastElement = document.getElementById('toast');
+        toastElement.textContent = message;
+
+        toastElement.style.display = 'block';
+
+        setTimeout(() => {
+            toastElement.style.display = 'none';
+        }, 3000);
     }
 </script>
 </body>
