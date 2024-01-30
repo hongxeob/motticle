@@ -34,11 +34,9 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final ImageService imageService;
 
-	public MemberInfoRes registerInfo(Long id, MemberInfoReq req, ImageUploadReq imageUploadReq) throws IOException {
+	public MemberInfoRes registerInfo(Long id, MemberInfoReq req){
 		Member member = getMember(id);
-
-		String imageUrl = saveImage(imageUploadReq);
-		Member updatedMember = MemberInfoReq.toMember(req, imageUrl);
+		Member updatedMember = MemberInfoReq.toMember(req);
 
 		member.registerInfo(updatedMember);
 

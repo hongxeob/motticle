@@ -34,11 +34,8 @@ public class MemberController {
 
 	@CurrentMemberId
 	@PatchMapping
-	public ResponseEntity<MemberInfoRes> addMemberInfo(Long memberId, @RequestPart @Validated MemberInfoReq memberInfoReq,
-													   @RequestPart(required = false) List<MultipartFile> image) throws IOException {
-		ImageUploadReq imageUploadReq = new ImageUploadReq(image);
-
-		MemberInfoRes memberInfoRes = memberService.registerInfo(memberId, memberInfoReq, imageUploadReq);
+	public ResponseEntity<MemberInfoRes> addMemberInfo(Long memberId, @RequestBody @Validated MemberInfoReq memberInfoReq) {
+		MemberInfoRes memberInfoRes = memberService.registerInfo(memberId, memberInfoReq);
 
 		return ResponseEntity.ok(memberInfoRes);
 	}

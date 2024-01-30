@@ -13,13 +13,14 @@ public record MemberInfoReq(
 	String nickname,
 	String genderType
 ) {
+	private static final String DEFAULT_IMAGE_PATH = "https://kr.object.ncloudstorage.com/motticle-file-storage/Default-Profile-Picture-PNG-Download-Image.png";
 
-	public static Member toMember(MemberInfoReq req, String image) {
+	public static Member toMember(MemberInfoReq req) {
 		return Member.builder()
 			.nickname(req.nickname)
 			.genderType(GenderType.of(req.genderType()))
+			.image(DEFAULT_IMAGE_PATH)
 			.role(Role.USER)
-			.image(image)
 			.build();
 	}
 }
