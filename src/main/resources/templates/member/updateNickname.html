@@ -145,7 +145,12 @@
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error('API 호출 실패');
+                if (response.status === 401) {
+                    alert("다시 로그인해주세요.");
+                    window.location.href = '/kakao';
+                } else {
+                    throw new Error('API 호출 실패');
+                }
             }
         })
         .then(data => {
@@ -163,10 +168,13 @@
         const nicknameAlert = document.querySelector('.nicknameAlert');
 
         if (nickname === "") {
-            alert("닉네임을 입력해주세요.");
+            nicknameAlert.textContent = "닉네임을 입력해주세요.";
+            nicknameAlert.style.color = "red";
+            nicknameInput.style.border = "1px solid red";
+
+            nicknameInput.focus();
             return;
         }
-
         try {
             const response = await fetch(`/api/members/nickname?nickname=${nickname}`);
             if (!response.ok) {
