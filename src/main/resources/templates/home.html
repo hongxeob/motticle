@@ -42,6 +42,7 @@
         .article-details {
             flex: 2;
             padding: 15px;
+            cursor: pointer;
         }
 
         .article-tags {
@@ -102,7 +103,10 @@
             </svg>
         </a>
     </div>
-    <div id="home-tagButtonsContainer">
+    <div id="home-tagButtonsContainer" style="cursor: pointer">
+        <button id="addTagButtonTop" class="home-tag-button" onclick="navigateToAddTag()"
+                style="border: 1px solid #cdcdcd; color: #818181; margin-right: 0px;">+태그추가
+        </button>
     </div>
     <section class="content-container">
         <div class="line"></div>
