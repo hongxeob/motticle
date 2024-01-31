@@ -12,7 +12,7 @@
     <title>모띠클 : 둘러보기</title>
     <style>
         .explore-article-section {
-            height: 520px;
+            height: 621px;
             width: 100%;
             padding-top: 16px;
             padding-bottom: 5px;
@@ -135,7 +135,7 @@
     </style>
 </head>
 <body>
-<div class=view>
+<div class=home-view>
     <a class="homeButton" href="/">둘러보기</a>
     <div style="position: absolute; top: 39px; right: 21px;">
         <a href="/my-page" style="cursor: pointer;">
@@ -156,17 +156,26 @@
     </div>
     <div id="home-tagButtonsContainer">
     </div>
-    <section class="explore-content-container">
-        <div class="line"></div>
-        <div class="line2"></div>
-        <label class="search" onclick="moveSearchPage()" style="cursor: pointer">검색하기</label>
-        <a class="sort" id="latestButton" onclick="changeSortOrder(null)"
-           style="cursor: pointer; display: none;">최신순↕</a>
-        <a class="sort" id="oldestButton" onclick="changeSortOrder('oldest')"
-           style="cursor: pointer; width: 61px; left: 404px">오래된순↕</a>
-
-    </section>
-    <article style="display: block; padding-top: 40px;padding-left: 10px;padding-right: 10px;">
+    <div>
+        <hr style="bottom: 0; width: 100%; border: 0; height: 1px; background-color: #cdcdcd;">
+        <button class="home-search" onclick="moveSearchPage()" style="cursor: pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none">
+                <g clip-path="url(#a)">
+                    <path fill="#2DD197"
+                          d="m14.817 13.933-3.73-3.73a6.26 6.26 0 1 0-.884.883l3.73 3.73a.625.625 0 0 0 .884-.883ZM6.25 11.25a5 5 0 1 1 0-9.999 5 5 0 0 1 0 9.999Z"/>
+                </g>
+                <defs>
+                    <clipPath id="a">
+                        <path fill="#fff" d="M0 0h15v15H0z"/>
+                    </clipPath>
+                </defs>
+            </svg>
+            검색하기
+        </button>
+        <a class="sort" id="latestButton" onclick="changeSortOrder(null)" style="cursor: pointer;">최신순↕</a>
+        <a class="sort" id="oldestButton" onclick="changeSortOrder('oldest')" style="cursor: pointer;">오래된순↕</a>
+    </div>
+    <article style="display: block; ">
         <section class="explore-article-section" data-projection-id="1" style="opacity: 1">
 
         </section>
@@ -228,6 +237,19 @@
         window.location.href = '/kakao';
     }
 
+    const viewContainer = document.querySelector('.home-view');
+    const noArticlesImage = `
+        <img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
+    `;
+    let noArticlesContainer = document.createElement('div')
+    noArticlesContainer.className = 'noArticleContainer';
+    noArticlesContainer.style.position = 'absolute';
+    noArticlesContainer.style.top = '302px';
+    noArticlesContainer.style.right = '102px';
+    noArticlesContainer.innerHTML = noArticlesImage;
+    viewContainer.appendChild(noArticlesContainer);
+    noArticlesContainer.style.display = 'none';
+
     function selectRandomTag() {
         const tagButtons = document.querySelectorAll('.home-tag-button');
 
@@ -247,11 +269,11 @@
         if (order === 'oldest') {
             // 오래된 순 버튼을 선택한 경우
             oldestButton.style.display = 'none';
-            latestButton.style.display = 'inline';
+            latestButton.style.display = 'block';
         } else {
             // 최신순 버튼을 선택한 경우
             latestButton.style.display = 'none';
-            oldestButton.style.display = 'inline';
+            oldestButton.style.display = 'block';
             oldestButton.style.left = '410px';
         }
 
@@ -261,6 +283,11 @@
     }
 
     async function fetchAndRenderData() {
+        const latestButton = document.getElementById('latestButton');
+        const oldestButton = document.getElementById('oldestButton');
+
+        latestButton.style.display = 'none';
+        oldestButton.style.display = 'none';
         const response = await fetch('/api/tags', {
             headers: {
                 'Authorization': accessToken
@@ -273,19 +300,9 @@
         } else {
             const data = await response.json();
             const tags = data.tagSliceRes;
+            renderTags(tags);
+            selectRandomTag();
 
-            if (tags.length === 0) {
-                renderTags(tags);
-                showToast("관심 있는 태그를 등록 후 사용해보세요.");
-
-                const spinner = document.getElementById('spinner');
-                spinner.style.display = 'none';
-
-                return;
-            } else {
-                renderTags(tags);
-                selectRandomTag();
-            }
         }
     }
 
@@ -295,6 +312,13 @@
         const tagButtonsContainer = document.getElementById('home-tagButtonsContainer');
 
         if (tags.length === 0) {
+            noArticlesContainer.style.display = 'block';
+
+            const latestButton = document.getElementById('latestButton');
+            const oldestButton = document.getElementById('oldestButton');
+            latestButton.style.display = 'none';
+            oldestButton.style.display = 'none';
+
             const placeholderText = document.createElement('div');
             placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
             placeholderText.style.color = "#777";
@@ -305,29 +329,37 @@
             tagButtonsContainer.addEventListener('click', function () {
                 navigateToAddTag();
             });
+            noArticlesContainer.style.display = 'block';
 
+            renderTags(tags);
+            showToast("관심 있는 태그를 등록 후 사용해보세요.");
+            const spinner = document.getElementById('spinner');
+            spinner.style.display = 'none';
             return;
+        } else {
+            noArticlesContainer.style.display = 'none';
+            tags.forEach(tag => {
+                const tagButton = document.createElement('button');
+                tagButton.type = 'button';
+                tagButton.id = `tag${tag.id}`;
+                tagButton.value = tag.name;
+                tagButton.className = 'home-tag-button';
+                tagButton.textContent = `#${tag.name}`;
+
+                tagButton.addEventListener('click', function () {
+                    this.classList.toggle('selected');
+
+                    fetchAndRenderArticles();
+                });
+                tagButtonsContainer.appendChild(tagButton);
+                tagButtonsContainer.addEventListener('click', function (event) {
+                    if (event.target === tagButtonsContainer) {
+                        navigateToAddTag();
+                    }
+                });
+            });
         }
-        tags.forEach(tag => {
-            const tagButton = document.createElement('button');
-            tagButton.type = 'button';
-            tagButton.id = `tag${tag.id}`;
-            tagButton.value = tag.name;
-            tagButton.className = 'home-tag-button';
-            tagButton.textContent = `#${tag.name}`;
 
-            tagButton.addEventListener('click', function () {
-                this.classList.toggle('selected');
-
-                fetchAndRenderArticles();
-            });
-            tagButtonsContainer.appendChild(tagButton);
-            tagButtonsContainer.addEventListener('click', function (event) {
-                if (event.target === tagButtonsContainer) {
-                    navigateToAddTag();
-                }
-            });
-        });
     }
 
     async function fetchAndRenderArticles(sortOrder) {
@@ -335,7 +367,6 @@
         const selectedTagsBeforeAlert = Array.from(document.querySelectorAll('.home-tag-button.selected'))
             .map(button => button.id);
 
-        console.log("selectedTagsBeforeAlert", selectedTagsBeforeAlert)
         if (selectedTagsBeforeAlert.length === 0) {
             // 토스트 창을 통해 사용자에게 메시지를 표시합니다.
             showToast("적어도 하나의 태그를 선택해주세요.");
@@ -350,8 +381,15 @@
 
             return;
         }
+        noArticlesContainer.style.display = 'none';
 
         const spinner = document.getElementById('spinner');
+        const latestButton = document.getElementById('latestButton');
+        const oldestButton = document.getElementById('oldestButton');
+
+        latestButton.style.display = 'none';
+        oldestButton.style.display = 'none';
+
         spinner.style.display = 'block';
         const articleListContainer = document.querySelector('.explore-article-section');
         articleListContainer.innerHTML = '';
@@ -373,40 +411,26 @@
 
         const articlesData = await articlesResponse.json();
         console.log('Filtered Articles Data:', articlesData);
-        const noArticlesContainer = document.querySelector('.no-articles-container'); // 변경된 부분
-        const latestButton = document.getElementById('latestButton');
-        const oldestButton = document.getElementById('oldestButton');
 
         if (articlesData.articleOgResList.length === 0) {
-            if (!noArticlesContainer) {
-                const noArticlesContainer = document.createElement('div');
-                noArticlesContainer.style.display = 'block';
-                noArticlesContainer.className = 'no-articles-container';
-                noArticlesContainer.style.position = 'absolute';
-                noArticlesContainer.style.top = '302px';
-                noArticlesContainer.style.right = '102px';
-                noArticlesContainer.innerHTML = '<img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">';
-                const viewContainer = document.querySelector('.view');
-                viewContainer.appendChild(noArticlesContainer);
-            }
-            const spinner = document.getElementById('spinner');
-            spinner.style.display = 'none';
+            noArticlesContainer.style.display = 'block';
+
             latestButton.style.display = 'none';
             oldestButton.style.display = 'none';
-            return;
         } else {
-            if (noArticlesContainer) {
-                noArticlesContainer.remove();
+            noArticlesContainer.style.display = 'none';
+            if (sortOrder === 'latest') {
                 latestButton.style.display = 'none';
                 oldestButton.style.display = 'block';
+            } else if (sortOrder === 'oldest') {
+                oldestButton.style.display = 'none';
+                latestButton.style.display = 'block';
             }
-            // 새로운 아티클이 있을 때 렌더링
             renderArticles(articlesData);
         }
     }
 
     function renderArticles(articlesData) {
-        console.log(articlesData);
         const exploreArticleSection = document.querySelector('.explore-article-section');
 
         articlesData.articleOgResList.forEach(article => {
