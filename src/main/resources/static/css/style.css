@@ -762,7 +762,7 @@ footer {
     height: 70px;
     animation: spin 1s linear infinite;
     margin: auto;
-    margin-top: 0vh;
+    margin-top: 20vh;
 }
 
 @keyframes spin {

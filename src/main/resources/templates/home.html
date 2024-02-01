@@ -287,6 +287,8 @@
         });
     }
 
+    let hasNextPage;
+
     async function fetchAndRenderArticles(sortOrder) {
         const spinner = document.getElementById('spinner');
         spinner.style.display = 'block';
@@ -297,7 +299,6 @@
 
         const selectedTags = Array.from(document.querySelectorAll('.home-tag-button.selected'))
             .map(button => parseInt(button.value));
-
 
         const tagIds = selectedTags.length === 0 ? '' : selectedTags.join(',');
 
@@ -327,6 +328,7 @@
             oldestButton.style.display = 'none';
         } else {
             renderArticles(articlesData);
+            hasNextPage = articlesData.hasNext;
         }
     }
 
@@ -403,6 +405,61 @@
     function moveSearchPage() {
         window.location.href = '/search';
     }
+
+    function infiniteScroll() {
+        const articleListContainer = document.getElementById('articleListContainer');
+        let currentPage = 0;
+
+        articleListContainer.addEventListener('scroll', function () {
+            const scrollTop = articleListContainer.scrollTop;
+            const scrollHeight = articleListContainer.scrollHeight;
+            const clientHeight = articleListContainer.clientHeight;
+
+            if (scrollTop + clientHeight >= scrollHeight) {
+                fetchMoreDataThrottled();
+            }
+        });
+
+        async function fetchMoreData() {
+            if (!hasNextPage) {
+                return;
+            }
+
+            const spinner = document.getElementById('spinner');
+            spinner.style.marginTop = ' -390px';
+            spinner.style.display = 'block';
+
+            const selectedTags = Array.from(document.querySelectorAll('.home-tag-button.selected'))
+                .map(button => parseInt(button.value));
+
+            const tagIds = selectedTags.length === 0 ? '' : selectedTags.join(',');
+
+            const response = await fetch(`/api/articles/search?tagIds=${tagIds}&page=${currentPage + 1}`, {
+                headers: {
+                    'Authorization': accessToken
+                }
+            });
+            const newData = await response.json();
+            renderArticles(newData);
+            spinner.style.display = 'none';
+            currentPage++;
+
+            hasNextPage = newData.hasNext;
+        }
+
+        let lastFetchTime = 0;
+        const throttleTime = 1000;
+
+        function fetchMoreDataThrottled() {
+            const now = Date.now();
+            if (now - lastFetchTime >= throttleTime) {
+                fetchMoreData();
+                lastFetchTime = now;
+            }
+        }
+    }
+
+    infiniteScroll();
 </script>
 </body>
 </html>
