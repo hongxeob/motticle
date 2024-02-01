@@ -139,8 +139,10 @@
         #deleteArticleButton,
         #updateArticleButton,
         #isPublicContainer,
+        .tagInfoAlert,
         .go-back,
         .memo-text,
+        .redirect-home,
         .tag-text {
             display: none;
         }
@@ -259,6 +261,8 @@
         const memoLabel = document.querySelector('.memo-text');
         const tagLabel = document.querySelector('.tag-text');
         const goBack = document.querySelector('.go-back');
+        const tagInfoAlert = document.querySelector('.tagInfoAlert');
+        const redirectHome = document.querySelector('.redirect-home');
         const isPublic = document.getElementById('isPublicContainer');
 
         fetch(`/api/articles/${articleId}`, {
@@ -286,6 +290,8 @@
                 deleteArticleButton.style.display = 'block';
                 updateArticleButton.style.display = 'block';
                 isPublic.style.display = 'block';
+                tagInfoAlert.style.display = 'block';
+                redirectHome.style.display = 'block';
 
                 displayArticleDetails(articleDetails);
                 isPublicCheckbox.checked = articleDetails.isPublic;
@@ -364,12 +370,6 @@
             return;
         }
         if (tags.length === 0) {
-            const placeholderText = document.createElement('div');
-            placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
-            placeholderText.style.color = "#777";
-            placeholderText.style.padding = "10px";
-            tagButtonsContainer.appendChild(placeholderText);
-
             tagButtonsContainer.addEventListener('click', function () {
                 navigateToAddTag();
             });

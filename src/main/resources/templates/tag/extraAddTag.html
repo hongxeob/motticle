@@ -106,7 +106,6 @@
                     tagItem.classList.add("tag-list-button");
                     tagItem.textContent = `#${tag.name}`;
                     tagItem.addEventListener('click', function () {
-                        tagNameInput.value = tag.name;
                         tagging(tag.id);
                     });
 
@@ -129,6 +128,9 @@
     }
 
     function tagging(tagId) {
+        const tagNameInput = document.getElementById('tagNameInput');
+        const tagAlert = document.querySelector('.tagAlert');
+
         fetch(`/api/articles/${articleId}/tags`, {
             method: 'POST',
             headers: {
