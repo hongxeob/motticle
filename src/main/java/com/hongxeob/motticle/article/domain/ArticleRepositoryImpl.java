@@ -55,6 +55,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 		// 페이징 적용
 		List<Article> result = query
 			.limit(pageable.getPageSize() + 1)
+			.offset(pageable.getOffset())
 			.fetch();
 
 		return checkLastPage(pageable, result);
@@ -88,6 +89,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 		// 페이징 적용
 		List<Article> result = query
 			.limit(pageable.getPageSize() + 1)
+			.offset(pageable.getOffset())
 			.fetch();
 
 		return checkLastPage(pageable, result);
