@@ -215,6 +215,8 @@
         window.location.href = '/kakao';
     }
 
+    let currentPage = 1;
+
     function changeSortOrder(order) {
         const latestButton = document.getElementById('latestButton');
         const oldestButton = document.getElementById('oldestButton');
@@ -229,7 +231,7 @@
             oldestButton.style.display = 'block';
             oldestButton.style.left = '410px';
         }
-
+        currentPage = 1;
         const sortOrder = order === 'oldest' ? 'oldest' : null;
         fetchAndRenderArticles(sortOrder);
     }
@@ -404,7 +406,6 @@
 
     function infiniteScroll() {
         const articleListContainer = document.getElementById('articleListContainer');
-        let currentPage = 0;
 
         articleListContainer.addEventListener('scroll', function () {
             const scrollTop = articleListContainer.scrollTop;
@@ -431,7 +432,9 @@
 
             const tagIds = selectedTags.length === 0 ? '' : selectedTags.join(',');
 
-            const response = await fetch(`/api/articles/search?tagIds=${tagIds}&page=${currentPage + 1}`, {
+            const sortOrder = getSortOrder();
+
+            const response = await fetch(`/api/articles/search?tagIds=${tagIds}&page=${currentPage + 1}&sortOrder=${sortOrder}`, {
                 headers: {
                     'Authorization': accessToken
                 }
@@ -445,7 +448,7 @@
         }
 
         let lastFetchTime = 0;
-        const throttleTime = 1000;
+        const throttleTime = 500;
 
         function fetchMoreDataThrottled() {
             const now = Date.now();
@@ -475,6 +478,19 @@
         setTimeout(() => {
             toastElement.style.display = 'none';
         }, 3000);
+    }
+
+    function getSortOrder() {
+        const latestButton = document.getElementById('latestButton');
+        const oldestButton = document.getElementById('oldestButton');
+
+        if (latestButton.style.display !== 'none') {
+            // 최신순 버튼이 보이면 최신순 반환
+            return 'oldest';
+        } else {
+            // 아니면 오래된순 반환
+            return 'latest';
+        }
     }
 </script>
 </body>

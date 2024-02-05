@@ -12,7 +12,7 @@
     <title>모띠클 : 둘러보기</title>
     <style>
         .explore-article-section {
-            height: 621px;
+            height: 610px;
             width: 100%;
             padding-top: 16px;
             padding-bottom: 5px;
@@ -262,6 +262,8 @@
         }
     }
 
+    let currentPage = 1;
+
     function changeSortOrder(order) {
         const latestButton = document.getElementById('latestButton');
         const oldestButton = document.getElementById('oldestButton');
@@ -276,9 +278,9 @@
             oldestButton.style.display = 'block';
             oldestButton.style.left = '410px';
         }
+        currentPage = 1;
 
         const sortOrder = order === 'oldest' ? 'oldest' : null;
-        console.log(sortOrder);
         fetchAndRenderArticles(sortOrder);
     }
 
@@ -323,7 +325,7 @@
             placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
             placeholderText.style.color = "#777";
             placeholderText.style.padding = "10px";
-            placeholderText.style.cursor = "pointer"
+            placeholderText.style.cursor = "pointer";
             tagButtonsContainer.appendChild(placeholderText);
 
             tagButtonsContainer.addEventListener('click', function () {
@@ -331,8 +333,7 @@
             });
             noArticlesContainer.style.display = 'block';
 
-            renderTags(tags);
-            showToast("관심 있는 태그를 등록 후 사용해보세요.");
+            showToast("관심 있는 태그를 등록 후 사용해보세요.", false);
             const spinner = document.getElementById('spinner');
             spinner.style.display = 'none';
             return;
@@ -359,8 +360,9 @@
                 });
             });
         }
-
     }
+
+    let hasNextPage;
 
     async function fetchAndRenderArticles(sortOrder) {
         sortOrder = sortOrder || 'latest';
@@ -369,7 +371,7 @@
 
         if (selectedTagsBeforeAlert.length === 0) {
             // 토스트 창을 통해 사용자에게 메시지를 표시합니다.
-            showToast("적어도 하나의 태그를 선택해주세요.");
+            showToast("적어도 하나의 태그를 선택해주세요.", true);
 
             // 선택한 태그가 해제되면 다시 선택한 상태로 되돌립니다.
             selectedTagsBeforeAlert.forEach(tagId => {
@@ -427,6 +429,7 @@
                 latestButton.style.display = 'block';
             }
             renderArticles(articlesData);
+            hasNextPage = articlesData.hasNext;
         }
     }
 
@@ -539,10 +542,18 @@
         window.location.href = '/search';
     }
 
-    function showToast(message) {
+    function showToast(message, isError) {
         const toastElement = document.getElementById('toast');
-        toastElement.textContent = message;
 
+        if (isError) {
+            toastElement.style.backgroundColor = '#e74c3c';
+            toastElement.style.color = '#fff';
+        } else {
+            toastElement.style.backgroundColor = '#2DD197';
+            toastElement.style.color = '#fff';
+        }
+
+        toastElement.textContent = message;
         toastElement.style.display = 'block';
 
         setTimeout(() => {
@@ -554,6 +565,76 @@
         const queryParams = new URLSearchParams({id: articleId});
         const url = `/article?${queryParams.toString()}`;
         window.location.href = url;
+    }
+
+    function infiniteScroll() {
+        const articleListContainer = document.querySelector('.explore-article-section');
+        currentPage = 1;
+
+        articleListContainer.addEventListener('scroll', function () {
+            const scrollTop = articleListContainer.scrollTop;
+            const scrollHeight = articleListContainer.scrollHeight;
+            const clientHeight = articleListContainer.clientHeight;
+
+            if (scrollTop + clientHeight >= scrollHeight) {
+                fetchMoreDataThrottled();
+            }
+        });
+
+        async function fetchMoreData() {
+            if (!hasNextPage) {
+                showToast("마지막 아티클 이에요.", false);
+                return;
+            }
+
+            const spinner = document.getElementById('spinner');
+            spinner.style.marginTop = ' -390px';
+            spinner.style.display = 'block';
+
+            const selectedTagsName = Array.from(document.querySelectorAll('.home-tag-button.selected'))
+                .map(button => button.value);
+            const selectedTags = selectedTagsName.map(tagName => encodeURIComponent(tagName));
+            const tagNames = selectedTags.join(',');
+            const sortOrder = getSortOrder();
+
+            const response = await fetch(`/api/articles/explore?tagNames=${tagNames}&sortOrder=${sortOrder}&page=${currentPage + 1}`, {
+                headers: {
+                    'Authorization': accessToken
+                }
+            });
+            const newData = await response.json();
+            renderArticles(newData);
+            spinner.style.display = 'none';
+            currentPage++;
+
+            hasNextPage = newData.hasNext;
+        }
+
+        let lastFetchTime = 0;
+        const throttleTime = 500;
+
+        function fetchMoreDataThrottled() {
+            const now = Date.now();
+            if (now - lastFetchTime >= throttleTime) {
+                fetchMoreData();
+                lastFetchTime = now;
+            }
+        }
+    }
+
+    infiniteScroll();
+
+    function getSortOrder() {
+        const latestButton = document.getElementById('latestButton');
+        const oldestButton = document.getElementById('oldestButton');
+
+        if (latestButton.style.display !== 'none') {
+            // 최신순 버튼이 보이면 최신순 반환
+            return 'oldest';
+        } else {
+            // 아니면 오래된순 반환
+            return 'latest';
+        }
     }
 </script>
 </body>
