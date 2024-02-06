@@ -19,12 +19,12 @@ public class ViewController {
 		return "kakao";
 	}
 
-	@GetMapping("/joinForm")
+	@GetMapping("/join")
 	public String join() {
 		return "member/joinForm";
 	}
 
-	@GetMapping("/addArticle")
+	@GetMapping("/add")
 	public String addArticle(@RequestParam(name = "type") String articleType, Model model) {
 		model.addAttribute("articleType", articleType);
 		return "article/addArticle";

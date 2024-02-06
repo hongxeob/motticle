@@ -89,7 +89,7 @@ public class AuthenticationCustomSuccessHandler extends SimpleUrlAuthenticationS
 				.build().toUriString();
 		} else {
 			return UriComponentsBuilder.fromUriString(targetUrl)
-				.path("/joinForm")
+				.path("/join")
 				.queryParam(ACCESS_TOKEN, token.accessToken())
 				.build().toUriString();
 		}
