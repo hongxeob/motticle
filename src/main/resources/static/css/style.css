@@ -24,6 +24,70 @@ body {
     letter-spacing: 0;
 }
 
+.nickname-request-text {
+    color: rgb(90, 103, 106);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 150%;
+    margin-bottom: 0px;
+    padding-left: 4px;
+    margin-bottom: 7px;
+}
+
+.nickname-request-form-container {
+    display: flex;
+}
+
+.join-form {
+    height: calc(calc(var(--var, 1vh) * 100) - 44px);
+    display: flex;
+    flex-direction: column;
+    max-width: 480px;
+    margin: 0 auto;
+    margin-top: 11px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.check-nickname-button {
+    background-color: #2DD197;
+    border: none;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: 20%;
+    height: 34px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(255 255 255);
+    margin-left: 10px;
+}
+
+.requestGenderType option {
+    text-align: center;
+}
+
+.submit-form {
+    margin-top: -8px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.add-click-button {
+    background-color: #2DD197;
+    border: none;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(255 255 255);
+}
+
 .e39_12 {
     border-radius: 500px;
     background-color: rgba(242.22095131874084, 242.22095131874084, 242.22095131874084, 1);
@@ -126,19 +190,6 @@ body {
     border: none;
 }
 
-.checkNickname {
-    width: 88.28070068359375px;
-    height: 44px;
-    position: relative;
-    left: 374.719299px;
-    top: 231px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    border: none;
-}
-
 .e39_8 {
     width: 355px;
     height: 87px;
@@ -234,33 +285,15 @@ input::placeholder {
     text-align: center;
 }
 
-.requestNickname {
-    background-color: rgba(225.1586964726448, 225.1586964726448, 225.1586964726448, 1);
-    width: 259.192993px;
-    height: 38px;
-    position: absolute;
-    left: 0px;
-    top: 2px;
-    border: none;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-}
-
 .requestGenderType {
-    background-color: rgba(225.1586964726448, 225.1586964726448, 225.1586964726448, 1);
     width: 446.976807px;
-
-    height: 43px;
-    position: absolute;
-    left: -4.976809px;
-    top: 0px;
+    height: 34px;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     border: none;
+    cursor: pointer;
 }
 
 select:invalid {
