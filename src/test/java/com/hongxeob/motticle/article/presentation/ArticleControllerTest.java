@@ -764,7 +764,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 		);
 		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
 
-		given(articleService.findAllByMemberAndCondition(any(), any(), any(), any(), any(), any()))
+		given(articleService.findAllByMemberAndCondition(any(), any(), any()))
 			.willReturn(articlesOgRes);
 
 		//when -> then
@@ -856,7 +856,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 		);
 		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
 
-		given(articleService.findAllByCondition(any(), any(), any(), any(), any(), any()))
+		given(articleService.findAllByCondition(any(), any(), any()))
 			.willReturn(articlesOgRes);
 
 		//when -> then

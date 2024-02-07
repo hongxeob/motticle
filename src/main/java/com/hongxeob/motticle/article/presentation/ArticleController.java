@@ -24,6 +24,7 @@ import com.hongxeob.motticle.article.application.ArticleService;
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleTaqReq;
+import com.hongxeob.motticle.article.application.dto.req.SearchReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
@@ -82,39 +83,24 @@ public class ArticleController {
 		return ResponseEntity.ok(articleResponse);
 	}
 
-	//TODO: 1/14/24 쿼리 스트링 필드들 객체로 묶기
 	@CurrentMemberId
 	@GetMapping("/search")
 	public ResponseEntity<ArticlesOgRes> getArticlesByMemberAndCondition(Long memberId,
-																		 @RequestParam(required = false) List<Long> tagIds,
-																		 @RequestParam(required = false) List<String> articleTypes,
-																		 @RequestParam(required = false) String keyword,
-																		 @RequestParam(required = false) String sortOrder,
-																		 @RequestParam(required = false, defaultValue = "0") int page,
-																		 @RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size
+																		 @Validated SearchReq searchReq,
+																		 @RequestParam(required = false) String keyword
 	) {
-		page = Math.max(page - 1, 0);
-		PageRequest pageable = PageRequest.of(page, size);
-
-		ArticlesOgRes articleRes = articleService.findAllByMemberAndCondition(memberId, tagIds, articleTypes, keyword, sortOrder, pageable);
+		ArticlesOgRes articleRes = articleService.findAllByMemberAndCondition(memberId, searchReq, keyword);
 
 		return ResponseEntity.ok(articleRes);
 	}
 
 	@CurrentMemberId
 	@GetMapping("/explore")
-	public ResponseEntity<ArticlesOgRes> getArticlesByAndCondition(Long memberId,
-																   @RequestParam(required = false) List<String> tagNames,
-																   @RequestParam(required = false) List<String> articleTypes,
-																   @RequestParam(required = false) String keyword,
-																   @RequestParam(required = false) String sortOrder,
-																   @RequestParam(required = false, defaultValue = "0") int page,
-																   @RequestParam(required = false, defaultValue = DEFAULT_PAGING_SIZE) int size
+	public ResponseEntity<ArticlesOgRes> getArticlesByCondition(Long memberId,
+																@Validated SearchReq searchReq,
+																@RequestParam(required = false) String keyword
 	) {
-		page = Math.max(page - 1, 0);
-		PageRequest pageable = PageRequest.of(page, size);
-
-		ArticlesOgRes articleRes = articleService.findAllByCondition(memberId, tagNames, articleTypes, keyword, sortOrder, pageable);
+		ArticlesOgRes articleRes = articleService.findAllByCondition(memberId, searchReq, keyword);
 
 		return ResponseEntity.ok(articleRes);
 	}

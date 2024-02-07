@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hongxeob.motticle.article.application.dto.req.ArticleAddReq;
 import com.hongxeob.motticle.article.application.dto.req.ArticleModifyReq;
+import com.hongxeob.motticle.article.application.dto.req.SearchReq;
 import com.hongxeob.motticle.article.application.dto.res.ArticleInfoRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
@@ -99,7 +101,6 @@ public class ArticleService {
 	}
 
 	// TODO: 12/19/23 동시성 고민(isolation = Isolation.SERIALIZABLE)
-
 	public ArticleInfoRes tagArticle(Long memberId, Long id, Long tagId) {
 		Member member = memberService.getMember(memberId);
 
@@ -204,25 +205,38 @@ public class ArticleService {
 	}
 
 	@Transactional(readOnly = true)
-	public ArticlesOgRes findAllByMemberAndCondition(Long memberId, List<Long> tagIds, List<String> articleTypes,
-													 String keyword, String sortOrder, Pageable pageable) {
+	public ArticlesOgRes findAllByMemberAndCondition(Long memberId, SearchReq searchReq, String keyword) {
 		Member member = memberService.getMember(memberId);
 
-		List<ArticleType> types = ArticleType.from(articleTypes);
+		List<ArticleType> types = ArticleType.from(searchReq.articleTypes());
+
+		PageRequest pageable = getPageRequest(searchReq);
 
 		Slice<Article> articleSliceRes = articleRepository.findByMemberIdWithTagIdAndArticleTypeAndKeyword(
-			member.getId(), tagIds, types,
-			keyword, sortOrder, pageable);
+			member.getId(),
+			searchReq.tagIds(),
+			types,
+			keyword,
+			searchReq.sortOrder(),
+			pageable);
 
 		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articleSliceRes);
 	}
 
-	@Transactional(readOnly = true)
-	public ArticlesOgRes findAllByCondition(Long memberId, List<String> tagNames, List<String> articleTypes,
-											String keyword, String sortOrder, Pageable pageable) {
-		List<ArticleType> types = ArticleType.from(articleTypes);
 
-		Slice<Article> articlesSliceRes = articleRepository.findAllWithTagIdAndArticleTypeAndKeyword(memberId, tagNames, types, keyword, sortOrder, pageable);
+	@Transactional(readOnly = true)
+	public ArticlesOgRes findAllByCondition(Long memberId, SearchReq searchReq, String keyword) {
+		List<ArticleType> types = ArticleType.from(searchReq.articleTypes());
+
+		PageRequest pageable = getPageRequest(searchReq);
+
+		Slice<Article> articlesSliceRes = articleRepository.findAllWithTagIdAndArticleTypeAndKeyword(
+			memberId,
+			searchReq.tagNames(),
+			types,
+			keyword,
+			searchReq.sortOrder(),
+			pageable);
 
 		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articlesSliceRes);
 	}
@@ -294,5 +308,13 @@ public class ArticleService {
 		if (files == null) {
 			throw new BusinessException(ErrorCode.UPLOAD_IMAGE_FILE);
 		}
+	}
+
+	private static PageRequest getPageRequest(SearchReq searchReq) {
+		int page = searchReq.page();
+		page = Math.max(page - 1, 0);
+		PageRequest pageable = PageRequest.of(page, searchReq.size());
+
+		return pageable;
 	}
 }
