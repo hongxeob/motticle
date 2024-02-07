@@ -9,7 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.hongxeob.motticle.auth.application.CustomOAuth2UserService;
-import com.hongxeob.motticle.auth.domain.CookieAuthorizationRequestRepository;
 import com.hongxeob.motticle.auth.handler.AuthenticationCustomFailureHandler;
 import com.hongxeob.motticle.auth.handler.AuthenticationCustomSuccessHandler;
 import com.hongxeob.motticle.auth.token.filter.JwtAuthFilter;
@@ -26,7 +25,6 @@ public class SecurityConfig {
 	private final JwtAuthFilter jwtAuthFilter;
 	private final AuthenticationCustomFailureHandler oAuth2LoginFailureHandler;
 	private final JwtExceptionFilter jwtExceptionFilter;
-	private final CookieAuthorizationRequestRepository cookieAuthorizationRequestRepository;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,21 +34,20 @@ public class SecurityConfig {
 			.csrf().disable()
 			.formLogin().disable()
 			.sessionManagement()
-			.sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션관리 정책을 STATELESS(세션이 있으면 쓰지도 않고, 없으면 만들지도 않는다)
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
-			.authorizeRequests() // 요청에 대한 인증 설정
-			.antMatchers("/api/auth/**").permitAll() // 토큰 발급 관련 경로 모두 허용
+			.authorizeRequests()
+			.antMatchers("/api/auth/**").permitAll()
 			.antMatchers("/**", "/css/**", "images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
 			.anyRequest().authenticated()
 			.and()
-		.oauth2Login()
+			.oauth2Login()
 			.loginPage("/kakao")
-			.userInfoEndpoint().userService(customOAuth2UserService) // OAuth2 로그인시 사용자 정보를 가져오는 엔드포인트와 사용자 서비스를 설정
+			.userInfoEndpoint().userService(customOAuth2UserService)
 			.and()
 			.failureHandler(oAuth2LoginFailureHandler)
 			.successHandler(oAuth2LoginSuccessHandler);
 
-		// JWT 인증 필터를 UsernamePasswordAuthenticationFilter 앞에 추가한다.
 		return http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(jwtExceptionFilter, JwtAuthFilter.class)
 			.build();
