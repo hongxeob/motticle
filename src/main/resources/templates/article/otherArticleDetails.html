@@ -9,6 +9,7 @@
     <meta property="og:url" content="URL to Your Page">
     <meta property="og:type" content="website">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="/images/1454948.png">
     <title>모띠클 : 둘러보기</title>
     <style>
         .others-tag {
@@ -235,6 +236,7 @@
             <article class="article-box" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
             <section class="article-section">
                     <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
+                    <span class="article-url" href="${articleDetails.openGraphResponse.description}" target="_blank">${articleDetails.openGraphResponse.description}</span>
                     <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
                 </section>
                 <img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
