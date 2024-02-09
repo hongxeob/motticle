@@ -10,12 +10,11 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class ExecutorConfig {
 
-	//todo 스프링 비동기 @Async 사용 고려 / 적절한 스레드풀 사이즈 고려
 	@Bean
 	public ThreadPoolTaskExecutor threadPoolExecutor() {
 		return new TaskExecutorBuilder()
-			.corePoolSize(12)
-			.maxPoolSize(12)
+			.corePoolSize(10)
+			.maxPoolSize(10)
 			.queueCapacity(200)
 			.awaitTermination(true)
 			.awaitTerminationPeriod(Duration.ofSeconds(10))
