@@ -1,6 +1,7 @@
 package com.hongxeob.motticle.article.application.dto.res;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,7 +41,7 @@ public record ArticleOgRes(
 
 	public static ArticleOgRes of(Article article, OpenGraphResponse openGraphResponse) {
 		List<TagRes> tagResList = Stream.ofNullable(article.getArticleTags())
-			.flatMap(java.util.Collection::stream)
+			.flatMap(Collection::stream)
 			.map(articleTag -> TagRes.from(articleTag.getTag()))
 			.collect(Collectors.toList());
 

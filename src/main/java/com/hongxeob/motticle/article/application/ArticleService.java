@@ -176,7 +176,6 @@ public class ArticleService {
 				return new BusinessException(ErrorCode.NOT_FOUND_ARTICLE);
 			});
 
-		article.setFilePath(article.getContent());
 		OpenGraphResponse openGraphResponse = openGraphProcessor.getOpenGraphResponse(article.getType(), article.getContent());
 
 		return ArticleOgRes.of(article, openGraphResponse);
