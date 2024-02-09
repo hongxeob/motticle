@@ -78,6 +78,7 @@
     </div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="/js/toast.js"></script>
 <script>
     function goBack() {
         window.history.back();
@@ -211,25 +212,6 @@
                 fetchAndDisplayTags();
             })
             .catch(error => console.error('태그 삭제 중 에러 발생:', error))
-    }
-
-    function showToast(message, isError) {
-        const toastElement = document.getElementById('toast');
-
-        if (isError) {
-            toastElement.style.backgroundColor = '#e74c3c';
-            toastElement.style.color = '#fff';
-        } else {
-            toastElement.style.backgroundColor = '#2DD197';
-            toastElement.style.color = '#fff';
-        }
-
-        toastElement.textContent = message;
-        toastElement.style.display = 'block';
-
-        setTimeout(() => {
-            toastElement.style.display = 'none';
-        }, 3000);
     }
 </script>
 </body>

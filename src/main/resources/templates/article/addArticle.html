@@ -15,7 +15,7 @@
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 40px; /* Adjust the width to make it thinner */
+            width: 40px;
             height: 20px;
         }
 
@@ -95,7 +95,7 @@
         .link-add-button {
             position: absolute;
             inset: 147px 16px auto auto;
-
+            cursor: pointer;
             width: 40px;
             height: 31.5px;
             padding-top: 3px;
@@ -248,7 +248,8 @@
     </div>
 
 </div>
-
+<div class="toast" id="toast"></div>
+<script src="/js/toast.js"></script>
 <script>
     function goBack() {
         window.history.back();
@@ -387,7 +388,8 @@
         }
 
         const isLinkType = selectedType === 'LINK';
-        const content = isLinkType ? document.getElementById('articleLink').value : document.getElementById('articleContent').value;
+        const content = isLinkType ? document.getElementById('articleLink').value :
+            document.getElementById('articleContent').value;
         const memo = document.getElementById('articleMemo').value;
         const isPublic = document.getElementById('isPublic').checked;
 
@@ -437,15 +439,21 @@
         const link = document.getElementById('articleLink').value;
 
         fetch(`/api/articles/validation?link=${link}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('서버 오류');
+                }
+                return response.json();
+            })
             .then(openGraphResponse => {
                 displayLinkPreview(openGraphResponse);
             })
             .catch(error => {
                 console.error('링크 확인 중 오류 발생:', error);
-                alert("유효하지 않은 링크입니다.");
+                showToast("유효하지 않은 링크입니다. 다시 입력해주세요.", true);
             });
     }
+
 
     function displayLinkPreview(openGraphResponse) {
         const linkInputContainer = document.getElementById('linkInputContainer');
@@ -455,15 +463,16 @@
 
         const articleDetails = {openGraphResponse};
         linkPreviewContainer.innerHTML = `
-                <article class="article-box" style="margin-bottom: 15px; onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
-                    <section class="article-section">
-                        <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
-                        <span class="article-url" href="${articleDetails.openGraphResponse.description}" target="_blank">${articleDetails.openGraphResponse.description}</span>
-                        <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
-                    </section>
-                    <img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
-                </article>
-            `;
+<article class="article-box" style="margin-bottom: 15px; onclick=" openArticleLink(
+'${articleDetails.openGraphResponse.url}')">
+<section class="article-section">
+    <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
+    <span class="article-url" href="${articleDetails.openGraphResponse.description}" target="_blank">${articleDetails.openGraphResponse.description}</span>
+    <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
+</section>
+<img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
+</article>
+`;
     }
 
     function openArticleLink(url) {

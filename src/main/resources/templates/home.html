@@ -187,6 +187,7 @@
     <div id="spinner" class="spinner"></div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="/js/toast.js"></script>
 <script>
     window.onload = function () {
         document.getElementById('latestButton').click();
@@ -461,25 +462,6 @@
     }
 
     infiniteScroll();
-
-    function showToast(message, isError) {
-        const toastElement = document.getElementById('toast');
-
-        if (isError) {
-            toastElement.style.backgroundColor = '#e74c3c';
-            toastElement.style.color = '#fff';
-        } else {
-            toastElement.style.backgroundColor = '#2DD197';
-            toastElement.style.color = '#fff';
-        }
-
-        toastElement.textContent = message;
-        toastElement.style.display = 'block';
-
-        setTimeout(() => {
-            toastElement.style.display = 'none';
-        }, 3000);
-    }
 
     function getSortOrder() {
         const latestButton = document.getElementById('latestButton');

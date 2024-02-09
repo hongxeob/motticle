@@ -237,6 +237,7 @@
     <div id="spinner" class="spinner"></div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="/js/toast.js"></script>
 <script>
     const accessToken = localStorage.getItem('accessToken');
     const path = window.location.pathname;
@@ -467,22 +468,12 @@
             .then(response => response.json())
             .then(articleInfoRes => {
                 console.log('공개 여부 수정 완료:', articleInfoRes.isPublic);
-                showToast("공개 여부가 수정되었습니다.");
+                showToast("공개 여부가 수정되었습니다.", false);
             })
             .catch(error => {
                 console.error('아티클 수정 중 오류 발생:', error);
+                showToast("오류가 발생했습니다. 다시 시도해주세요.", true);
             });
-    }
-
-    function showToast(message) {
-        const toastElement = document.getElementById('toast');
-        toastElement.textContent = message;
-
-        toastElement.style.display = 'block';
-
-        setTimeout(() => {
-            toastElement.style.display = 'none';
-        }, 3000);
     }
 </script>
 </body>

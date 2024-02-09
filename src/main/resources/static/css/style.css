@@ -2,6 +2,7 @@ html {
     background-color: grey;
     height: 100%;
 }
+
 body {
     margin: 0;
     padding: 0;
@@ -860,9 +861,8 @@ input:checked + .slider:before {
 }
 
 .toast {
-    display: none;
     position: fixed;
-    bottom: 20px;
+    bottom: -100px; /* Start position below the screen */
     left: 50%;
     transform: translateX(-50%);
     background-color: #333;
@@ -871,6 +871,7 @@ input:checked + .slider:before {
     border-radius: 5px;
     font-size: 16px;
     z-index: 999;
+    transition: bottom 0.5s ease;
 }
 
 .tagInfoAlert {

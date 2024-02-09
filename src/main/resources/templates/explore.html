@@ -221,6 +221,7 @@
     <div id="spinner" class=""></div>
 </div>
 <div class="toast" id="toast"></div>
+<script src="/js/toast.js"></script>
 <script>
     accessToken = localStorage.getItem('accessToken');
 
@@ -541,25 +542,6 @@
 
     function moveSearchPage() {
         window.location.href = '/search';
-    }
-
-    function showToast(message, isError) {
-        const toastElement = document.getElementById('toast');
-
-        if (isError) {
-            toastElement.style.backgroundColor = '#e74c3c';
-            toastElement.style.color = '#fff';
-        } else {
-            toastElement.style.backgroundColor = '#2DD197';
-            toastElement.style.color = '#fff';
-        }
-
-        toastElement.textContent = message;
-        toastElement.style.display = 'block';
-
-        setTimeout(() => {
-            toastElement.style.display = 'none';
-        }, 3000);
     }
 
     function moveArticlePage(articleId) {
