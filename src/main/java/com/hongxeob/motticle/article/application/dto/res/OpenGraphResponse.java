@@ -1,5 +1,7 @@
 package com.hongxeob.motticle.article.application.dto.res;
 
+import com.hongxeob.motticle.article.opengraph.OpenGraphVO;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +19,13 @@ public class OpenGraphResponse {
 	private String url;
 	private String image;
 
-	public static OpenGraphResponse of(int code, String image, String title, String url, String description) {
+	public static OpenGraphResponse of(int code, OpenGraphVO openGraphVO) {
 		return OpenGraphResponse.builder()
 			.code(code)
-			.image(image)
-			.title(title)
-			.url(url)
-			.description(description)
+			.image(openGraphVO.getImage())
+			.title(openGraphVO.getTitle())
+			.url(openGraphVO.getUrl())
+			.description(openGraphVO.getDescription())
 			.build();
 	}
 

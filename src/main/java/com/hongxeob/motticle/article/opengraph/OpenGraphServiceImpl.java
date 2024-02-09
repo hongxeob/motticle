@@ -2,10 +2,12 @@ package com.hongxeob.motticle.article.opengraph;
 
 import java.util.Optional;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.github.siyoon210.ogparser4j.OgParser;
 import com.github.siyoon210.ogparser4j.OpenGraph;
+import com.github.siyoon210.ogparser4j.OpenGraph.Content;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class OpenGraphServiceImpl implements OpenGraphService {
 	private final MotticleOgMetaElementHtmlParser motticleOgMetaElementHtmlParser;
 
+	@Cacheable("metaData")
 	@Override
 	public Optional<OpenGraphVO> getMetadata(String url) {
 		OgParser ogParser = new OgParser(motticleOgMetaElementHtmlParser);
@@ -37,7 +40,8 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 	}
 
 	private String getValueSafely(OpenGraph openGraph, String property) {
-		OpenGraph.Content content = openGraph.getContentOf(property);
+		Content content = openGraph.getContentOf(property);
+
 		return content != null ? content.getValue() : null;
 	}
 }

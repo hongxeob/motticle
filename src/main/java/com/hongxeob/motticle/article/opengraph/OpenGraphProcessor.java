@@ -2,7 +2,6 @@ package com.hongxeob.motticle.article.opengraph;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,6 +10,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.hongxeob.motticle.article.application.dto.res.ArticleOgRes;
 import com.hongxeob.motticle.article.application.dto.res.ArticlesOgRes;
@@ -31,25 +31,23 @@ public class OpenGraphProcessor {
 	private final OpenGraphService openGraphService;
 
 	public ArticlesOgRes generateArticlesOgResWithOpenGraph(Slice<Article> articles) {
-		final Map<Long, OpenGraphResponse> inspirationOpenGraphMap = new ConcurrentHashMap<>();
-		// executor 에 작업 할당
+		final Map<Long, OpenGraphResponse> articleOgMap = new ConcurrentHashMap<>();
 		final List<CompletableFuture<Void>> completableFutures =
 			articles.stream()
 				.map(
 					article -> CompletableFuture.runAsync(
-						() -> inspirationOpenGraphMap.put(
+						() -> articleOgMap.put(
 							article.getId(),
 							getOpenGraphResponse(article.getType(), article.getContent())
 						),
 						threadPoolTaskExecutor
 					)
 				).toList();
-		// 비동기 작업 끝날때까지 대기
+
 		completableFutures.forEach(CompletableFuture::join);
 
 		List<ArticleOgRes> articleOgResList = articles.stream()
-			.peek(article -> article.setFilePath(article.getContent()))
-			.map(article -> ArticleOgRes.of(article, inspirationOpenGraphMap.get(article.getId())))
+			.map(article -> ArticleOgRes.of(article, articleOgMap.get(article.getId())))
 			.toList();
 
 		return ArticlesOgRes.of(articleOgResList, articles);
@@ -60,20 +58,12 @@ public class OpenGraphProcessor {
 			return OpenGraphResponse.from(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		}
 
-		Optional<OpenGraphVO> openGraphVoOptional = openGraphService.getMetadata(link);
+		OpenGraphVO openGraphVO = openGraphService.getMetadata(link)
+			.orElseThrow(() -> {
+				log.warn("GET:READ:NOT_FOUND_ARTICLE_LINK => {}", link);
+				return new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+			});
 
-		if (openGraphVoOptional.isEmpty()) {
-			return OpenGraphResponse.from(HttpStatus.INTERNAL_SERVER_ERROR.value());
-		}
-
-		OpenGraphVO openGraphVo = openGraphVoOptional.get();
-
-		return OpenGraphResponse.of(
-			HttpStatus.OK.value(),
-			openGraphVo.getImage(),
-			openGraphVo.getTitle(),
-			openGraphVo.getUrl() != null ? openGraphVo.getUrl() : link,
-			openGraphVo.getDescription()
-		);
+		return OpenGraphResponse.of(HttpStatus.OK.value(), openGraphVO);
 	}
 }
