@@ -34,8 +34,8 @@ public class ScrapController {
 	}
 
 	@CurrentMemberId
-	@DeleteMapping("/{article-id}")
-	public ResponseEntity<Void> deleteScrap(Long memberId, @PathVariable("article-id") Long articleId) {
+	@DeleteMapping("/{articleId}")
+	public ResponseEntity<Void> deleteScrap(Long memberId, @PathVariable Long articleId) {
 		scrapService.removeScrap(memberId, articleId);
 
 		return ResponseEntity
@@ -52,8 +52,8 @@ public class ScrapController {
 	}
 
 	@CurrentMemberId
-	@GetMapping("/{article-id}")
-	public ResponseEntity<Boolean> checkScrapedArticle(Long memberId, @PathVariable("article-id") Long articleId) {
+	@GetMapping("/{articleId}")
+	public ResponseEntity<Boolean> checkScrapedArticle(Long memberId, @PathVariable Long articleId) {
 		boolean isScraped = scrapService.isScrapedArticle(memberId, articleId);
 
 		if (isScraped) {
