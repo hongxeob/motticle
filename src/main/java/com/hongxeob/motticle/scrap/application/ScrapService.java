@@ -31,7 +31,6 @@ public class ScrapService {
 	private final ArticleService articleService;
 	private final OpenGraphProcessor openGraphProcessor;
 
-	@Transactional(readOnly = true)
 	public ScrapRes scrap(Long memberId, ScrapReq scrapReq) {
 		Member member = memberService.getMember(memberId);
 		Article article = articleService.getArticle(scrapReq.articleId());
@@ -76,6 +75,14 @@ public class ScrapService {
 		ArticlesOgRes articlesOgRes = openGraphProcessor.generateArticlesOgResWithOpenGraph(articles);
 
 		return articlesOgRes;
+	}
+
+	@Transactional(readOnly = true)
+	public boolean isScrapedArticle(Long memberId, Long articleId) {
+		Member member = memberService.getMember(memberId);
+		Article article = articleService.getArticle(articleId);
+
+		return scrapRepository.existsByMemberIdAndArticleId(member.getId(), article.getId());
 	}
 
 	private void checkPublicArticle(Article article) {

@@ -9,6 +9,6 @@ public record ScrapRes(
 ) {
 
 	public static ScrapRes from(Scrap scrap) {
-		return new ScrapRes(scrap.getId(), ArticleInfoRes.from(scrap.getArticle()));
+		return new ScrapRes(scrap.getMember().getId(), ArticleInfoRes.from(scrap.getArticle()));
 	}
 }
