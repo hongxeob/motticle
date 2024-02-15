@@ -81,4 +81,9 @@ public class ViewController {
 	public String explore() {
 		return "explore";
 	}
+
+	@GetMapping("/scrap")
+	public String scrap() {
+		return "article/scrap-list";
+	}
 }
