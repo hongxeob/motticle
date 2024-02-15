@@ -385,12 +385,6 @@ function moveSearchPage() {
     window.location.href = '/search';
 }
 
-function moveArticlePage(articleId) {
-    const queryParams = new URLSearchParams({id: articleId});
-    const url = `/article?${queryParams.toString()}`;
-    window.location.href = url;
-}
-
 function infiniteScroll() {
     const articleListContainer = document.querySelector('.explore-article-section');
     currentPage = 1;
