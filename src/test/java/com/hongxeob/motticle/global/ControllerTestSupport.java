@@ -50,13 +50,15 @@ import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.MemberRepository;
 import com.hongxeob.motticle.member.domain.Role;
 import com.hongxeob.motticle.member.presentation.MemberController;
+import com.hongxeob.motticle.scrap.application.ScrapService;
+import com.hongxeob.motticle.scrap.presentation.ScrapController;
 import com.hongxeob.motticle.tag.application.TagService;
 import com.hongxeob.motticle.tag.presentation.TagController;
 
 @WebMvcTest(
 	value = {
 		TagController.class, ArticleController.class, MemberController.class,
-		AuthController.class
+		ScrapController.class, AuthController.class
 	}
 )
 @Import(ControllerTestSupport.SecurityConfig.class)
@@ -83,6 +85,9 @@ public abstract class ControllerTestSupport {
 
 	@MockBean
 	protected ArticleService articleService;
+
+	@MockBean
+	protected ScrapService scrapService;
 
 	@MockBean
 	protected RefreshTokenService refreshTokenService;
