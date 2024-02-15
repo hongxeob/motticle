@@ -56,10 +56,6 @@ public class ScrapController {
 	public ResponseEntity<Boolean> checkScrapedArticle(Long memberId, @PathVariable Long articleId) {
 		boolean isScraped = scrapService.isScrapedArticle(memberId, articleId);
 
-		if (isScraped) {
-			return ResponseEntity.ok(true);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		return ResponseEntity.ok(isScraped);
 	}
 }
