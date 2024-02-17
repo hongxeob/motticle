@@ -10,7 +10,7 @@ function showToast(message, isError) {
     }
 
     toastElement.textContent = message;
-    toastElement.style.bottom = '20px';
+    toastElement.style.bottom = '15px';
 
     setTimeout(() => {
         toastElement.style.bottom = '-100px';

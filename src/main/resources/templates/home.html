@@ -15,7 +15,7 @@
 <body>
 <div class=home-view>
     <section>
-        <a class="homeButton" href="/">MOTTICLE</a>
+        <a class="homeButton" style="font-family: 'gwangyang';" href="/">MOTTICLE</a>
         <div style="position: absolute; top: 39px; right: 21px;">
             <a href="/my-page" style="cursor: pointer;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
@@ -34,8 +34,7 @@
             </a>
         </div>
         <div id="home-tagButtonsContainer" style="cursor: pointer">
-            <button id="addTagButtonTop" class="home-tag-button" onclick="navigateToAddTag()"
-                    style="border: 1px solid #cdcdcd; color: #818181; margin-right: 0px;">+태그추가
+            <button id="addTagButtonTop" class="home-tag-button" onclick="navigateToAddTag()">+태그추가
             </button>
         </div>
         <div>
@@ -61,8 +60,8 @@
     <section class="articleList" id="articleListContainer">
     </section>
     <footer>
-        <nav>
-            <div style="position: absolute; top: 17px; right: 369px;">
+        <nav class="footer-nav">
+            <div class="nav-home-button">
                 <a href="/" style="cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
                         <g clip-path="url(#a)">
@@ -77,8 +76,17 @@
                         </defs>
                     </svg>
                 </a>
+                <span style="color:#2DD197;">홈</span>
             </div>
-            <div style="position: absolute; top: 17px; right: 77px;">
+            <div class="nav-add-button">
+                <a onclick="openModal()" style="cursor: pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="none">
+                        <path fill="#F8BD7E"
+                              d="M32.5 0A32.5 32.5 0 1 0 65 32.5 32.535 32.535 0 0 0 32.5 0Zm10.833 35.208h-8.125v8.125a2.708 2.708 0 1 1-5.416 0v-8.125h-8.125a2.708 2.708 0 1 1 0-5.416h8.125v-8.125a2.708 2.708 0 1 1 5.416 0v8.125h8.125a2.708 2.708 0 1 1 0 5.416Z"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="nav-explore-button">
                 <a href="/explore" style="cursor: pointer;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
                         <g fill="#A6A6A6" clip-path="url(#a)">
@@ -91,14 +99,7 @@
                         </defs>
                     </svg>
                 </a>
-            </div>
-            <div style="position: absolute; top: -35px; right: 212px;">
-                <a onclick="openModal()" style="cursor: pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="none">
-                        <path fill="#F8BD7E"
-                              d="M32.5 0A32.5 32.5 0 1 0 65 32.5 32.535 32.535 0 0 0 32.5 0Zm10.833 35.208h-8.125v8.125a2.708 2.708 0 1 1-5.416 0v-8.125h-8.125a2.708 2.708 0 1 1 0-5.416h8.125v-8.125a2.708 2.708 0 1 1 5.416 0v8.125h8.125a2.708 2.708 0 1 1 0 5.416Z"/>
-                    </svg>
-                </a>
+                <span style="color:#a5a5a5;">둘러보기</span>
             </div>
         </nav>
     </footer>

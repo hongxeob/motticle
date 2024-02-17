@@ -44,6 +44,8 @@ function updatePlaceholderAndFileInput() {
         linkInputContainer.style.display = 'block';
         articleContentText.style.display = 'none';
         linkText.style.display = 'block';
+        // ifLinkTypeDiv.style.marginTop = '205px';
+        // buttonContainer.style.marginBottom = '0px';
     } else {
         linkInputContainer.style.display = 'none';
         linkText.style.display = 'none';
@@ -200,7 +202,6 @@ function validateLink() {
             showToast("유효하지 않은 링크입니다. 다시 입력해주세요.", true);
         });
 }
-
 
 function displayLinkPreview(openGraphResponse) {
     const linkInputContainer = document.getElementById('linkInputContainer');

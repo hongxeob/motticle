@@ -103,9 +103,10 @@ function displayArticleDetails(articleDetails) {
     const addTagButton = document.createElement('button');
     addTagButton.className = 'tag-button';
     addTagButton.textContent = '+태그등록';
-    addTagButton.style.border = '1px solid #cdcdcd';
-    addTagButton.style.color = '#818181';
-    addTagButton.style.marginRight = '0px';
+    addTagButton.style.border = '1px solid rgb(205, 205, 205)';
+    addTagButton.style.color = 'rgb(129, 129, 129)';
+    addTagButton.style.marginRight = '2px';
+    addTagButton.style.backgroundColor = '#f7f7f7';
     addTagButton.onclick = navigateToAddTag;
 
     tagContainer.appendChild(addTagButton);
