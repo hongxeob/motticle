@@ -16,7 +16,7 @@ function getAccessTokenFromQuery() {
     return accessToken;
 }
 
-const accessToken = getAccessTokenFromQuery();
+var accessToken = getAccessTokenFromQuery();
 
 if (accessToken === null) {
     redirectToKakaoScreen();
@@ -46,20 +46,49 @@ function changeSortOrder(order) {
 }
 
 async function fetchAndRenderData() {
-    const response = await fetch('/api/tags', {
-        headers: {
-            'Authorization': accessToken
-        }
-    });
+  try {
+        const response = await fetch('/api/tags', {
+            headers: {
+                'Authorization': accessToken
+            }
+        });
 
-    if (response.status === 401) {
-        alert("다시 로그인해주세요.");
-        window.location.href = "/kakao";
-    } else {
-        const tags = await response.json().then(data => data.tagSliceRes);
-        renderTags(tags);
+        if (response.ok) {
+            const tags = await response.json().then(data => data.tagSliceRes);
+            renderTags(tags);
+        } else if (response.status === 401) {
+            await handleUnauthorizedResponseWithTag();
+        } else {
+            console.error('Error fetching tags:', response.statusText);
+        }
+    } catch (error) {
+        console.error('Error fetching tags:', error);
     }
 }
+
+async function handleUnauthorizedResponseWithTag() {
+    try {
+        const reissueResponse = await fetch("/api/auth/reissue", {
+            method: "PATCH",
+            headers: {
+                'Authorization': accessToken
+            }
+        });
+
+        if (reissueResponse.ok) {
+            const result = await reissueResponse.json();
+            accessToken = result.accessToken;
+            localStorage.setItem('accessToken', accessToken);
+            fetchAndRenderData();
+        } else {
+            console.error('Failed to reissue token:', reissueResponse.statusText);
+        }
+    } catch (error) {
+        console.error('Error handling unauthorized response:', error);
+        // Handle error in handling unauthorized response
+    }
+}
+
 
 fetchAndRenderData();
 
@@ -110,33 +139,46 @@ async function fetchAndRenderArticles(sortOrder) {
 
     const tagIds = selectedTags.length === 0 ? '' : selectedTags.join(',');
 
-    const articlesResponse = await fetch(`/api/articles/search?tagIds=${tagIds}&sortOrder=${sortOrder}`, {
-        headers: {
-            'Authorization': accessToken
+    try {
+        const articlesResponse = await fetch(`/api/articles/search?tagIds=${tagIds}&sortOrder=${sortOrder}`, {
+            headers: {
+                'Authorization': accessToken
+            }
+        });
+
+        if (articlesResponse.ok) {
+            const articlesData = await articlesResponse.json();
+            console.log('Filtered Articles Data:', articlesData);
+            if (articlesData.articleOgResList.length === 0) {
+                const noArticlesImage = `
+                <img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
+            `;
+                const noArticlesContainer = document.createElement('div');
+                noArticlesContainer.style.position = 'absolute';
+                noArticlesContainer.style.top = '302px';
+                noArticlesContainer.style.right = '102px';
+                noArticlesContainer.innerHTML = noArticlesImage;
+                viewContainer.appendChild(noArticlesContainer);
+
+                const latestButton = document.getElementById('latestButton');
+                const oldestButton = document.getElementById('oldestButton');
+                latestButton.style.display = 'none';
+                oldestButton.style.display = 'none';
+            } else {
+                renderArticles(articlesData);
+                hasNextPage = articlesData.hasNext;
+            }
+        } else if (articlesResponse.status === 401) {
+            // Handle unauthorized response
+            await handleUnauthorizedResponse();
+        } else {
+            // Handle other non-401 errors
+            console.error('Error fetching articles:', articlesResponse.statusText);
         }
-    });
-    spinner.style.display = 'none';
-
-    const articlesData = await articlesResponse.json();
-    console.log('Filtered Articles Data:', articlesData);
-    if (articlesData.articleOgResList.length === 0) {
-        const noArticlesImage = `
-        <img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
-    `;
-        const noArticlesContainer = document.createElement('div');
-        noArticlesContainer.style.position = 'absolute';
-        noArticlesContainer.style.top = '302px';
-        noArticlesContainer.style.right = '102px';
-        noArticlesContainer.innerHTML = noArticlesImage;
-        viewContainer.appendChild(noArticlesContainer);
-
-        const latestButton = document.getElementById('latestButton');
-        const oldestButton = document.getElementById('oldestButton');
-        latestButton.style.display = 'none';
-        oldestButton.style.display = 'none';
-    } else {
-        renderArticles(articlesData);
-        hasNextPage = articlesData.hasNext;
+    } catch (error) {
+        console.error('Error fetching articles:', error);
+    } finally {
+        spinner.style.display = 'none';
     }
 }
 
@@ -213,6 +255,27 @@ function moveSearchPage() {
     window.location.href = '/search';
 }
 
+async function handleUnauthorizedResponse() {
+    try {
+        const reissueResponse = await fetch("/api/auth/reissue", {
+            method: "PATCH", headers: {
+                'Authorization': accessToken
+            }
+        });
+
+        if (reissueResponse.ok) {
+            const result = await reissueResponse.json();
+            accessToken = result.accessToken;
+            localStorage.setItem('accessToken', accessToken);
+            fetchAndRenderArticles(); // Fetch articles again with updated token
+        } else {
+            console.error('Failed to reissue token:', reissueResponse.statusText);
+        }
+    } catch (error) {
+        console.error('Error handling unauthorized response:', error);
+    }
+}
+
 function infiniteScroll() {
     const articleListContainer = document.getElementById('articleListContainer');
 
@@ -243,17 +306,27 @@ function infiniteScroll() {
 
         const sortOrder = getSortOrder();
 
-        const response = await fetch(`/api/articles/search?tagIds=${tagIds}&page=${currentPage + 1}&sortOrder=${sortOrder}`, {
-            headers: {
-                'Authorization': accessToken
-            }
-        });
-        const newData = await response.json();
-        renderArticles(newData);
-        spinner.style.display = 'none';
-        currentPage++;
+        try {
+            const response = await fetch(`/api/articles/search?tagIds=${tagIds}&page=${currentPage + 1}&sortOrder=${sortOrder}`, {
+                headers: {
+                    'Authorization': accessToken
+                }
+            });
 
-        hasNextPage = newData.hasNext;
+            if (response.ok) {
+                const newData = await response.json();
+                renderArticles(newData);
+                currentPage++;
+                hasNextPage = newData.hasNext;
+            } else if (response.status === 401) {
+                // Handle unauthorized response
+                await handleUnauthorizedResponse();
+            }
+        } catch (error) {
+            console.error('Error fetching articles:', error);
+        } finally {
+            spinner.style.display = 'none';
+        }
     }
 
     let lastFetchTime = 0;
