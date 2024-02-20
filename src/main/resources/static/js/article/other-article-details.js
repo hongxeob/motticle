@@ -3,10 +3,6 @@ const urlParams = new URLSearchParams(window.location.search);
 const articleId = urlParams.get('id');
 fetchArticleDetails();
 
-function moveUpdatePage() {
-    window.location.href = `/article/update/${articleId}`;
-}
-
 function fetchArticleDetails() {
     const spinner = document.getElementById('spinner');
     spinner.style.display = 'block';
@@ -22,7 +18,24 @@ function fetchArticleDetails() {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error(`Error fetching article details: ${response.statusText}`);
+                if (response.status === 401) {
+                    console.log("token reissue");
+                    return fetch("/api/auth/reissue", {
+                        method: "PATCH",
+                        headers: {
+                            'Authorization': accessToken
+                        }
+                    })
+                        .then((res) => {
+                            if (res.ok) {
+                                return res.json();
+                            }
+                        })
+                        .then((result) => {
+                            localStorage.setItem('accessToken', result.accessToken);
+                            window.location.href = "/article?id=" + articleId;
+                        });
+                }
             }
             return response.json();
         })
