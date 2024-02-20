@@ -11,57 +11,7 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="icon" href="/images/1454948.png">
     <title>모띠클 : 내 계정</title>
-    <style>
-        .myAccount {
-            flex: 1 1 0%;
-            display: flex;
-            flex-direction: column;
-            -webkit-box-pack: justify;
-            justify-content: space-between;
-            padding-bottom: 30px;
-            overflow-y: auto;
-        }
 
-        .accountInfo {
-            display: flex;
-            align-items: flex-start;
-            height: 91px;
-            padding: 23px 0px;
-            border-bottom: 1px solid rgb(194, 203, 205);
-        }
-
-        .account-container {
-            flex: 1 1 0%;
-            padding-right: 14px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .account-text {
-            font-size: 16px;
-            line-height: 150%;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 10px;
-        }
-
-        .account-value {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 150%;
-            color: rgb(113, 125, 130);
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-
-    </style>
 </head>
 <body>
 <div class=view>
@@ -137,49 +87,6 @@
     </section>
 </div>
 
-<script>
-    function goBack() {
-        window.history.back();
-    }
-
-    const accessToken = localStorage.getItem('accessToken');
-
-    if (accessToken === null) {
-        redirectToKakaoScreen();
-    }
-
-    function redirectToKakaoScreen() {
-        window.location.href = '/kakao';
-    }
-
-    fetch('/api/members', {
-        headers: {
-            'Authorization': accessToken
-        }
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                throw new Error('API 호출 실패');
-            }
-        })
-        .then(data => {
-            const nickname = data.nickname;
-            const email = data.email;
-            let genderType = data.genderType;
-
-            if (genderType === 'MALE') {
-                genderType = '남성';
-            } else if (genderType === 'FEMALE') {
-                genderType = '여성';
-            }
-
-            document.getElementById('nicknameInfo').querySelector('.account-value').textContent = nickname;
-            document.getElementById('emailInfo').querySelector('.account-value').textContent = email;
-            document.getElementById('genderInfo').querySelector('.account-value').textContent = genderType;
-        })
-        .catch(error => console.error('Error:', error));
-</script>
+<script src="/js/member/profile.js"></script>
 </body>
 </html>
