@@ -34,6 +34,7 @@ public class RefreshTokenService {
 		String newAccessToken = jwtUtil.generateAccessToken(token.getId(), role);
 
 		token.updateAccessToken(newAccessToken);
+		refreshTokenRepository.save(token);
 
 		return TokenResponse.from(newAccessToken);
 	}
