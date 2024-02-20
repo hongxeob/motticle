@@ -469,6 +469,8 @@ select:invalid {
 .article-card {
     padding: 10px;
     display: flex;
+    overflow-y: hidden;
+    max-height: 200px;
 }
 
 .article-title {
@@ -1596,4 +1598,52 @@ input:checked + .slider:before {
     display: inline-flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.myAccount {
+    flex: 1 1 0%;
+    display: flex;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    justify-content: space-between;
+    padding-bottom: 30px;
+    overflow-y: auto;
+}
+
+.accountInfo {
+    display: flex;
+    align-items: flex-start;
+    height: 91px;
+    padding: 23px 0px;
+    border-bottom: 1px solid rgb(194, 203, 205);
+}
+
+.account-container {
+    flex: 1 1 0%;
+    padding-right: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.account-text {
+    font-size: 16px;
+    line-height: 150%;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+}
+
+.account-value {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 150%;
+    color: rgb(113, 125, 130);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
