@@ -37,6 +37,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	private static final String TOKEN_HEADER = "Authorization";
 
 	@Override
+	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+		return request.getRequestURI().contains("/api/auth");
+	}
+
+	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		String accessToken = request.getHeader(TOKEN_HEADER);
 
@@ -47,8 +52,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		jwtUtil.verifyToken(accessToken);
 
-		// AccessToken 내부의 payload에 있는 email로 member를 조회한다.
-		// 없다면 예외를 발생시킨다 -> 정상 케이스가 아님
 		Member member = memberRepository.findByEmail(jwtUtil.getUid(accessToken))
 			.orElseThrow(() -> {
 				log.warn("GET:READ:NOT_FOUND_MEMBER_BY_EMAIL : {}", accessToken);
