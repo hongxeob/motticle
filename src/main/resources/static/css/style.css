@@ -712,21 +712,22 @@ input[type="checkbox"] {
 }
 
 .tag-list-button {
-    border: 1px solid #9dffdc;
-    display: inline-flex;
+    border: none;
+    /* display: inline-flex; */
     flex-shrink: 0;
     -webkit-box-align: center;
     align-items: center;
     height: 34px;
     padding: 0px 8px;
     border-radius: 4px;
-    background-color: #9dffdc;
+    background-color: #f7f7f7;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 15px;
     line-height: 150%;
     width: fit-content;
     color: rgb(45, 45, 45);
     cursor: pointer;
+    margin-left: -198px;
 }
 
 .delete-tag-button {
@@ -735,6 +736,7 @@ input[type="checkbox"] {
     line-height: 0;
     margin-left: 4px;
     font-size: smaller;
+    cursor: pointer;
 }
 
 .nav-text {
@@ -1568,4 +1570,30 @@ input:checked + .slider:before {
     flex-direction: column;
     align-items: center;
     margin-bottom: -3px;
+}
+
+#tagContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-top: 22px;
+    margin-left: 5.25px;
+}
+
+#tagNameInput {
+    width: 359px;
+    margin-bottom: 5px;
+}
+
+#tagList {
+    display: grid;
+    padding-left: 6px;
+    padding-right: 9px;
+    gap: 5px;
+}
+
+.added-tag-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
 }
