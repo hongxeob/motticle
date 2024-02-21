@@ -92,7 +92,7 @@ jobs:
           cp ./appspec.yml ./deploy/
           cp ./Dockerfile ./deploy/
           cp ./scripts/*.sh ./deploy/
-          cp ./build/libs/motticle-0.0.1-SNAPSHOT.jar ./deploy/
+          cp ./build/libs/*.jar ./deploy/
           zip -r -qq -j ./motticle-build.zip ./deploy
 
       - name: Configure AWS credentials
