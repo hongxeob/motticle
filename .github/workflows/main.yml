@@ -93,7 +93,7 @@ jobs:
           cp ./Dockerfile ./deploy/
           cp ./scripts/*.sh ./deploy/
           cp ./build/libs/*.jar ./deploy/
-          zip -r -qq -j ./spring-build.zip ./deploy
+          zip -r -qq -j ./motticle-build.zip ./deploy
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -106,11 +106,11 @@ jobs:
         run: |
           aws s3 cp \
             --region ap-northeast-2 \
-            ./spring-build.zip s3://motticle-s3
+            ./motticle-build.zip s3://motticle-s3
 
       # 추가
       - name: Code Deploy
-        run: aws deploy create-deployment --application-name spring-deploy
+        run: aws deploy create-deployment --application-name motticle-deploy
           --deployment-config-name CodeDeployDefault.OneAtATime
-          --deployment-group-name spring-deploy-group
-          --s3-location bucket=motticle-s3,bundleType=zip,key=spring-build.zip
+          --deployment-group-name motticle-deploy-group
+          --s3-location bucket=motticle-s3,bundleType=zip,key=motticle-build.zip
