@@ -1,7 +1,7 @@
-FROM openjdk:17-alpine
+FROM openjdk:17-jdk
 
-WORKDIR /motticle
+WORKDIR /app
 
 COPY motticle-0.0.1-SNAPSHOT.jar motticle.jar
 
-ENTRYPOINT ["java", "jar", "motticle.jar"]
+ENTRYPOINT ["java", "-jar", "motticle.jar"]
