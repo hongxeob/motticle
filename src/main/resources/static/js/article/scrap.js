@@ -23,7 +23,22 @@ async function fetchAndRenderArticles() {
             'Authorization': accessToken
         }
     });
+    if (articlesResponse.status === 401) {
+        console.log("token reissue");
+        const res = await fetch("/api/auth/reissue", {
+            method: "PATCH",
+            headers: {
+                'Authorization': accessToken
+            }
+        });
 
+        if (res.ok) {
+            const result = await res.json();
+            localStorage.setItem('accessToken', result.accessToken);
+            window.location.href = "/scrap";
+            return;
+        }
+    }
     const articlesData = await articlesResponse.json();
 
     renderArticles(articlesData);

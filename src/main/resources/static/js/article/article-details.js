@@ -1,4 +1,4 @@
-const accessToken = localStorage.getItem('accessToken');
+let accessToken = localStorage.getItem('accessToken');
 const path = window.location.pathname;
 const articleId = path.substring(path.lastIndexOf('/') + 1);
 let selectedType;
@@ -34,9 +34,24 @@ function fetchArticleDetails() {
     })
         .then(response => {
             if (!response.ok) {
-                if (response.status === 400) {
-                    alert('잘못된 접근입니다.');
-                    window.location.href = '/';
+                if (response.status === 401) {
+                    console.log("token reissue");
+                    return fetch("/api/auth/reissue", {
+                        method: "PATCH",
+                        headers: {
+                            'Authorization': accessToken
+                        }
+                    })
+                        .then((res) => {
+                            if (res.ok) {
+                                return res.json();
+                            }
+                        })
+                        .then((result) => {
+                            accessToken = result.accessToken;
+                            localStorage.setItem('accessToken', accessToken);
+                            window.location.href = "/article/" + articleId;
+                        });
                 } else {
                     throw new Error(`Error fetching article details: ${response.statusText}`);
                 }
@@ -169,8 +184,6 @@ function confirmDelete() {
 }
 
 function deleteArticle() {
-    const accessToken = localStorage.getItem('accessToken');
-
     fetch(`/api/articles/${articleId}`, {
         method: 'DELETE',
         headers: {
@@ -178,10 +191,42 @@ function deleteArticle() {
         }
     })
         .then(response => {
-            if (!response.ok) {
+            if (response.ok) {
+                window.location.href = '/';
+            } else if (response.status === 401) {
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(reissueResponse => {
+                        if (reissueResponse.ok) {
+                            return reissueResponse.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch(`/api/articles/${articleId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': accessToken
+                            },
+                        });
+                    })
+                    .then(secondDeleteResponse => {
+                        if (secondDeleteResponse.ok) {
+                            window.location.href = '/';
+                        } else {
+                            throw new Error('Failed to delete article after token reissue');
+                        }
+                    });
+            } else {
                 throw new Error(`Error deleting article: ${response.statusText}`);
             }
-            window.location.href = '/';
         })
         .catch(error => console.error(error));
 }
@@ -206,10 +251,6 @@ function updateIsPublic() {
     const title = document.getElementById('articleTitle').textContent;
     const memo = document.getElementById('articleMemo').textContent;
 
-    console.log(title)
-
-    console.log(memo)
-
     const data = {
         title: title,
         memo: memo,
@@ -225,7 +266,39 @@ function updateIsPublic() {
         },
         body: JSON.stringify(data),
     })
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else if (response.status === 401) {
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(reissueResponse => {
+                        if (reissueResponse.ok) {
+                            return reissueResponse.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch(`/api/articles/${articleId}`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Authorization': accessToken,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(data),
+                        });
+                    });
+            } else {
+                throw new Error('Error updating isPublic');
+            }
+        })
         .then(articleInfoRes => {
             console.log('공개 여부 수정 완료:', articleInfoRes.isPublic);
             showToast("공개 여부가 수정되었습니다.", false);

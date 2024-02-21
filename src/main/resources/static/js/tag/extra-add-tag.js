@@ -2,7 +2,7 @@ function goBack() {
     window.history.back();
 }
 
-const accessToken = localStorage.getItem('accessToken');
+let accessToken = localStorage.getItem('accessToken');
 const urlParams = new URLSearchParams(window.location.search);
 const articleId = urlParams.get('articleId');
 
@@ -19,7 +19,30 @@ function fetchAndDisplayTags() {
     })
         .then(response => {
             if (response.status === 401) {
-                window.location.href = '/kakao';
+                console.log("Token reissue");
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch('/api/tags', {
+                            headers: {
+                                'Authorization': result.accessToken,
+                            }
+                        })
+                            .then(response => response.json());
+                    });
             }
             return response.json();
         })
@@ -92,6 +115,36 @@ function tagging(tagId) {
                 fetchAndDisplayTags();
                 tagNameInput.value = '';
                 return;
+            } else if (articleResponse.status === 401) {
+                console.log("Token reissue");
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch(`/api/articles/${articleId}/tags`, {
+                            method: "POST",
+                            headers: {
+                                'Authorization': result.accessToken,
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                tagId: tagId,
+                            }),
+                        })
+                            .then(response => response.json());
+                    });
             }
             return articleResponse.json();
         })
@@ -130,8 +183,41 @@ function registerTag() {
         body: JSON.stringify({
             name: tagName,
         }),
+    }).then(response => {
+        if (response.status === 401) {
+            console.log("Token reissue");
+            return fetch("/api/auth/reissue", {
+                method: "PATCH",
+                headers: {
+                    'Authorization': accessToken
+                }
+            })
+                .then(res => {
+                    if (res.ok) {
+                        return res.json();
+                    } else {
+                        throw new Error('Failed to reissue token');
+                    }
+                })
+                .then(result => {
+                    accessToken = result.accessToken;
+                    localStorage.setItem('accessToken', accessToken);
+                    return fetch('/api/tags', {
+                        method: "POST",
+                        headers: {
+                            'Authorization': result.accessToken,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            name: tagName,
+                        }),
+                    })
+                        .then(response => response.json());
+                });
+        } else {
+            return response.json();
+        }
     })
-        .then(response => response.json())
         .then(tag => {
             const tagId = tag.id;
 
@@ -153,6 +239,36 @@ function registerTag() {
                         tagNameInput.focus();
                         fetchAndDisplayTags();
                         return;
+                    } else if (articleResponse.status === 401) {
+                        console.log("Token reissue");
+                        return fetch("/api/auth/reissue", {
+                            method: "PATCH",
+                            headers: {
+                                'Authorization': accessToken
+                            }
+                        })
+                            .then(res => {
+                                if (res.ok) {
+                                    return res.json();
+                                } else {
+                                    throw new Error('Failed to reissue token');
+                                }
+                            })
+                            .then(result => {
+                                accessToken = result.accessToken;
+                                localStorage.setItem('accessToken', accessToken);
+                                return fetch(`/api/articles/${articleId}/tags`, {
+                                    method: "POST",
+                                    headers: {
+                                        'Authorization': accessToken,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        tagId: tagId,
+                                    }),
+                                })
+                                    .then(response => response.json());
+                            });
                     }
                     return articleResponse.json();
                 })
@@ -185,13 +301,41 @@ function deleteTag(tagId) {
         },
     })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`태그 삭제 실패: ${response.status} ${response.statusText}`);
+            if (response.ok) {
+                return response.text();
+            } else if (response.status === 401) {
+                // Handle unauthorized response
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(reissueResponse => {
+                        if (reissueResponse.ok) {
+                            console.log("token reissued");
+                            return reissueResponse.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch(`/api/tags/${tagId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': accessToken
+                            },
+                        });
+                    });
+            } else {
+                throw new Error(`Failed to delete tag: ${response.status} ${response.statusText}`);
             }
-            return response.text();
         })
         .then(() => {
+            showToast("해당 태그가 포함된 아티클에서 태그 해제 및 삭제 되었습니다.");
             fetchAndDisplayTags();
         })
-        .catch(error => console.error('태그 삭제 중 에러 발생:', error))
+        .catch(error => console.error('An error occurred while deleting tag:', error))
 }

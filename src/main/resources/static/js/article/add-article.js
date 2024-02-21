@@ -11,7 +11,7 @@ isPublicCheckbox.addEventListener('change', function () {
         console.log('Switch is OFF');
     }
 });
-const accessToken = localStorage.getItem('accessToken');
+let accessToken = localStorage.getItem('accessToken');
 const urlParams = new URLSearchParams(window.location.search);
 const selectedType = urlParams.get('type');
 
@@ -44,8 +44,6 @@ function updatePlaceholderAndFileInput() {
         linkInputContainer.style.display = 'block';
         articleContentText.style.display = 'none';
         linkText.style.display = 'block';
-        // ifLinkTypeDiv.style.marginTop = '205px';
-        // buttonContainer.style.marginBottom = '0px';
     } else {
         linkInputContainer.style.display = 'none';
         linkText.style.display = 'none';
@@ -74,13 +72,6 @@ function displayUserTags(tags) {
 
     if (!Array.isArray(tags)) {
         console.error('Invalid response: tags is not an array', tags);
-        return;
-    }
-    if (tags.length === 0) {
-        tagButtonsContainer.addEventListener('click', function () {
-            navigateToAddTag();
-        });
-
         return;
     }
 
@@ -112,20 +103,52 @@ fetch('/api/tags', {
     }
 })
     .then(response => {
-        if (!response.ok) {
-            throw new Error(`Error fetching user tags: ${response.statusText}`);
+        if (response.status === 200 || response.status === 201) {
+            console.log("200ok");
+            return response.json();
+        } else if (response.status === 401) {
+            console.log("token reissue");
+            return fetch("/api/auth/reissue", {
+                method: "PATCH",
+                headers: {
+                    'Authorization': accessToken
+                }
+            })
+                .then((res) => {
+                    if (res.ok) {
+                        return res.json();
+                    }
+                })
+                .then((result) => {
+                    accessToken = result.accessToken
+                    localStorage.setItem('accessToken', accessToken);
+                    return fetch('/api/tags', {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': accessToken
+                        }
+                    })
+                        .then(retryResponse => {
+                            if (retryResponse.ok) {
+                                return retryResponse.json();
+                            } else {
+                                throw new Error('Failed to fetch tags after token reissue');
+                            }
+                        });
+                });
+        } else {
+            return Promise.reject("Failed to fetch tags: " + response.status);
         }
-        return response.json();
     })
-    .then(tags => {
-        displayUserTags(tags.tagSliceRes);
+    .then(data => {
+        displayUserTags(data.tagSliceRes);
     })
-    .catch(error => console.error(error));
+    .catch(error => {
+        console.error("Error fetching tags:", error);
+    });
 
 
 function registerArticle() {
-
-    const accessToken = localStorage.getItem('accessToken');
     const title = document.getElementById('articleTitle').value;
 
     if (title.trim() === '') {
@@ -173,14 +196,50 @@ function registerArticle() {
         },
         body: formData,
     })
-        .then(response => response.json())
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            } else if (response.status === 401) {
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(reissueResponse => {
+                        if (reissueResponse.ok) {
+                            return reissueResponse.json().then(result => {
+                                accessToken = result.accessToken;
+                                localStorage.setItem('accessToken', accessToken);
+                                // Retry the original request with the new token
+                                return fetch('/api/articles', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Authorization': accessToken
+                                    },
+                                    body: formData,
+                                })
+                                    .then(retryResponse => {
+                                        if (retryResponse.ok) {
+                                            return retryResponse.json();
+                                        } else {
+                                            throw new Error('Failed to register article after token reissue');
+                                        }
+                                    });
+                            });
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    });
+            }
+        })
         .then(articleInfoRes => {
-            console.log('아티클이 성공적으로 등록되었습니다:', articleInfoRes);
-            alert("아티클이 등록 되었습니다!")
+            console.log('Article registered successfully:', articleInfoRes);
+            alert("아티클이 등록되었습니다.");
             window.location.href = '/';
         })
         .catch(error => {
-            console.error('아티클 등록 중 오류 발생:', error);
+            console.error('An error occurred while registering article:', error);
         });
 }
 
@@ -195,6 +254,7 @@ function validateLink() {
             return response.json();
         })
         .then(openGraphResponse => {
+            displayLinkPreview(openGraphResponse);
             displayLinkPreview(openGraphResponse);
         })
         .catch(error => {

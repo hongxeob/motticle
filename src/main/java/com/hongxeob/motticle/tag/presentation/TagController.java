@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TagController {
 
-	private static final String DEFAULT_PAGING_SIZE = "10";
+	private static final String DEFAULT_PAGING_SIZE = "30";
 	private final TagService tagService;
 	private final ArticleService articleService;
 

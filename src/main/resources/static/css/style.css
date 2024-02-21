@@ -1647,3 +1647,84 @@ input:checked + .slider:before {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.nicknameContainer {
+    margin-top: 32px;
+}
+
+.nicknameContainerDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.nicknameText {
+    display: block;
+    color: rgb(90, 103, 106);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 150%;
+    margin-bottom: 0px;
+    padding-left: 3px;
+}
+
+.nicknameFormDiv {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nicknameForm {
+    width: 82%;
+    padding: 12px 40px 12px 12px;
+    background: rgb(255 255 255);
+    border: 1px solid #dadada;
+    border-radius: 4px;
+    color: rgb(90, 103, 106);
+    opacity: 1;
+    appearance: none;
+    font-weight: 500;
+    font-size: 14px;
+    outline: none;
+    resize: none;
+}
+
+.checkNicknameButton {
+    width: 16%;
+    background: #2DD197;
+    border: 1px solid #2DD197;
+    border-radius: 4px;
+    color: white;
+    opacity: 1;
+    appearance: none;
+    font-weight: 500;
+    font-size: 14px;
+    outline: none;
+    line-height: 2;
+    resize: none;
+    cursor: pointer;
+}
+
+.nicknameAlert {
+    color: rgb(163, 179, 186);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 150%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.updateNicknameButton {
+    background-color: #2DD197;
+    border: none;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: 100%;
+    height: 40px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgb(255 255 255);
+}

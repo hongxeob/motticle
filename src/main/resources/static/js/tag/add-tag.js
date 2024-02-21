@@ -2,7 +2,7 @@ function goBack() {
     window.history.back();
 }
 
-const accessToken = localStorage.getItem('accessToken');
+let accessToken = localStorage.getItem('accessToken');
 
 if (accessToken === null) {
     redirectToKakaoScreen();
@@ -25,8 +25,30 @@ function fetchAndDisplayTags() {
         .then(response => {
             if (!response.ok) {
                 if (response.status === 401) {
-                    alert("다시 로그인해주세요.");
-                    window.location.href = '/kakao';
+                    console.log("Token reissue");
+                    return fetch("/api/auth/reissue", {
+                        method: "PATCH",
+                        headers: {
+                            'Authorization': accessToken
+                        }
+                    })
+                        .then(res => {
+                            if (res.ok) {
+                                return res.json();
+                            } else {
+                                throw new Error('Failed to reissue token');
+                            }
+                        })
+                        .then(result => {
+                            accessToken = result.accessToken;
+                            localStorage.setItem('accessToken', accessToken);
+                            return fetch('/api/tags', {
+                                headers: {
+                                    'Authorization': accessToken,
+                                }
+                            })
+                                .then(response => response.json());
+                        });
                 } else {
                     throw new Error(`Error fetching user tags: ${response.statusText}`);
                 }
@@ -78,7 +100,6 @@ function registerTag() {
     const tagName = tagNameInput.value;
     const tagAlert = document.querySelector('.tagAlert');
 
-
     if (tagName.trim() === '') {
         tagAlert.textContent = "태그를 입력해주세요.";
         tagAlert.style.color = "red";
@@ -90,7 +111,8 @@ function registerTag() {
 
     fetch('/api/tags', {
         method: 'POST', headers: {
-            'Content-Type': 'application/json', 'Authorization': accessToken
+            'Content-Type': 'application/json',
+            'Authorization': accessToken
         }, body: JSON.stringify({
             name: tagName,
         }),
@@ -103,6 +125,35 @@ function registerTag() {
 
                 tagNameInput.focus();
                 throw new Error('Duplicate tag');
+            } else if (response.status === 401) {
+                console.log("Token reissue");
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            return res.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch('/api/tags', {
+                            method: "POST",
+                            headers: {
+                                'Authorization': accessToken,
+                                'Content-Type': 'application/json'
+                            }, body: JSON.stringify({
+                                name: tagName,
+                            })
+                        })
+                            .then(response => response.json());
+                    });
             }
             return response.json();
         })
@@ -124,18 +175,46 @@ function registerTag() {
 
 function deleteTag(tagId) {
     fetch(`/api/tags/${tagId}`, {
-        method: 'DELETE', headers: {
+        method: 'DELETE',
+        headers: {
             'Authorization': accessToken
         },
     })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`태그 삭제 실패: ${response.status} ${response.statusText}`);
+            if (response.ok) {
+                return response.text();
+            } else if (response.status === 401) {
+                // Handle unauthorized response
+                return fetch("/api/auth/reissue", {
+                    method: "PATCH",
+                    headers: {
+                        'Authorization': accessToken
+                    }
+                })
+                    .then(reissueResponse => {
+                        if (reissueResponse.ok) {
+                            console.log("token reissued");
+                            return reissueResponse.json();
+                        } else {
+                            throw new Error('Failed to reissue token');
+                        }
+                    })
+                    .then(result => {
+                        accessToken = result.accessToken;
+                        localStorage.setItem('accessToken', accessToken);
+                        return fetch(`/api/tags/${tagId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Authorization': accessToken
+                            },
+                        });
+                    });
+            } else {
+                throw new Error(`Failed to delete tag: ${response.status} ${response.statusText}`);
             }
-            return response.text();
         })
         .then(() => {
             fetchAndDisplayTags();
         })
-        .catch(error => console.error('태그 삭제 중 에러 발생:', error))
+        .catch(error => console.error('An error occurred while deleting tag:', error))
 }
