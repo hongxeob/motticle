@@ -110,6 +110,7 @@ asciidoctor { // (7)
     configurations 'asciidoctorExt' // (9)
     dependsOn test // (10)
 }
+
 jar {
     enabled = false
 }
