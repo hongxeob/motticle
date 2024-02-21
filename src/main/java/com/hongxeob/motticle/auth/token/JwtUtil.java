@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtUtil {
 
 	private static final String TOKEN_HEADER = "Authorization";
-	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 3;
+	public static final Long ACCESS_TOKEN_EXPIRE_TIME = 1000L * 60 * 60;
 	public static final Long REFRESH_TOKEN_EXPIRE_TIME = 1000L * 60 * 60 * 6;
 
 	private final JwtProperties jwtProperties;
@@ -118,7 +118,6 @@ public class JwtUtil {
 			.parseClaimsJws(token);
 	}
 
-	// 토큰에서 Email을 추출한다.
 	public String getUid(String token) {
 		return Jwts.parser()
 			.setSigningKey(secretKey)
@@ -127,7 +126,6 @@ public class JwtUtil {
 			.getSubject();
 	}
 
-	// 토큰에서 ROLE(권한)만 추출한다.
 	public String getRole(String token) {
 		return Jwts.parser()
 			.setSigningKey(secretKey)
