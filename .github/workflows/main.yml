@@ -73,9 +73,7 @@ jobs:
         # main 설정 파일 생성 및 write
       - name: Make application.yml
         run: |
-          cd ./src/main
-          mkdir resources
-          cd ./resources
+          cd ./src/main/resources
           touch ./application.yml
           echo "${{ secrets.APPLICATION }}" > ./application.yml
         shell: bash
