@@ -1,7 +1,7 @@
-FROM openjdk:17
+FROM openjdk:17-jdk
 
-ARG JAR_FILE=build/libs/*.jar
+WORKDIR /motticle
 
-COPY ${JAR_FILE} app.jar
+COPY motticle-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "jar", "app.jar"]
