@@ -4,5 +4,5 @@ services:
   backend:
     build: .
     ports:
-      - "8081:8080"
+      - "8081:80"
     container_name: motticle-blue
