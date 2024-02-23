@@ -36,3 +36,7 @@
 ## 유저 스토리
 
 ![userstory](https://github.com/hongxeob/motticle/assets/97447334/3aba24aa-2f5d-4de2-a234-78f4d1fb8cae)
+
+### 🔔 소식
+- AWS EC2 프리티어가 종료되어 NCP로 마이그레이션 진행중입니다!
+- 웹에서 쉽고 빠르게 모띠클로 아티클을 등록할 수 있도록 크롬 확장자 제작중입니다!
