@@ -29,7 +29,9 @@ public class RedisConfig {
 	public RedisConnectionFactory redisConnectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
 		redisStandaloneConfiguration.setHostName(host);
+		System.out.println("host = " + host);
 		redisStandaloneConfiguration.setPort(port);
+		System.out.println("port = " + port);
 		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 	}
 
