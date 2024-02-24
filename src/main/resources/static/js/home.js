@@ -46,7 +46,7 @@ function changeSortOrder(order) {
 }
 
 async function fetchAndRenderData() {
-  try {
+    try {
         const response = await fetch('/api/tags', {
             headers: {
                 'Authorization': accessToken
@@ -59,7 +59,7 @@ async function fetchAndRenderData() {
         } else if (response.status === 401) {
             await handleUnauthorizedResponseWithTag();
         } else {
-            console.error('Error fetching tags:', response.statusText);
+            window.location.href = '/kakao';
         }
     } catch (error) {
         console.error('Error fetching tags:', error);
@@ -79,13 +79,28 @@ async function handleUnauthorizedResponseWithTag() {
             const result = await reissueResponse.json();
             accessToken = result.accessToken;
             localStorage.setItem('accessToken', accessToken);
-            fetchAndRenderData();
+
+            // 성공적으로 토큰을 재발급한 후에 다시 API를 호출하여 데이터를 가져옵니다.
+            const response = await fetch('/api/tags', {
+                headers: {
+                    'Authorization': accessToken
+                }
+            });
+
+            if (response.ok) {
+                const tags = await response.json().then(data => data.tagSliceRes);
+                renderTags(tags);
+            } else {
+                console.error('Failed to fetch tags after token reissue:', response.statusText);
+                window.location.href = '/kakao';
+            }
         } else {
             console.error('Failed to reissue token:', reissueResponse.statusText);
+            window.location.href = '/kakao';
         }
     } catch (error) {
         console.error('Error handling unauthorized response:', error);
-        // Handle error in handling unauthorized response
+        window.location.href = '/kakao';
     }
 }
 
@@ -151,7 +166,7 @@ async function fetchAndRenderArticles(sortOrder) {
             console.log('Filtered Articles Data:', articlesData);
             if (articlesData.articleOgResList.length === 0) {
                 const noArticlesImage = `
-                <img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
+                <img src="/static/images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
             `;
                 const noArticlesContainer = document.createElement('div');
                 noArticlesContainer.style.position = 'absolute';

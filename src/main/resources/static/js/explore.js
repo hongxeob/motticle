@@ -16,7 +16,7 @@ function redirectToKakaoScreen() {
 
 const viewContainer = document.querySelector('.home-view');
 const noArticlesImage = `
-        <img src="images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
+        <img src="/static/images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
     `;
 let noArticlesContainer = document.createElement('div')
 noArticlesContainer.className = 'noArticleContainer';

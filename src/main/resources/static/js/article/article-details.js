@@ -106,7 +106,7 @@ function displayArticleDetails(articleDetails) {
             <article class="article-box" onclick="openArticleLink('${articleDetails.openGraphResponse.url}')">
             <section class="article-section">
                     <p class="link-article-title">${articleDetails.openGraphResponse.title}</p>
-                    <span class="article-url" href="${articleDetails.openGraphResponse.description}" target="_blank">${articleDetails.openGraphResponse.description}</span>
+                    <span class="article-description" href="${articleDetails.openGraphResponse.description}" target="_blank">${articleDetails.openGraphResponse.description}</span>
                     <span class="article-url" href="${articleDetails.openGraphResponse.url}" target="_blank">${articleDetails.openGraphResponse.url}</span>
                 </section>
                 <img src="${articleDetails.openGraphResponse.image}" alt="OG Image" class="link-type-image">
@@ -233,13 +233,14 @@ function deleteArticle() {
 
 function updateIsPublic() {
     const isPublic = document.getElementById('isPublic').checked;
-
+    console.log("type", selectedType);
     const isLinkType = selectedType === 'LINK';
     const isImageType = selectedType === 'IMAGE';
     let content;
     if (isLinkType) {
         const linkSection = document.querySelector('.article-section');
         content = linkSection.querySelector('.article-url').innerText;
+        console.log("call isLinkType", content);
     } else if (isImageType) {
         const contentImage = document.querySelector('.image-type-image');
         const imageUrl = contentImage.src;
@@ -250,7 +251,7 @@ function updateIsPublic() {
     }
     const title = document.getElementById('articleTitle').textContent;
     const memo = document.getElementById('articleMemo').textContent;
-
+    console.log("call isLinkType final", content);
     const data = {
         title: title,
         memo: memo,
