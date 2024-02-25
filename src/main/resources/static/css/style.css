@@ -365,7 +365,6 @@ select:invalid {
     font-size: 48px;
     letter-spacing: 0;
     text-decoration: none;
-    font-weight: 700;
 }
 
 .myPage {
@@ -773,6 +772,21 @@ input[type="checkbox"] {
     background-color: #2DD197;
     color: white;
     border: 1px solid #2DD197;
+}
+
+.home-tag-add-button {
+    background-color: #f7f7f7;
+    color: #535353;
+    border: 1px solid #E6E6E6;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    margin-right: 2px;
+    margin-left: 2px;
+    height: 29px;
+    line-height: 22px;
 }
 
 footer {
@@ -1375,7 +1389,8 @@ input:checked + .slider:before {
 
 .type-text-content {
     font-size: 12px;
-    padding: 6px;
+    padding: 0px 5px;
+    margin: 3px 0px 0px;
     line-height: 150%;
     overflow: hidden;
     text-overflow: ellipsis;

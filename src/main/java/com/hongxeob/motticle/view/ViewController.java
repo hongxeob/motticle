@@ -56,6 +56,11 @@ public class ViewController {
 		return "article/search";
 	}
 
+	@GetMapping("/explore/search")
+	public String searchExplore() {
+		return "article/explore-search";
+	}
+
 	@GetMapping("/article/update/{id}")
 	public String updateArticle(@PathVariable Long id) {
 		return "article/updateArticle";

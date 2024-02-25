@@ -218,10 +218,14 @@ function renderArticles(articlesData) {
         let articleImageHTML = '';
 
         if (article.type === 'IMAGE' && article.content) {
+            articleImageContainer.style.borderRadius = '4px';
             articleImageHTML = `<img src="${article.content}" alt="Article Image" class="home-article-image">`;
         } else if (article.type === 'LINK' && article.openGraphResponse.image) {
+            articleImageContainer.style.borderRadius = '4px';
             articleImageHTML = `<img src="${article.openGraphResponse.image}" alt="OG Image" class="home-article-image">`;
         } else {
+            articleImageContainer.style.borderRadius = '4px';
+            articleImageContainer.style.border = '1px solid #E6E6E6';
             articleImageHTML = `<p class="type-text-content">${article.content}</p>`;
         }
 

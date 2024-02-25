@@ -98,7 +98,7 @@ function displayArticleDetails(articleDetails) {
         articleHTML =
             `<div class="text-div1">
                     <div class="text-div2">
-                        <textarea class="text-details">${articleDetails.content}</textarea>
+                        <textarea class="text-details" readonly>${articleDetails.content}</textarea>
                     </div>
                 </div>
                 `

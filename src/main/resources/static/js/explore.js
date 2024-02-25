@@ -153,9 +153,6 @@ function renderTags(tags) {
         placeholderText.style.cursor = "pointer";
         tagButtonsContainer.appendChild(placeholderText);
 
-        tagButtonsContainer.addEventListener('click', function () {
-            navigateToAddTag();
-        });
         noArticlesContainer.style.display = 'block';
 
         showToast("관심 있는 태그를 등록 후 사용해보세요.", false);
@@ -178,11 +175,6 @@ function renderTags(tags) {
                 fetchAndRenderArticles();
             });
             tagButtonsContainer.appendChild(tagButton);
-            tagButtonsContainer.addEventListener('click', function (event) {
-                if (event.target === tagButtonsContainer) {
-                    navigateToAddTag();
-                }
-            });
         });
     }
 }
@@ -351,7 +343,10 @@ async function renderArticles(articlesData) {
                         exploreArticleCard.appendChild(imgElement);
                     }
                 } else if (type === 'TEXT') {
+                    exploreArticleCard.style.border = '1px solid #E6E6E6';
                     const textContentElement = document.createElement('p');
+                    textContentElement.style.padding = '0 5px 0 5px';
+                    textContentElement.style.margin = '3px 0 0 0px';
                     textContentElement.textContent = content;
                     exploreArticleCard.appendChild(textContentElement);
                 }
@@ -512,7 +507,7 @@ function navigateToAddTag() {
 }
 
 function moveSearchPage() {
-    window.location.href = '/search';
+    window.location.href = '/explore/search';
 }
 
 function infiniteScroll() {

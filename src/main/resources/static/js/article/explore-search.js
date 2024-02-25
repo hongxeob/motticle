@@ -8,7 +8,7 @@ function searchByKeyword() {
     const keywordInput = document.getElementById('keywordInput').value;
     const accessToken = localStorage.getItem('accessToken'); // Ensure you get the latest token
 
-    fetch(`/api/articles/search?keyword=${keywordInput}`, {
+    fetch(`/api/articles/explore?keyword=${keywordInput}`, {
         method: 'GET',
         headers: {
             'Authorization': accessToken
