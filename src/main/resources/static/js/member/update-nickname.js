@@ -12,58 +12,27 @@ function goBack() {
     window.history.back();
 }
 
-fetch('/api/members', {
-    headers: {
-        'Authorization': accessToken,
-        'Cache-Control': 'no-cache'
-    }
-})
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            if (response.status === 401) {
-                return fetch("/api/auth/reissue", {
-                    method: "PATCH",
-                    headers: {
-                        'Authorization': accessToken
-                    }
-                })
-                    .then(reissueResponse => {
-                        if (reissueResponse.ok) {
-                            return reissueResponse.json();
-                        } else {
-                            throw new Error('Failed to reissue token');
-                        }
-                    })
-                    .then(result => {
-                        accessToken = result.accessToken;
-                        localStorage.setItem('accessToken', accessToken);
-                        return fetch('/api/members', {
-                            headers: {
-                                'Authorization': accessToken,
-                                'Cache-Control': 'no-cache'
-                            }
-                        });
-                    })
-                    .then(retryResponse => {
-                        if (retryResponse.ok) {
-                            return retryResponse.json();
-                        } else {
-                            throw new Error('Failed to reissue token and retry request');
-                        }
-                    });
-            } else {
-                throw new Error('API 호출 실패');
+document.addEventListener('DOMContentLoaded', getNickname);
+
+async function getNickname() {
+    try {
+        const response = await fetch('/api/members', {
+            headers: {
+                'Authorization': accessToken,
             }
+        });
+        if (response.ok) {
+            const data = await response.json();
+            const nickname = data.nickname;
+            const inputElement = document.getElementById('input-:r2:');
+            inputElement.value = nickname;
+        } else {
+            throw new Error('API 호출 실패');
         }
-    })
-    .then(data => {
-        const nickname = data.nickname;
-        const inputElement = document.getElementById('input-:r2:');
-        inputElement.value = nickname;
-    })
-    .catch(error => console.error('Error:', error));
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
 
 async function checkNickname(event) {
     event.preventDefault();
@@ -127,20 +96,10 @@ function updateNickname() {
         body: JSON.stringify(requestData)
     })
         .then(response => {
-            console.log('서버 응답 상태 코드:', response.status);
-
             if (response.status === 204) {
-                alert('닉네임이 수정되었습니다.');
-                window.location.href = '/my-page';
+                showToast("닉네임이 변경되었습니다.", false);
             } else {
-                console.error('닉네임 수정에 실패했습니다.');
-            }
-        })
-        .catch(async error => {
-            if (error.response && error.response.status === 401) {
-                await handleUnauthorizedResponse();
-            } else {
-                console.error('API 호출 에러:', error);
+                showToast("닉네임을 업데이트하는데 문제가 발생했습니다.", true);
             }
         });
 }
