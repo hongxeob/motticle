@@ -29,7 +29,8 @@ function fetchArticleDetails() {
     fetch(`/api/articles/${articleId}`, {
         method: 'GET',
         headers: {
-            'Authorization': accessToken
+            'Authorization': accessToken,
+            'Cache-Control': 'no-store'
         }
     })
         .then(response => {

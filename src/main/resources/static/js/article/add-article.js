@@ -65,6 +65,8 @@ function addImagePreview() {
 
         reader.readAsDataURL(imageInput.files[0]);
     }
+    const articleContentInput = document.getElementById('articleContent');
+    articleContentInput.placeholder = '';
 }
 
 function displayUserTags(tags) {
@@ -99,7 +101,8 @@ function displayUserTags(tags) {
 fetch('/api/tags', {
     method: 'GET',
     headers: {
-        'Authorization': accessToken
+        'Authorization': accessToken,
+        'Cache-Control': 'no-store'
     }
 })
     .then(response => {
@@ -125,7 +128,8 @@ fetch('/api/tags', {
                     return fetch('/api/tags', {
                         method: 'GET',
                         headers: {
-                            'Authorization': accessToken
+                            'Authorization': accessToken,
+                            'Cache-Control': 'no-store'
                         }
                     })
                         .then(retryResponse => {

@@ -49,8 +49,9 @@ async function fetchAndRenderData() {
     try {
         const response = await fetch('/api/tags', {
             headers: {
-                'Authorization': accessToken
-            }
+                'Authorization': accessToken,
+                'Cache-Control': 'no-store'
+            },
         });
 
         if (response.ok) {
@@ -166,12 +167,10 @@ async function fetchAndRenderArticles(sortOrder) {
             console.log('Filtered Articles Data:', articlesData);
             if (articlesData.articleOgResList.length === 0) {
                 const noArticlesImage = `
-                <img src="/static/images/cup of water notebook and pencil.png" alt="No Articles Image" width="100%" height="100%">
+                <img src="/static/images/cup of water notebook and pencil.png" alt="No Articles Image" width="70%" height="auto">
             `;
                 const noArticlesContainer = document.createElement('div');
-                noArticlesContainer.style.position = 'absolute';
-                noArticlesContainer.style.top = '302px';
-                noArticlesContainer.style.right = '102px';
+                noArticlesContainer.classList.add("empty-image");
                 noArticlesContainer.innerHTML = noArticlesImage;
                 viewContainer.appendChild(noArticlesContainer);
 

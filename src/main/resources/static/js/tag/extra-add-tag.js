@@ -48,7 +48,6 @@ function fetchAndDisplayTags() {
         })
         .then(tags => {
             const tagListContainer = document.getElementById('tagList');
-
             tagListContainer.innerHTML = '';
             const tagSliceRes = tags.tagSliceRes;
 
@@ -59,7 +58,6 @@ function fetchAndDisplayTags() {
                 hashTag.classList.add("hash-tag");
                 hashTag.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"><path stroke="#14E69C" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6.75h12M3 11.25h12M7.5 2.25 6 15.75M12 2.25l-1.5 13.5"/></svg>';
 
-                const tagItemWrapper = document.createElement('div');
                 const tagItem = document.createElement('button');
                 tagItem.classList.add("tag-list-button");
                 tagItem.textContent = `${tag.name}`;
@@ -77,12 +75,10 @@ function fetchAndDisplayTags() {
 
                 const tagContainer = document.createElement('div');
                 tagContainer.classList.add("added-tag-container");
-                tagItemWrapper.appendChild(tagItem);
                 hashTagWrapper.appendChild(hashTag);
+                hashTagWrapper.appendChild(tagItem);
                 deleteButtonWrapper.appendChild(deleteButton)
-
                 tagContainer.appendChild(hashTagWrapper);
-                tagContainer.appendChild(tagItemWrapper);
                 tagContainer.appendChild(deleteButtonWrapper);
 
                 tagListContainer.appendChild(tagContainer);

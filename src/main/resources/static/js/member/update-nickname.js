@@ -14,7 +14,8 @@ function goBack() {
 
 fetch('/api/members', {
     headers: {
-        'Authorization': accessToken
+        'Authorization': accessToken,
+        'Cache-Control': 'no-cache'
     }
 })
     .then(response => {
@@ -38,10 +39,10 @@ fetch('/api/members', {
                     .then(result => {
                         accessToken = result.accessToken;
                         localStorage.setItem('accessToken', accessToken);
-                        // Retry the original request
                         return fetch('/api/members', {
                             headers: {
-                                'Authorization': accessToken
+                                'Authorization': accessToken,
+                                'Cache-Control': 'no-cache'
                             }
                         });
                     })
