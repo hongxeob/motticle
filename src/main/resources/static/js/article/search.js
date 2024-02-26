@@ -77,7 +77,7 @@ function renderArticles(articlesData) {
 
             const articleImageContainer = document.createElement('div');
             articleImageContainer.classList.add('article-image-container');
-
+            articleImageContainer.style.borderRadius = '4px';
             const articleDetails = document.createElement('div');
             articleDetails.classList.add('article-details');
 
@@ -92,6 +92,7 @@ function renderArticles(articlesData) {
             } else if (article.type === 'LINK' && article.openGraphResponse.image) {
                 articleImageHTML = `<img src="${article.openGraphResponse.image}" alt="OG Image" class="home-article-image">`;
             } else {
+                articleImageContainer.style.border = '1px solid #E6E6E6';
                 articleImageHTML = `<p class="type-text-content">${article.content}</p>`;
             }
 

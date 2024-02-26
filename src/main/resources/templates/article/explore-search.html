@@ -12,91 +12,91 @@
     <link rel="icon" href="/static/images/1454948.png">
     <title>모띠클 : 아티클 검색</title>
     <style>
-        #keywordContainer {
-            display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            margin-top: 22px;
-            margin-left: 5.25px;
-        }
-
-        #keywordInput {
-            width: 359px;
-            margin-bottom: 10px;
-        }
-
-        .article-image-container {
-            flex: 1;
-            width: 180px;
-            height: 180px;
-            min-width: 180px;
-            min-height: 180px;
-            overflow: hidden;
-        }
-
-        .article-details {
-            flex: 2;
-            padding: 15px;
-        }
-
-        .article-tags {
-            white-space: nowrap;
-            display: flex;
-            max-width: 100%;
-            flex-wrap: wrap;
-        }
-
-        .home-article-image {
-            width: 180px;
-            height: 180px;
-            object-fit: cover;
-        }
-
-        .type-text-content {
-            font-size: 12px;
-            padding: 6px;
-            line-height: 150%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .searchButton {
-            width: 75px;
-            background-color: #2DD197;
-            color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 4px;
-            margin-right: 8px;
-            height: 34px;
-            line-height: 1px;
-        }
-
-        .searchArticleList {
-            position: relative;
-            top: -48px;
-            left: 0;
-            right: 0;
-            max-height: 630px;
-            overflow-y: auto;
-            padding-left: 10px;
-            border-right-width: 10px;
-            padding-right: 10px;
-        }
-
-        .searchArticleList::-webkit-scrollbar {
-            display: none;
-        }
+        //#keywordContainer {
+        //    display: flex;
+        //    flex-direction: row;
+        //    align-items: flex-start;
+        //    margin-top: 22px;
+        //    margin-left: 6px;
+        //    margin-right: 6px;
+        //}
+        //
+        //#keywordInput {
+        //    width: 359px;
+        //    margin-bottom: 10px;
+        //}
+        //
+        //.article-image-container {
+        //    flex: 1;
+        //    width: 180px;
+        //    height: 180px;
+        //    min-width: 180px;
+        //    min-height: 180px;
+        //    overflow: hidden;
+        //}
+        //
+        //.article-details {
+        //    flex: 2;
+        //    padding: 15px;
+        //}
+        //
+        //.article-tags {
+        //    white-space: nowrap;
+        //    display: flex;
+        //    max-width: 100%;
+        //    flex-wrap: wrap;
+        //}
+        //
+        //.home-article-image {
+        //    width: 180px;
+        //    height: 180px;
+        //    object-fit: cover;
+        //}
+        //
+        //.type-text-content {
+        //    font-size: 12px;
+        //    padding: 6px;
+        //    line-height: 150%;
+        //    overflow: hidden;
+        //    text-overflow: ellipsis;
+        //}
+        //
+        //.searchButton {
+        //    width: 75px;
+        //    background-color: #2DD197;
+        //    color: white;
+        //    padding: 10px;
+        //    border: none;
+        //    border-radius: 4px;
+        //    cursor: pointer;
+        //    font-size: 16px;
+        //    margin-left: 4px;
+        //    height: 37px;
+        //    line-height: 1px;
+        //}
+        //
+        //.searchArticleList {
+        //    position: relative;
+        //    top: -48px;
+        //    left: 0;
+        //    right: 0;
+        //    max-height: 630px;
+        //    overflow-y: auto;
+        //    padding-left: 10px;
+        //    border-right-width: 10px;
+        //    padding-right: 10px;
+        //}
+        //
+        //.searchArticleList::-webkit-scrollbar {
+        //    display: none;
+        //}
     </style>
 </head>
 <body>
 <div class="view">
     <nav class="nav">
         <span onclick="goBack()" class="go-back"><</span>
-        <h1 class="nav-text">둘러보기 내 아티클 검색</h1>
+        <h1 class="nav-text">둘러보기 검색</h1>
         <div class="redirect-home">
             <a href="/" style="cursor: pointer;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none">
@@ -115,7 +115,7 @@
         </div>
     </nav>
     <section id="keywordContainer">
-        <div style="margin-left: 12px; margin-right: 12px">
+        <div style="display: contents">
             <input type="text" id="keywordInput" placeholder="검색어를 입력하세요.">
             <button onclick="searchByKeyword();" class="searchButton">검색</button>
         </div>

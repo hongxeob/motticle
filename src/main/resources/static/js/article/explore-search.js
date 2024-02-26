@@ -80,6 +80,7 @@ function renderArticles(articlesData) {
 
             const articleDetails = document.createElement('div');
             articleDetails.classList.add('article-details');
+            articleImageContainer.style.borderRadius = '4px';
 
             const articleTagName = article.tagsRes.tagRes.map(tag => `
             <div class="article-tag-card">#${tag.name}</div>
@@ -92,6 +93,7 @@ function renderArticles(articlesData) {
             } else if (article.type === 'LINK' && article.openGraphResponse.image) {
                 articleImageHTML = `<img src="${article.openGraphResponse.image}" alt="OG Image" class="home-article-image">`;
             } else {
+                articleImageContainer.style.border = '1px solid #E6E6E6';
                 articleImageHTML = `<p class="type-text-content">${article.content}</p>`;
             }
 
