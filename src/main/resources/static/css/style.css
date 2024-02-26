@@ -1081,6 +1081,14 @@ input:checked + .slider:before {
     padding-right: 16px;
 }
 
+#articleDetails {
+    position: relative;
+    width: 100%;
+    min-height: 100px;
+    overflow: hidden;
+    object-fit: cover;
+}
+
 #articleMemo {
     position: relative;
     width: 100%;
@@ -1277,6 +1285,21 @@ input:checked + .slider:before {
 
 .tag-wrapper {
     padding-bottom: 8px;
+}
+
+.added-tag-button {
+    background-color: #2DD197;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 5px;
+    height: 23px;
+    line-height: 2px;
+    margin-right: 2px;
+    margin-left: 2px;
 }
 
 .tag-text {

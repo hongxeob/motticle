@@ -129,6 +129,7 @@ function displayArticleDetails(articleDetails) {
     displayUserTags(articleDetails.tagsRes.tagRes);
     articleDetailsElement.innerHTML = articleHTML;
 
+    articleMemoElement.style.height = '100px';
     articleMemoElement.textContent = articleDetails.memo;
 }
 
