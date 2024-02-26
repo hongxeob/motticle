@@ -20,9 +20,10 @@ const noArticlesImage = `
     `;
 let noArticlesContainer = document.createElement('div')
 noArticlesContainer.className = 'noArticleContainer';
-noArticlesContainer.style.position = 'absolute';
-noArticlesContainer.style.top = '302px';
-noArticlesContainer.style.right = '102px';
+noArticlesContainer.style.position = 'fixed';
+noArticlesContainer.style.top = '50%';
+noArticlesContainer.style.left = '50%';
+noArticlesContainer.style.transform = 'translate(-50%, -50%)';
 noArticlesContainer.innerHTML = noArticlesImage;
 viewContainer.appendChild(noArticlesContainer);
 noArticlesContainer.style.display = 'none';
@@ -370,13 +371,16 @@ async function renderArticles(articlesData) {
                 nameTagWrapper.appendChild(profileImageElement);
                 nameTagWrapper.appendChild(nicknameElement);
 
+                const nameWrapper = document.createElement('div');
+                nameWrapper.className = 'explore-tag-wrapper';
                 const nameElement = document.createElement('small');
+
                 nameElement.className = 'explore-article-name';
                 nameElement.textContent = title;
                 nameElement.onclick = function () {
                     moveArticlePage(article.id);
                 };
-
+                nameWrapper.appendChild(nameElement);
                 svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
                 svgElement.setAttribute("width", "20");
                 svgElement.setAttribute("height", "20");
@@ -485,7 +489,7 @@ async function renderArticles(articlesData) {
                 }
 
                 exploreArticleDetails.appendChild(nameTagWrapper);
-                exploreArticleDetails.appendChild(nameElement);
+                exploreArticleDetails.appendChild(nameWrapper);
                 exploreArticleDetails.appendChild(tagWrapper);
 
                 exploreArticleArticle.appendChild(exploreArticleDetails);
