@@ -503,7 +503,7 @@ function moveArticlePage(articleId) {
 }
 
 function navigateToAddTag() {
-    window.location.href = '/addTag';
+    window.location.href = '/add-tag';
 }
 
 function moveSearchPage() {

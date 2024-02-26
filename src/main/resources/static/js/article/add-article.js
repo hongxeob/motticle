@@ -16,7 +16,7 @@ const urlParams = new URLSearchParams(window.location.search);
 const selectedType = urlParams.get('type');
 
 function navigateToAddTag() {
-    window.location.href = '/addTag';
+    window.location.href = '/add-tag';
 }
 
 function updatePlaceholderAndFileInput() {

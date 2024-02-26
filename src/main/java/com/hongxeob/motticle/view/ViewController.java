@@ -30,7 +30,7 @@ public class ViewController {
 		return "article/addArticle";
 	}
 
-	@GetMapping("/addTag")
+	@GetMapping("/add-tag")
 	public String addTag() {
 		return "tag/addTag";
 	}

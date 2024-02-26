@@ -719,7 +719,7 @@ input[type="checkbox"] {
     left: 50%;
     transform: translate(-50%, -50%);
     color: rgb(90, 103, 106);
-    font-size: 1rem;
+    font-size: 1.15rem;
 }
 
 .menu {
@@ -1508,7 +1508,7 @@ input:checked + .slider:before {
 }
 
 .MyAccountText {
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .profile-image-container {
