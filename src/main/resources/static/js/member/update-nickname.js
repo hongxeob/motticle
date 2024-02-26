@@ -12,7 +12,7 @@ function goBack() {
     window.history.back();
 }
 
-document.addEventListener('DOMContentLoaded', getNickname);
+getNickname();
 
 async function getNickname() {
     try {
@@ -21,6 +21,7 @@ async function getNickname() {
                 'Authorization': accessToken,
             }
         });
+
         if (response.ok) {
             const data = await response.json();
             const nickname = data.nickname;
@@ -63,7 +64,7 @@ async function checkNickname(event) {
 
     } catch (error) {
         if (error.response && error.response.status === 401) {
-            await handleUnauthorizedResponse(); // Assuming handleUnauthorizedResponse is a function you've defined to handle 401 errors.
+            await handleUnauthorizedResponse();
         } else {
             nicknameAlert.textContent = "닉네임이 중복됩니다. 다른 닉네임을 입력해주세요.";
             nicknameAlert.style.color = "red";
@@ -74,12 +75,18 @@ async function checkNickname(event) {
     }
 }
 
-function updateNickname() {
+function updateNickname(event) {
+    event.preventDefault()
     const nickname = document.getElementById('input-:r2:').value;
+    const nicknameAlert = document.querySelector('.nicknameAlert');
+    const nicknameInput = document.getElementById('input-:r2:');
 
     if (nickname === "") {
-        alert("닉네임을 입력해주세요.");
-        document.getElementById('nickname').focus();
+        nicknameAlert.textContent = "닉네임을 입력해주세요.";
+        nicknameAlert.style.color = "red";
+        nicknameInput.style.border = "1px solid red";
+
+        nicknameInput.focus();
         return;
     }
 
@@ -99,7 +106,11 @@ function updateNickname() {
             if (response.status === 204) {
                 showToast("닉네임이 변경되었습니다.", false);
             } else {
-                showToast("닉네임을 업데이트하는데 문제가 발생했습니다.", true);
+                showToast("닉네임 업데이트에 문제가 발생했습니다.", true);
             }
+        })
+        .catch(error => {
+            console.error('Error updating nickname:', error);
+            showToast("닉네임 업데이트에 문제가 발생했습니다.", true);
         });
 }
