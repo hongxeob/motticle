@@ -59,7 +59,7 @@ public enum ErrorCode {
 	ARTICLE_IS_PRIVATE("S003", "해당 아티클은 비공개처리 되었습니다."),
 
 	//신고
-	CANNOT_REPORT_YOUR_OWN_POSTS("R001", "본인 아티클은 신고할 수 없습니다."),
+	CANNOT_REPORT_YOUR_OWN_ARTICLE("R001", "본인 아티클은 신고할 수 없습니다."),
 	ALREADY_REPORTED_ARTICLE_BY_SAME_MEMBER("R002", "이미 신고한 아티클입니다.");
 
 	private final String code;

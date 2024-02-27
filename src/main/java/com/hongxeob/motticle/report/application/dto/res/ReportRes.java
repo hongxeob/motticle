@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.hongxeob.motticle.report.domain.Report;
 
-public record ReportResponse(
+public record ReportRes(
 	Long id,
 	Long articleId,
 	Long reporterId,
@@ -17,11 +17,11 @@ public record ReportResponse(
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
 	@JsonDeserialize(using = LocalDateTimeDeserializer.class)
-	LocalDateTime createdDatetime
+	LocalDateTime createdAt
 ) {
 
-	public static ReportResponse from(Report report) {
-		return new ReportResponse(
+	public static ReportRes from(Report report) {
+		return new ReportRes(
 			report.getId(),
 			report.getArticle().getId(),
 			report.getRequester().getId(),

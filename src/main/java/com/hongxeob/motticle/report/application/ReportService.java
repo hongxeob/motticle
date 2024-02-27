@@ -10,7 +10,7 @@ import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.member.application.MemberService;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.report.application.dto.req.ReportReq;
-import com.hongxeob.motticle.report.application.dto.res.ReportResponse;
+import com.hongxeob.motticle.report.application.dto.res.ReportRes;
 import com.hongxeob.motticle.report.domain.Report;
 import com.hongxeob.motticle.report.domain.ReportRepository;
 
@@ -27,7 +27,7 @@ public class ReportService {
 	private final MemberService memberService;
 	private final ArticleService articleService;
 
-	public ReportResponse reportArticle(Long memberId, ReportReq req) {
+	public ReportRes reportArticle(Long memberId, ReportReq req) {
 		Member member = memberService.getMember(memberId);
 
 		Article article = articleService.getArticle(req.articleId());
@@ -47,7 +47,7 @@ public class ReportService {
 
 		reportRepository.save(report);
 
-		return ReportResponse.from(report);
+		return ReportRes.from(report);
 	}
 
 	private boolean isAlreadyReportArticleBySameMember(Member member, Article article) {

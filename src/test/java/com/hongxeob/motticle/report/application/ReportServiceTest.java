@@ -23,7 +23,7 @@ import com.hongxeob.motticle.member.domain.GenderType;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.member.domain.Role;
 import com.hongxeob.motticle.report.application.dto.req.ReportReq;
-import com.hongxeob.motticle.report.application.dto.res.ReportResponse;
+import com.hongxeob.motticle.report.application.dto.res.ReportRes;
 import com.hongxeob.motticle.report.domain.Report;
 import com.hongxeob.motticle.report.domain.ReportRepository;
 
@@ -99,7 +99,7 @@ class ReportServiceTest {
 			.thenReturn(report);
 
 		//when
-		ReportResponse res = reportService.reportArticle(member2.getId(), req);
+		ReportRes res = reportService.reportArticle(member2.getId(), req);
 
 		//then
 		assertThat(res.reporterId()).isEqualTo(member2.getId());
