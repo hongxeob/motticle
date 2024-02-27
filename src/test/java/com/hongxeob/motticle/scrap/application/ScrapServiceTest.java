@@ -79,7 +79,6 @@ class ScrapServiceTest {
 			.type(ArticleType.TEXT)
 			.content("내용")
 			.memo("메모")
-			.scrapCount(0L)
 			.isPublic(true)
 			.member(member)
 			.build();
