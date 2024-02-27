@@ -1,0 +1,62 @@
+= REST Docs Report API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+
+[[User-API]]
+== POST : 신고하기
+
+=== /api/reports
+
+=== 성공
+
+.Request Success - 성공
+include::{snippets}/report/report-success/http-request.adoc[]
+include::{snippets}/report/report-success/request-fields.adoc[]
+
+.request header
+include::{snippets}/report/report-success/request-headers.adoc[]
+
+.Response Success - 성공
+include::{snippets}/report/report-success/http-response.adoc[]
+
+.response fields
+include::{snippets}/report/report-success/response-fields.adoc[]
+
+---
+
+=== 실패 : 이미 내가 신고한 아티클
+
+.Request Fail - 이미 내가 신고한 아티클
+include::{snippets}/report/report-fail-already-reported/http-request.adoc[]
+
+.request header
+include::{snippets}/report/report-fail-already-reported/request-headers.adoc[]
+
+.request field
+include::{snippets}/report/report-fail-already-reported/request-fields.adoc[]
+
+.Response Fail - 이미 등록된 태그
+include::{snippets}/report/report-fail-already-reported/http-response.adoc[]
+
+include::{snippets}/report/report-fail-already-reported/response-fields.adoc[]
+
+---
+
+=== 실패 : 본인 아티클 본인이 신고
+
+.Request Fail - 본인 아티클 본인이 신고
+include::{snippets}/report/report-fail-own-article/http-request.adoc[]
+
+.request header
+include::{snippets}/report/report-fail-own-article/request-headers.adoc[]
+
+.request field
+include::{snippets}/report/report-fail-own-article/request-fields.adoc[]
+
+.Response Fail - 이미 등록된 태그
+include::{snippets}/report/report-fail-own-article/http-response.adoc[]
+
+include::{snippets}/report/report-fail-own-article/response-fields.adoc[]
