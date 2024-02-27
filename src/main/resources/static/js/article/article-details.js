@@ -26,6 +26,7 @@ function fetchArticleDetails() {
     const redirectHome = document.querySelector('.redirect-home');
     const isPublic = document.getElementById('isPublicContainer');
     const createdAtDiv = document.querySelector('.created-at');
+    const scrapCount = document.querySelector('.details-scrap-count');
 
     fetch(`/api/articles/${articleId}`, {
         method: 'GET',
@@ -70,15 +71,18 @@ function fetchArticleDetails() {
             isPublic.style.display = 'flex';
             tagInfoAlert.style.display = 'block';
             redirectHome.style.display = 'block';
+            scrapCount.style.display = 'block';
+            createdAtDiv.style.display = 'block';
 
             displayArticleDetails(articleDetails);
             isPublicCheckbox.checked = articleDetails.isPublic;
             selectedType = articleDetails.type;
 
             const createdAt = new Date(articleDetails.createdDatetime);
-            // const formattedDate = createdAt.toLocaleString();
             const formattedDate = `${createdAt.getFullYear()}/${createdAt.getMonth() + 1}/${createdAt.getDate()}`;
             createdAtDiv.textContent = `작성일: ${formattedDate}`;
+            const scrapCountValue = articleDetails.scrapCount !== null ? articleDetails.scrapCount : 0;
+            scrapCount.textContent = `스크랩 ` + scrapCountValue;
         })
         .catch(error => console.error(error))
         .finally(() => {

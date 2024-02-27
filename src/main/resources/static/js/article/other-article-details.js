@@ -56,6 +56,7 @@ function displayArticleDetails(articleDetails) {
 
     const articleTitleElement = document.getElementById('articleTitle');
     const articleDetailsElement = document.getElementById('articleDetails');
+    const scrapCount = document.querySelector('.details-scrap-count');
 
     articleTitleElement.textContent = articleDetails.title;
     articleDetailsElement.textContent = articleDetails.content;
@@ -63,9 +64,10 @@ function displayArticleDetails(articleDetails) {
     let articleHTML = '';
     const createdAtDiv = document.querySelector('.created-at');
     const createdAt = new Date(articleDetails.createdDatetime);
-    // const formattedDate = createdAt.toLocaleString();
     const formattedDate = `${createdAt.getFullYear()}/${createdAt.getMonth() + 1}/${createdAt.getDate()}`;
     createdAtDiv.textContent = `작성일: ${formattedDate}`;
+    const scrapCountValue = articleDetails.scrapCount !== null ? articleDetails.scrapCount : 0;
+    scrapCount.textContent = `스크랩 ` + scrapCountValue;
 
     if (articleDetails.type === 'IMAGE' && articleDetails.content) {
         articleHTML = `<img src="${articleDetails.content}" alt="Article Image" class="image-type-image">`;

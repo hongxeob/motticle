@@ -62,13 +62,13 @@ public class Article extends BaseEntity {
 	private Set<ArticleTag> articleTags = new HashSet<>();
 
 	@Builder
-	public Article(Long id, String title, ArticleType type, String content, String memo, Long scrapCount, boolean isPublic, Member member) {
+	public Article(Long id, String title, ArticleType type, String content, String memo, boolean isPublic, Member member) {
 		this.id = id;
 		this.title = title;
 		this.type = type;
 		this.content = content;
 		this.memo = memo;
-		this.scrapCount = scrapCount;
+		this.scrapCount = 0L;
 		this.isPublic = isPublic;
 		this.member = member;
 	}
