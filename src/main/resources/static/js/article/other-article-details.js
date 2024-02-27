@@ -8,7 +8,7 @@ function fetchArticleDetails() {
     spinner.style.display = 'block';
 
     const tagButtonsContainer = document.getElementById('tagButtonsContainer');
-
+    const reportButton = document.querySelector('.report-button');
     const tagLabel = document.querySelector('.tag-text');
     const goBack = document.querySelector('.go-back');
 
@@ -43,6 +43,7 @@ function fetchArticleDetails() {
             tagButtonsContainer.style.display = 'block';
             tagLabel.style.display = 'block';
             goBack.style.display = 'block';
+            reportButton.style.display = 'block';
 
             displayArticleDetails(articleDetails);
         })
@@ -132,3 +133,67 @@ function displayUserTags(tags) {
         tagButtonsContainer.appendChild(tagButton);
     });
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    const reportButton = document.querySelector('.report-button');
+    const modal = document.getElementById('myModal');
+    const closeBtn = document.querySelector('.close');
+
+    reportButton.addEventListener('click', function () {
+        modal.style.display = "block";
+    });
+
+    closeBtn.addEventListener('click', function () {
+        modal.style.display = "none";
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    });
+
+    const submitReportBtn = document.getElementById('submitReport');
+    submitReportBtn.addEventListener('click', function () {
+        const reportContent = document.getElementById('reportContent').value;
+
+        modal.style.display = "none";
+
+        const requestBody = {
+            articleId: articleId,
+            content: reportContent
+        }
+
+        fetch('/api/reports', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': accessToken
+            },
+            body: JSON.stringify(requestBody)
+        })
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 400) {
+                        response.json().then(data => {
+                            if (data.code === 'R002') {
+                                showToast("이미 신고한 아티클이에요. 관리자가 확인중이에요.", true);
+                            } else if (data.code === 'R001') {
+                                showToast("자신의 아티클은 신고할 수 없어요. 아티클을 확인해주세요.", true);
+                            }
+                        });
+                    }
+                    showToast("일시적인 문제로 신고에 실패했어요. 잠시 후 다시 시도해주세요.", true)
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Report submitted successfully:', data);
+                showToast("신고가 정상 제출 되었어요. 신속하게 확인 후 조치할게요.", false);
+            })
+            .catch(error => {
+                console.error('Error submitting report:', error);
+                showToast("일시적인 문제로 신고에 실패했어요. 잠시 후 다시 시도해주세요.", true)
+            });
+    });
+});
