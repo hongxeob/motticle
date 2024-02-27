@@ -57,7 +57,10 @@ public enum ErrorCode {
 	ALREADY_SCRAPED_ARTICLE_BY_MEMBER("S001", "이미 스크랩된 아티클입니다."),
 	NOT_FOUND_SCRAP_ARTICLE("S002", "해당 아티클로 스크랩된 내역이 없습니다."),
 	ARTICLE_IS_PRIVATE("S003", "해당 아티클은 비공개처리 되었습니다."),
-	;
+
+	//신고
+	CANNOT_REPORT_YOUR_OWN_POSTS("R001", "본인 아티클은 신고할 수 없습니다."),
+	ALREADY_REPORTED_ARTICLE_BY_SAME_MEMBER("R002", "이미 신고한 아티클입니다.");
 
 	private final String code;
 	private final String message;

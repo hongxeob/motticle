@@ -31,16 +31,17 @@ public class Report {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
-	private Member member;
+	private Member requester;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "article_id")
 	private Article article;
 
 	@Builder
-	public Report(String content, Member member, Article article) {
+	public Report(Long id, String content, Member requester, Article article) {
+		this.id = id;
 		this.content = content;
-		this.member = member;
+		this.requester = requester;
 		this.article = article;
 	}
 }

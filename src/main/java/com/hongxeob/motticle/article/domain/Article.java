@@ -110,6 +110,12 @@ public class Article extends BaseEntity {
 		}
 	}
 
+	public void checkArticleOwnerWithReporterId(Long requesterId) {
+		if (this.member.getId().equals(requesterId)) {
+			throw new BusinessException(ErrorCode.CANNOT_REPORT_YOUR_OWN_POSTS);
+		}
+	}
+
 	public void updateInfo(Article article) {
 		this.title = article.title;
 		this.content = article.content;
