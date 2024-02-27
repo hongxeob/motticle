@@ -100,7 +100,11 @@ async function renderArticles(articlesData) {
         const exploreArticleCard = document.createElement('div');
         exploreArticleCard.className = 'explore-article-card';
         exploreArticleCard.onclick = function () {
-            moveArticlePage(article.id);
+            if (article.isPublic) {
+                moveArticlePage(article.id);
+            } else {
+                showToast("해당 아티클은 작성자가 비공개로 전환 하였습니다.", false)
+            }
         };
 
         if (type === 'IMAGE') {

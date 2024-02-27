@@ -52,6 +52,7 @@ public class Article extends BaseEntity {
 	@Column(name = "is_public")
 	private boolean isPublic;
 
+	@Column(name = "scrap_count")
 	private Long scrapCount;
 
 	@ManyToOne
