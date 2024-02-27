@@ -42,6 +42,7 @@ public class ScrapService {
 				log.warn("GET:READ:ALREADY_SCRAPED_ARTICLE_BY_MEMBER : memberId => {}, articleId => {} ", member.getId(), article.getId());
 				throw new BusinessException(ErrorCode.ALREADY_SCRAPED_ARTICLE_BY_MEMBER);
 			});
+		article.increaseScrapCount();
 
 		Scrap scrap = Scrap.builder()
 			.member(member)
@@ -62,6 +63,8 @@ public class ScrapService {
 				log.warn("GET:READ:NOT_FOUND_SCRAPING_ARTICLE : memberId => {}, articleId => {} ", member.getId(), article.getId());
 				return new BusinessException(ErrorCode.NOT_FOUND_REQUEST_TAG_IN_ARTICLE);
 			});
+
+		article.decreaseScrapCount();
 
 		scrapRepository.delete(scrap);
 	}

@@ -52,6 +52,8 @@ public class Article extends BaseEntity {
 	@Column(name = "is_public")
 	private boolean isPublic;
 
+	private Long scrapCount;
+
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
@@ -60,12 +62,13 @@ public class Article extends BaseEntity {
 	private Set<ArticleTag> articleTags = new HashSet<>();
 
 	@Builder
-	public Article(Long id, String title, ArticleType type, String content, String memo, boolean isPublic, Member member) {
+	public Article(Long id, String title, ArticleType type, String content, String memo, Long scrapCount, boolean isPublic, Member member) {
 		this.id = id;
 		this.title = title;
 		this.type = type;
 		this.content = content;
 		this.memo = memo;
+		this.scrapCount = scrapCount;
 		this.isPublic = isPublic;
 		this.member = member;
 	}
@@ -88,8 +91,16 @@ public class Article extends BaseEntity {
 		this.content = filePath;
 	}
 
-	public void deleteFilePath() {
-		this.content = "";
+	public void increaseScrapCount() {
+		this.scrapCount++;
+	}
+
+	public void decreaseScrapCount() {
+		if (this.scrapCount <= 0) {
+			this.scrapCount = 0L;
+		} else {
+			this.scrapCount--;
+		}
 	}
 
 	public void checkArticleOwnerWithRequesterId(Long requesterId) {

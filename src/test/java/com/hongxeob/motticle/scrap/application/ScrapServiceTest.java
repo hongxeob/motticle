@@ -79,6 +79,7 @@ class ScrapServiceTest {
 			.type(ArticleType.TEXT)
 			.content("내용")
 			.memo("메모")
+			.scrapCount(0L)
 			.isPublic(true)
 			.member(member)
 			.build();
@@ -109,6 +110,7 @@ class ScrapServiceTest {
 		ScrapRes scrapRes = scrapService.scrap(1L, scrapReq);
 
 		//then
+		assertThat(article.getScrapCount()).isEqualTo(1);
 		assertThat(scrapRes.memberId()).isEqualTo(member.getId());
 	}
 
@@ -140,6 +142,7 @@ class ScrapServiceTest {
 		assertDoesNotThrow(() -> scrapService.removeScrap(1L, 1L));
 
 		// Then
+		assertThat(article.getScrapCount()).isEqualTo(0);
 		verify(scrapRepository, times(1))
 			.delete(any(Scrap.class));
 	}

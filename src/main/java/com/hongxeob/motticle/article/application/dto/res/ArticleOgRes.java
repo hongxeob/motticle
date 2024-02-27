@@ -22,6 +22,7 @@ public record ArticleOgRes(
 	String title,
 	String content,
 	String type,
+	Long scrapCount,
 	String memo,
 	TagsRes tagsRes,
 	boolean isPublic,
@@ -49,7 +50,7 @@ public record ArticleOgRes(
 
 		return new ArticleOgRes(
 			article.getId(), MemberInfoRes.from(article.getMember()), article.getTitle(), article.getContent(),
-			article.getType().name(), article.getMemo(), tagsRes,
+			article.getType().name(), article.getScrapCount(), article.getMemo(), tagsRes,
 			article.isPublic(), article.getMember().getId(),
 			openGraphResponse, article.getCreatedAt(), article.getUpdatedAt());
 	}

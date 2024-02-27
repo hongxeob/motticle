@@ -212,7 +212,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 			.image("이미지")
 			.build();
 		MemberInfoRes memberInfoRes = new MemberInfoRes(1L, "test@test", "닉네임", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
-		ArticleOgRes articleOgRes = new ArticleOgRes(1L, memberInfoRes, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
+		ArticleOgRes articleOgRes = new ArticleOgRes(1L, memberInfoRes, "제목1", "TEXT", "내용1", 0L, "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
 			LocalDateTime.now(), LocalDateTime.now());
 
 		given(articleService.findByMemberId(any(), any()))
@@ -244,6 +244,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("title").type(STRING).description("아티클 제목"),
 					fieldWithPath("type").type(STRING).description("아티클 유형"),
 					fieldWithPath("content").type(STRING).description("아티클 내용 또는 이미지 경로"),
+					fieldWithPath("scrapCount").type(NUMBER).description("스크랩 수"),
 					fieldWithPath("memo").type(STRING).description("아티클 메모"),
 					fieldWithPath("tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
 					fieldWithPath("tagsRes.tagRes[].name").type(STRING).description("태그 이름"),
@@ -283,7 +284,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 			.build();
 
 		MemberInfoRes memberInfoRes = new MemberInfoRes(1L, "test@test", "닉네임", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
-		ArticleOgRes articleOgRes = new ArticleOgRes(1L, memberInfoRes, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
+		ArticleOgRes articleOgRes = new ArticleOgRes(1L, memberInfoRes, "제목1", "TEXT", "내용1", 0L, "메모1", new TagsRes(tagResList), true, 1L, openGraphResponse,
 			LocalDateTime.now(), LocalDateTime.now());
 
 		given(articleService.findByMemberId(any(), any()))
@@ -314,6 +315,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("memberInfoRes.image").type(STRING).description("회원 이미지 경로"),
 					fieldWithPath("title").type(STRING).description("아티클 제목"),
 					fieldWithPath("type").type(STRING).description("아티클 유형"),
+					fieldWithPath("scrapCount").type(NUMBER).description("스크랩 수"),
 					fieldWithPath("content").type(STRING).description("아티클 내용 또는 이미지 경로"),
 					fieldWithPath("memo").type(STRING).description("아티클 메모"),
 					fieldWithPath("tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
@@ -390,9 +392,9 @@ class ArticleControllerTest extends ControllerTestSupport {
 		MemberInfoRes memberInfoRes2 = new MemberInfoRes(2L, "test2@test", "닉네임2", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
 
 		List<ArticleOgRes> articleOgResList = List.of(
-			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", "메모1", new TagsRes(tagResList), true, 1L, null,
+			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", 0L, "메모1", new TagsRes(tagResList), true, 1L, null,
 				LocalDateTime.now(), LocalDateTime.now()),
-			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", "메모2", new TagsRes(tagResList), true, 1L, openGraphResponse,
+			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", 0L, "메모2", new TagsRes(tagResList), true, 1L, openGraphResponse,
 				LocalDateTime.now(), LocalDateTime.now())
 		);
 
@@ -431,6 +433,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
 					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
 					fieldWithPath("articleOgResList[].memo").type(STRING).description("아티클 메모"),
+					fieldWithPath("articleOgResList[].scrapCount").type(NUMBER).description("스크랩 수"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].name").type(STRING).description("태그 이름"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].memberId").type(NUMBER).description("유저 ID"),
@@ -757,9 +760,11 @@ class ArticleControllerTest extends ControllerTestSupport {
 		MemberInfoRes memberInfoRes2 = new MemberInfoRes(2L, "test2@test", "닉네임2", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
 
 		List<ArticleOgRes> articleOgResList = List.of(
-			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
+			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", 0L,
+				"메모1", tagsRes, true, 1L, null,
 				LocalDateTime.now(), LocalDateTime.now()),
-			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
+			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", 0L,
+				"메모2", tagsRes, true, 1L, openGraphResponse,
 				LocalDateTime.now(), LocalDateTime.now())
 		);
 		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
@@ -806,6 +811,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
 					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
 					fieldWithPath("articleOgResList[].memo").type(STRING).description("아티클 메모"),
+					fieldWithPath("articleOgResList[].scrapCount").type(NUMBER).description("스크랩 수"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].name").type(STRING).description("태그 이름"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].memberId").type(NUMBER).description("유저 ID"),
@@ -849,9 +855,11 @@ class ArticleControllerTest extends ControllerTestSupport {
 		MemberInfoRes memberInfoRes2 = new MemberInfoRes(2L, "test2@test", "닉네임2", GenderType.FEMALE.name(), Role.USER.getKey(), "test/image.png");
 
 		List<ArticleOgRes> articleOgResList = List.of(
-			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", "메모1", tagsRes, true, 1L, null,
+			new ArticleOgRes(1L, memberInfoRes1, "제목1", "TEXT", "내용1", 0L,
+				"메모1", tagsRes, true, 1L, null,
 				LocalDateTime.now(), LocalDateTime.now()),
-			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", "메모2", tagsRes, true, 1L, openGraphResponse,
+			new ArticleOgRes(2L, memberInfoRes2, "제목2", "IMAGE", "이미지경로2", 0L,
+				"메모2", tagsRes, true, 1L, openGraphResponse,
 				LocalDateTime.now(), LocalDateTime.now())
 		);
 		ArticlesOgRes articlesOgRes = new ArticlesOgRes(articleOgResList, false);
@@ -893,6 +901,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 					fieldWithPath("articleOgResList[].type").type(STRING).description("아티클 유형"),
 					fieldWithPath("articleOgResList[].content").type(STRING).description("아티클 내용"),
 					fieldWithPath("articleOgResList[].memo").type(STRING).description("아티클 메모"),
+					fieldWithPath("articleOgResList[].scrapCount").type(NUMBER).description("스크랩 수"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].id").type(NUMBER).description("태그 ID"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].name").type(STRING).description("태그 이름"),
 					fieldWithPath("articleOgResList[].tagsRes.tagRes[].memberId").type(NUMBER).description("유저 ID"),
