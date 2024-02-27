@@ -17,7 +17,6 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 	private final MotticleOgMetaElementHtmlParser motticleOgMetaElementHtmlParser;
 
 	@Cacheable("metaData")
-	@Override
 	public Optional<OpenGraphVO> getMetadata(String url) {
 		OgParser ogParser = new OgParser(motticleOgMetaElementHtmlParser);
 		OpenGraph openGraph = ogParser.getOpenGraphOf(url);

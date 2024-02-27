@@ -1257,7 +1257,6 @@ input:checked + .slider:before {
 
 .link-add-button {
     position: absolute;
-    inset: 147px 16px auto auto;
     cursor: pointer;
     width: 40px;
     height: 31.5px;
@@ -1268,12 +1267,12 @@ input:checked + .slider:before {
 }
 
 #articleLink {
-    width: 100%;
+    width: 91%;
     height: 32px;
     padding: 12px;
     background: rgb(194, 203, 205);
     border: 1px solid transparent;
-    border-radius: 4px;
+    border-radius: 4px 0 0 4px;
     color: rgb(90, 103, 106);
     opacity: 1;
     appearance: none;

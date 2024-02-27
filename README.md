@@ -50,11 +50,11 @@
 
 ![제목 없는 다이어그램 (1)](https://github.com/hongxeob/motticle/assets/97447334/22a8abf7-b3cb-4c5f-a48b-7cc183e47727)
 
-### 💸 서비스 구성도
+## 💸 서비스 구성도
 
 <img width="1356" alt="image" src="https://github.com/hongxeob/motticle/assets/97447334/b33967a2-c1fe-4aae-9ca4-2d308175a719">
 
-## 유저 스토리
+## 📈유저 스토리
 
 ![userstory](https://github.com/hongxeob/motticle/assets/97447334/3aba24aa-2f5d-4de2-a234-78f4d1fb8cae)
 
