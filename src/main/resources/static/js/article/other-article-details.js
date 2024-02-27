@@ -61,6 +61,11 @@ function displayArticleDetails(articleDetails) {
     articleDetailsElement.textContent = articleDetails.content;
 
     let articleHTML = '';
+    const createdAtDiv = document.querySelector('.created-at');
+    const createdAt = new Date(articleDetails.createdDatetime);
+    // const formattedDate = createdAt.toLocaleString();
+    const formattedDate = `${createdAt.getFullYear()}/${createdAt.getMonth() + 1}/${createdAt.getDate()}`;
+    createdAtDiv.textContent = `작성일: ${formattedDate}`;
 
     if (articleDetails.type === 'IMAGE' && articleDetails.content) {
         articleHTML = `<img src="${articleDetails.content}" alt="Article Image" class="image-type-image">`;
@@ -86,7 +91,7 @@ function displayArticleDetails(articleDetails) {
         `;
     }
     const tagContainer = document.querySelector('#tagButtonsContainer');
-    tagContainer.innerHTML = ''; // 기존 콘텐츠 지우기
+    tagContainer.innerHTML = '';
     displayUserTags(articleDetails.tagsRes.tagRes);
     articleDetailsElement.innerHTML = articleHTML;
 }

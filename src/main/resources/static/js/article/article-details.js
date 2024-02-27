@@ -25,6 +25,7 @@ function fetchArticleDetails() {
     const tagInfoAlert = document.querySelector('.tagInfoAlert');
     const redirectHome = document.querySelector('.redirect-home');
     const isPublic = document.getElementById('isPublicContainer');
+    const createdAtDiv = document.querySelector('.created-at');
 
     fetch(`/api/articles/${articleId}`, {
         method: 'GET',
@@ -66,13 +67,18 @@ function fetchArticleDetails() {
             goBack.style.display = 'block';
             deleteArticleButton.style.display = 'block';
             updateArticleButton.style.display = 'block';
-            isPublic.style.display = 'block';
+            isPublic.style.display = 'flex';
             tagInfoAlert.style.display = 'block';
             redirectHome.style.display = 'block';
 
             displayArticleDetails(articleDetails);
             isPublicCheckbox.checked = articleDetails.isPublic;
             selectedType = articleDetails.type;
+
+            const createdAt = new Date(articleDetails.createdDatetime);
+            // const formattedDate = createdAt.toLocaleString();
+            const formattedDate = `${createdAt.getFullYear()}/${createdAt.getMonth() + 1}/${createdAt.getDate()}`;
+            createdAtDiv.textContent = `작성일: ${formattedDate}`;
         })
         .catch(error => console.error(error))
         .finally(() => {
