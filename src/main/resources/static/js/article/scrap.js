@@ -144,13 +144,16 @@ async function renderArticles(articlesData) {
         nameTagWrapper.className = 'explore-article-info';
         nameTagWrapper.appendChild(profileImageElement);
         nameTagWrapper.appendChild(nicknameElement);
-
+        const nameWrapper = document.createElement('div');
+        nameWrapper.className = 'explore-tag-wrapper';
         const nameElement = document.createElement('small');
+
         nameElement.className = 'explore-article-name';
         nameElement.textContent = title;
         nameElement.onclick = function () {
             moveArticlePage(article.id);
         };
+        nameWrapper.appendChild(nameElement);
 
         svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
         svgElement.setAttribute("width", "20");
@@ -212,7 +215,7 @@ async function renderArticles(articlesData) {
         }
 
         exploreArticleDetails.appendChild(nameTagWrapper);
-        exploreArticleDetails.appendChild(nameElement);
+        exploreArticleDetails.appendChild(nameWrapper);
         exploreArticleDetails.appendChild(tagWrapper);
 
         exploreArticleArticle.appendChild(exploreArticleDetails);
