@@ -1,5 +1,7 @@
 package com.hongxeob.motticle.scrap.application;
 
+import java.util.List;
+
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +69,12 @@ public class ScrapService {
 		article.decreaseScrapCount();
 
 		scrapRepository.delete(scrap);
+	}
+
+	public void removeAllScrapsForArticle(Long articleId) {
+		List<Scrap> scraps = scrapRepository.findAllByArticleId(articleId);
+
+		scrapRepository.deleteAllInBatch(scraps);
 	}
 
 	@Transactional(readOnly = true)

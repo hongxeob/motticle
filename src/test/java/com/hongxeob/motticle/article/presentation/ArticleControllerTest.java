@@ -684,6 +684,7 @@ class ArticleControllerTest extends ControllerTestSupport {
 
 		//given
 		doNothing().when(articleService).unTagArticleByArticle(any(), any());
+		doNothing().when(scrapService).removeAllScrapsForArticle(any());
 		doNothing().when(articleService).remove(any(), any());
 
 		//when -> then

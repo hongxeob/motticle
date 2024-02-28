@@ -33,6 +33,7 @@ import com.hongxeob.motticle.article.domain.ArticleType;
 import com.hongxeob.motticle.global.aop.CurrentMemberId;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
 import com.hongxeob.motticle.image.application.dto.res.ImagesRes;
+import com.hongxeob.motticle.scrap.application.ScrapService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -42,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class ArticleController {
 
 	private final ArticleService articleService;
+	private final ScrapService scrapService;
 	private static final String DEFAULT_PAGING_SIZE = "10";
 
 	@CurrentMemberId
@@ -156,6 +158,7 @@ public class ArticleController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteArticle(@PathVariable Long id, Long memberId) {
 		articleService.unTagArticleByArticle(id, memberId);
+		scrapService.removeAllScrapsForArticle(id);
 		articleService.remove(memberId, id);
 
 		return ResponseEntity.noContent()
