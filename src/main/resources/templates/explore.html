@@ -56,8 +56,13 @@
             </svg>
             검색하기
         </button>
-        <a class="sort" id="latestButton" onclick="changeSortOrder(null)" style="cursor: pointer;">최신순↕</a>
-        <a class="sort" id="oldestButton" onclick="changeSortOrder('oldest')" style="cursor: pointer;">오래된순↕</a>
+        <div>
+            <select id="sortDropdown" onchange="changeSortOrder(this.value)">
+                <option value="latest">최신순</option>
+                <option value="oldest">오래된순</option>
+                <option value="scrap-count">스크랩 많은순</option>
+            </select>
+        </div>
     </div>
     <article style="display: block; ">
         <section class="explore-article-section" data-projection-id="1" style="opacity: 1">

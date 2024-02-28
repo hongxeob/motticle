@@ -41,31 +41,14 @@ function selectRandomTag() {
 let currentPage = 1;
 
 function changeSortOrder(order) {
-    const latestButton = document.getElementById('latestButton');
-    const oldestButton = document.getElementById('oldestButton');
-
-    if (order === 'oldest') {
-        oldestButton.style.display = 'none';
-        latestButton.style.display = 'block';
-    } else {
-        latestButton.style.display = 'none';
-        oldestButton.style.display = 'block';
-        oldestButton.style.left = '410px';
-    }
     currentPage = 1;
 
-    const sortOrder = order === 'oldest' ? 'oldest' : null;
+    const sortOrder = order === 'oldest' ? 'oldest' : (order === 'scrap-count' ? 'scrap-count' : null);
     fetchAndRenderArticles(sortOrder);
 }
 
 async function fetchAndRenderData() {
     try {
-        const latestButton = document.getElementById('latestButton');
-        const oldestButton = document.getElementById('oldestButton');
-
-        latestButton.style.display = 'none';
-        oldestButton.style.display = 'none';
-
         const response = await fetch('/api/tags', {
             headers: {
                 'Authorization': accessToken
@@ -142,11 +125,6 @@ function renderTags(tags) {
     if (tags.length === 0) {
         noArticlesContainer.style.display = 'block';
 
-        const latestButton = document.getElementById('latestButton');
-        const oldestButton = document.getElementById('oldestButton');
-        latestButton.style.display = 'none';
-        oldestButton.style.display = 'none';
-
         const placeholderText = document.createElement('div');
         placeholderText.textContent = "여기를 눌러 태그를 추가하세요";
         placeholderText.style.color = "#777";
@@ -202,11 +180,6 @@ async function fetchAndRenderArticles(sortOrder) {
     noArticlesContainer.style.display = 'none';
 
     const spinner = document.getElementById('spinner');
-    const latestButton = document.getElementById('latestButton');
-    const oldestButton = document.getElementById('oldestButton');
-
-    latestButton.style.display = 'none';
-    oldestButton.style.display = 'none';
 
     spinner.style.display = 'block';
     const articleListContainer = document.querySelector('.explore-article-section');
@@ -217,6 +190,7 @@ async function fetchAndRenderArticles(sortOrder) {
 
     const selectedTags = selectedTagsName.map(tagName => encodeURIComponent(tagName));
     const tagNames = selectedTags.join(',');
+    const sortDropdown = document.getElementById('sortDropdown');
 
     try {
         const articlesResponse = await fetch(`/api/articles/explore?tagNames=${tagNames}&sortOrder=${sortOrder}`, {
@@ -231,17 +205,8 @@ async function fetchAndRenderArticles(sortOrder) {
 
             if (articlesData.articleOgResList.length === 0) {
                 noArticlesContainer.style.display = 'block';
-                latestButton.style.display = 'none';
-                oldestButton.style.display = 'none';
+                sortDropdown.style.display = 'none';
             } else {
-                noArticlesContainer.style.display = 'none';
-                if (sortOrder === 'latest') {
-                    latestButton.style.display = 'none';
-                    oldestButton.style.display = 'block';
-                } else if (sortOrder === 'oldest') {
-                    oldestButton.style.display = 'none';
-                    latestButton.style.display = 'block';
-                }
                 renderArticles(articlesData);
                 hasNextPage = articlesData.hasNext;
             }
@@ -572,11 +537,15 @@ function infiniteScroll() {
 infiniteScroll();
 
 function getSortOrder() {
-    const latestButton = document.getElementById('latestButton');
-    const oldestButton = document.getElementById('oldestButton');
+    const sortDropdown = document.getElementById('sortDropdown');
+    const selectedOption = sortDropdown.value;
 
-    if (latestButton.style.display !== 'none') {
+    if (selectedOption === 'latest') {
+        return 'latest';
+    } else if (selectedOption === 'oldest') {
         return 'oldest';
+    } else if (selectedOption === 'scrap-count') {
+        return 'scrap-count';
     } else {
         return 'latest';
     }

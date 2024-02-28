@@ -232,7 +232,7 @@ function renderArticles(articlesData) {
         articleDetails.innerHTML = `
             <div class="article-title">${article.title}</div>
 
-            <div class="article-tags">${articleTagName}</div>
+            <div class="article-tags2">${articleTagName}</div>
         `;
 
         articleImageContainer.innerHTML = articleImageHTML;

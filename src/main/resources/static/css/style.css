@@ -445,6 +445,7 @@ select:invalid {
 }
 
 .article-title {
+    overflow: scroll;
     white-space: nowrap;
     font-size: large;
     margin-left: 6px;
@@ -1807,13 +1808,16 @@ select {
 .article-details {
     flex: 2;
     padding: 15px;
+    overflow: auto;
 }
 
-.article-tags {
+.article-tags2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
+    overflow-x: auto;
     display: flex;
     max-width: 100%;
-    flex-wrap: wrap;
 }
 
 .home-article-image {
@@ -1865,4 +1869,35 @@ select {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+#sortDropdown {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    cursor: pointer;
+    width: 69px;
+    float: right;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+#sortDropdown:hover {
+    background-color: #e9e9e9;
+}
+
+#sortDropdown option {
+    padding: 10px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    text-align: center;
+}
+
+#sortDropdown option:hover {
+    background-color: #e9e9e9;
 }
