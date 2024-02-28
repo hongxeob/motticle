@@ -1,5 +1,6 @@
 package com.hongxeob.motticle.scrap.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,21 +24,21 @@ import lombok.NoArgsConstructor;
 @Table(name = "scraps")
 public class Scrap {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    private Article article;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "article_id")
+	private Article article;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@JoinColumn(name = "member_id")
+	private Member member;
 
-    @Builder
-    public Scrap(Article article, Member member) {
-        this.article = article;
-        this.member = member;
-    }
+	@Builder
+	public Scrap(Article article, Member member) {
+		this.article = article;
+		this.member = member;
+	}
 }
