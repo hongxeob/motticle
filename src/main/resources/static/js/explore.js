@@ -207,6 +207,7 @@ async function fetchAndRenderArticles(sortOrder) {
                 noArticlesContainer.style.display = 'block';
                 sortDropdown.style.display = 'none';
             } else {
+                sortDropdown.style.display = 'block';
                 renderArticles(articlesData);
                 hasNextPage = articlesData.hasNext;
             }
