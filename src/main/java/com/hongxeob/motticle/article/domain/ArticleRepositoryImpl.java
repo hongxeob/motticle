@@ -62,7 +62,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 	}
 
 	@Override
-	public Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(Long memberId, Collection<String> tagNames, Collection<ArticleType> articleTypes, String keyword, String sortType, Pageable pageable) {
+	public Slice<Article> findAllWithTagIdAndArticleTypeAndKeyword(
+		Long memberId,
+		Collection<String> tagNames,
+		Collection<ArticleType> articleTypes,
+		String keyword,
+		String sortType,
+		Pageable pageable) {
+
 		BooleanExpression expression = qArticle.isPublic.isTrue();
 
 		if (memberId != null) {
@@ -97,7 +104,9 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
 	private void orderSpecifier(String sortType, JPAQuery<Article> query) {
 		OrderSpecifier<?> orderSpecifier;
-		if ("oldest".equalsIgnoreCase(sortType)) {
+		if ("scrap-count".equalsIgnoreCase(sortType)) {
+			orderSpecifier = qArticle.scrapCount.desc();
+		} else if ("oldest".equalsIgnoreCase(sortType)) {
 			orderSpecifier = qArticle.createdAt.asc();
 		} else {
 			orderSpecifier = qArticle.createdAt.desc();
