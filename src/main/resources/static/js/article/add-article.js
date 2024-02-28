@@ -2,6 +2,8 @@ function goBack() {
     window.history.back();
 }
 
+const spinner = document.getElementById('spinner');
+spinner.style.display = 'none';
 const isPublicCheckbox = document.getElementById('isPublic');
 
 isPublicCheckbox.addEventListener('change', function () {
@@ -249,6 +251,8 @@ function registerArticle() {
 
 function validateLink() {
     const link = document.getElementById('articleLink').value;
+    const spinner = document.getElementById('spinner');
+    spinner.style.display = 'block';
 
     fetch(`/api/articles/validation?link=${link}`)
         .then(response => {
@@ -259,7 +263,8 @@ function validateLink() {
         })
         .then(openGraphResponse => {
             displayLinkPreview(openGraphResponse);
-            displayLinkPreview(openGraphResponse);
+            spinner.style.display = 'none';
+            // displayLinkPreview(openGraphResponse);
         })
         .catch(error => {
             console.error('링크 확인 중 오류 발생:', error);
