@@ -29,6 +29,7 @@ import com.hongxeob.motticle.article_tag.application.ArticleTagService;
 import com.hongxeob.motticle.article_tag.domain.ArticleTag;
 import com.hongxeob.motticle.article_tag.domain.ArticleTagRepository;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
+import com.hongxeob.motticle.global.util.BucketUtils;
 import com.hongxeob.motticle.image.application.ImageService;
 import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
@@ -60,6 +61,9 @@ class ArticleServiceTest {
 
 	@Mock
 	private ArticleTagService articleTagService;
+
+	@Mock
+	private BucketUtils bucketUtils;
 
 	@InjectMocks
 	private ArticleService articleService;
