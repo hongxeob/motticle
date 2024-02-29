@@ -32,6 +32,7 @@ import com.hongxeob.motticle.article.domain.ArticleType;
 import com.hongxeob.motticle.article.opengraph.OpenGraphProcessor;
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
+import com.hongxeob.motticle.global.util.BucketUtils;
 import com.hongxeob.motticle.member.application.MemberService;
 import com.hongxeob.motticle.member.domain.GenderType;
 import com.hongxeob.motticle.member.domain.Member;
@@ -55,6 +56,9 @@ class ScrapServiceTest {
 
 	@Mock
 	private OpenGraphProcessor openGraphProcessor;
+
+	@Mock
+	private BucketUtils bucketUtils;
 
 	@InjectMocks
 	private ScrapService scrapService;
