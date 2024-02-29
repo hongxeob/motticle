@@ -28,6 +28,7 @@ import com.hongxeob.motticle.article_tag.domain.ArticleTagRepository;
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
+import com.hongxeob.motticle.global.util.BucketUtils;
 import com.hongxeob.motticle.image.application.ImageService;
 import com.hongxeob.motticle.image.application.dto.FileDto;
 import com.hongxeob.motticle.image.application.dto.req.ImageUploadReq;
@@ -53,6 +54,7 @@ public class ArticleService {
 	private final TagService tagService;
 	private final ArticleTagRepository articleTagRepository;
 	private final OpenGraphProcessor openGraphProcessor;
+	private final BucketUtils bucketUtils;
 
 	public ArticleInfoRes register(Long memberId, ArticleAddReq req, ImageUploadReq imageReq) throws IOException {
 		Member member = memberService.getMember(memberId);
@@ -73,6 +75,7 @@ public class ArticleService {
 	}
 
 	public ArticleInfoRes modify(Long articleId, Long memberId, ArticleModifyReq req) {
+		bucketUtils.checkRequestBucketCount();
 		Article article = checkArticleWriterAndRequester(articleId, memberId);
 
 		Article modifiedArticle = ArticleModifyReq.toArticle(req);
@@ -81,7 +84,7 @@ public class ArticleService {
 		return ArticleInfoRes.from(article);
 	}
 
-	// TODO: 12/29/23 공개 -> 비공개로 될 때 이미 스크랩 당한 아티클들 처리 고민 (프론트 단에서?)
+
 	public void modifyPublicStatus(Long articleId, Long memberId) {
 		Article article = checkArticleWriterAndRequester(articleId, memberId);
 
@@ -100,7 +103,6 @@ public class ArticleService {
 		return ImagesRes.from(fileDtos);
 	}
 
-	// TODO: 12/19/23 동시성 고민(isolation = Isolation.SERIALIZABLE)
 	public ArticleInfoRes tagArticle(Long memberId, Long id, Long tagId) {
 		Member member = memberService.getMember(memberId);
 

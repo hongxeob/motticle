@@ -12,6 +12,7 @@ import com.hongxeob.motticle.article.domain.Article;
 import com.hongxeob.motticle.article.opengraph.OpenGraphProcessor;
 import com.hongxeob.motticle.global.error.ErrorCode;
 import com.hongxeob.motticle.global.error.exception.BusinessException;
+import com.hongxeob.motticle.global.util.BucketUtils;
 import com.hongxeob.motticle.member.application.MemberService;
 import com.hongxeob.motticle.member.domain.Member;
 import com.hongxeob.motticle.scrap.application.dto.req.ScrapReq;
@@ -32,8 +33,11 @@ public class ScrapService {
 	private final MemberService memberService;
 	private final ArticleService articleService;
 	private final OpenGraphProcessor openGraphProcessor;
+	private final BucketUtils bucketUtils;
 
 	public ScrapRes scrap(Long memberId, ScrapReq scrapReq) {
+		bucketUtils.checkRequestBucketCount();
+
 		Member member = memberService.getMember(memberId);
 		Article article = articleService.getArticle(scrapReq.articleId());
 
@@ -57,6 +61,8 @@ public class ScrapService {
 	}
 
 	public void removeScrap(Long memberId, Long articleId) {
+		bucketUtils.checkRequestBucketCount();
+
 		Member member = memberService.getMember(memberId);
 		Article article = articleService.getArticle(articleId);
 

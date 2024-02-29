@@ -19,6 +19,7 @@ public enum ErrorCode {
 	JSON_PARSING_ERROR("C006", "유효하지 않은 JSON 형식입니다."),
 	INVALID_TOKEN("C007", "유효하지 않은 토큰입니다."),
 	EXPIRED_TOKEN("C008", "만료된 토큰 입니다."),
+	TOO_MANY_REQUESTS("C009", "단시간에 너무 많은 요청을 보냈습니다."),
 
 	//이미지
 	IMAGE_UPLOAD_FAILED("I001", "이미지 업로드에 실패 했습니다."),

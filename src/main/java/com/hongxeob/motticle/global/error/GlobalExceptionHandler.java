@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.hongxeob.motticle.global.error.exception.BusinessException;
 import com.hongxeob.motticle.global.error.exception.EntityNotFoundException;
+import com.hongxeob.motticle.global.error.exception.ExcessiveRequestException;
 import com.hongxeob.motticle.global.error.exception.RequiredAuthenticationException;
 
 @RestControllerAdvice
@@ -36,7 +37,6 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(RequiredAuthenticationException.class)
 	public ResponseEntity<ErrorResponse> handleRequiredAuthenticationException(RequiredAuthenticationException e) {
-		// 인증을 필요로하지만 토큰이 헤더에 들어있지 않은 경우(토큰이 null인 경우)
 		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.REQUIRED_AUTHENTICATION);
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -45,9 +45,15 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(MissingServletRequestParameterException.class)
 	public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(
 		MissingServletRequestParameterException e) {
-		// 쿼리 파라미터에 아무 값도 들어오지 않은 경우
 		ErrorResponse errorResponse = ErrorResponse.of(ErrorCode.REQUIRE_QUERY_PARAM);
 
 		return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ExcessiveRequestException.class)
+	public ResponseEntity<ErrorResponse> handleExcessiveRequestException(ExcessiveRequestException e) {
+		ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode());
+
+		return new ResponseEntity<>(errorResponse, HttpStatus.TOO_MANY_REQUESTS);
 	}
 }
