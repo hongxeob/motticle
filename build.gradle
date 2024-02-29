@@ -52,7 +52,7 @@ dependencies {
     implementation 'com.github.siyoon210:ogparser4j:1.0.1'
     implementation 'org.jsoup:jsoup:1.17.2'
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    //querydsl 추가
+    implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
     implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
 
