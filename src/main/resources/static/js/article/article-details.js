@@ -308,6 +308,9 @@ function updateIsPublic() {
                             body: JSON.stringify(data),
                         });
                     });
+            } else if (response.status === 429) {
+                console.log("429call");
+                showToast("요청이 너무 많습니다. 잠시 후에 다시 시도해주세요.", true);
             } else {
                 throw new Error('Error updating isPublic');
             }
@@ -315,9 +318,5 @@ function updateIsPublic() {
         .then(articleInfoRes => {
             console.log('공개 여부 수정 완료:', articleInfoRes.isPublic);
             showToast("공개 여부가 수정되었습니다.", false);
-        })
-        .catch(error => {
-            console.error('아티클 수정 중 오류 발생:', error);
-            showToast("오류가 발생했습니다. 다시 시도해주세요.", true);
         });
 }

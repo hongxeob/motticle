@@ -171,27 +171,31 @@ async function renderArticles(articlesData) {
                 const response = await fetch(`/api/scraps`, {
                     method: 'POST',
                     headers: {
-                        'Authorization': accessToken,
-                        'Content-Type': 'application/json'
+                        Authorization: accessToken,
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({articleId: articleId})
+                    body: JSON.stringify({articleId: articleId}),
                 });
 
                 if (response.ok) {
                     pathElement.setAttribute('d', filledD);
-                    showToast("스크랩 되었습니다.", false);
+                    showToast('스크랩 되었습니다.', false);
+                } else if (response.status === 429) {
+                    alert('스크랩 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.');
                 }
             } else {
                 const response = await fetch(`/api/scraps/${articleId}`, {
                     method: 'DELETE',
                     headers: {
-                        'Authorization': accessToken
-                    }
+                        Authorization: accessToken,
+                    },
                 });
 
                 if (response.ok) {
                     pathElement.setAttribute('d', unfilledD);
-                    showToast("스크랩이 취소되었습니다.", false);
+                    showToast('스크랩이 취소되었습니다.', false);
+                } else if (response.status === 429) {
+                    alert('스크랩 취소 요청이 너무 많습니다. 잠시 후 다시 시도해 주세요.');
                 }
             }
         });
