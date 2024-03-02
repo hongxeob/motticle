@@ -1,1 +1,6 @@
 rootProject.name = 'motticle'
+include 'motticle-admin'
+include 'motticle-api'
+include 'motticle-web'
+include 'motticle-domain'
+

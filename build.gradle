@@ -1,115 +1,140 @@
-buildscript {
-    ext {
-        queryDslVersion = "5.0.0"
-    }
-}
-
 plugins {
     id 'java'
     id 'org.springframework.boot' version '2.7.17'
     id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
-    id "org.asciidoctor.jvm.convert" version "3.3.2"
+//    id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
+//    id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
-group = 'com.hongxeob'
-version = '0.0.1-SNAPSHOT'
-
-java {
+allprojects {
+    group = 'com.hongxeob'
+    version = '0.0.1-SNAPSHOT'
     sourceCompatibility = '17'
+
+    repositories {
+        mavenCentral()
+    }
 }
 
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
-    asciidoctorExt
+//    asciidoctorExt
 }
 
-repositories {
-    mavenCentral()
-}
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
-    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-    implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.529')
-    implementation 'com.amazonaws:aws-java-sdk-s3'
-
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    implementation 'com.github.ben-manes.caffeine:caffeine'
-
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'com.github.siyoon210:ogparser4j:1.0.1'
-    implementation 'org.jsoup:jsoup:1.17.2'
-    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-    implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
-    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
-
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2'
-    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-}
-
-tasks.named('bootBuildImage') {
-    builder = 'paketobuildpacks/builder-jammy-base:latest'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
-}
-
-//querydsl 추가 시작
-def querydslDir = "$buildDir/generated/querydsl"
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-sourceSets {
-    main.java.srcDir querydslDir
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'com.h2database:h2'
     }
-    querydsl.extendsFrom compileClasspath
-}
-//querydsl 추가 끝
 
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
+    tasks.named('bootJar') { //빌드할 때 bootjar 파일로 하겠다는 의미
+        enabled = false
+    }
 
-test { // (6)
-    outputs.dir snippetsDir
-}
+    tasks.named('jar') { //빌드할 때 jar 파일로 하겠다는 의미
+        enabled = true
+    }
 
-asciidoctor { // (7)
-    inputs.dir snippetsDir // (8)
-    configurations 'asciidoctorExt' // (9)
-    dependsOn test // (10)
+    tasks.named('test') {
+        useJUnitPlatform()
+    }
 }
 
-bootJar { enabled = true }
-jar { enabled = false }
+//java {
+//    sourceCompatibility = '17'
+//}
+//
+//
+//repositories {
+//    mavenCentral()
+//}
+//
+//dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-validation'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+//    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+//    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+//    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
+//    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+//    implementation platform('com.amazonaws:aws-java-sdk-bom:1.12.529')
+//    implementation 'com.amazonaws:aws-java-sdk-s3'
+//
+//    implementation 'org.springframework.boot:spring-boot-starter-cache'
+//    implementation 'com.github.ben-manes.caffeine:caffeine'
+//
+//    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+//    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//    implementation 'com.github.siyoon210:ogparser4j:1.0.1'
+//    implementation 'org.jsoup:jsoup:1.17.2'
+//    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+//    implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.6.0'
+//    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+//    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+//
+//    compileOnly 'org.projectlombok:lombok'
+//    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+//    runtimeOnly 'com.h2database:h2'
+//    annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+//    annotationProcessor 'org.projectlombok:lombok'
+//    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+//    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//    testImplementation 'org.springframework.security:spring-security-test'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    runtimeOnly 'com.mysql:mysql-connector-j'
+//}
+
+//tasks.named('bootBuildImage') {
+//    builder = 'paketobuildpacks/builder-jammy-base:latest'
+//}
+//
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
+
+//def querydslDir = "$buildDir/generated/querydsl"
+//
+//querydsl {
+//    jpa = true
+//    querydslSourcesDir = querydslDir
+//}
+//sourceSets {
+//    main.java.srcDir querydslDir
+//}
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}
+//configurations {
+//    compileOnly {
+//        extendsFrom annotationProcessor
+//    }
+//    querydsl.extendsFrom compileClasspath
+//}
+//
+//ext {
+//    snippetsDir = file('build/generated-snippets')
+//}
+//
+//test {
+//    outputs.dir snippetsDir
+//}
+//
+//asciidoctor {
+//    inputs.dir snippetsDir
+//    configurations 'asciidoctorExt'
+//    dependsOn test
+//}
+//
+bootJar { enabled = false }
+//jar { enabled = false }
