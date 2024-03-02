@@ -35,7 +35,7 @@ jobs:
         if: |
           contains(github.ref, 'main')
         run: |
-          cd ./src/main/resources
+          cd ./motticle-web/src/main/resources
           touch ./application-oauth.yml
           echo "${{ secrets.APPLICATION_OAUTH }}" > ./application-oauth.yml
         shell: bash
@@ -45,7 +45,7 @@ jobs:
         if: |
           contains(github.ref, 'main')
         run: |
-          cd ./src/main/resources
+          cd ./motticle-web/src/main/resources
           touch ./application-s3.yml
           echo "${{ secrets.APPLICATION_S3 }}" > ./application-s3.yml
         shell: bash
@@ -55,7 +55,7 @@ jobs:
         if: |
           contains(github.ref, 'main')
         run: |
-          cd ./src/main/resources
+          cd ./motticle-web/src/main/resources
           touch ./application-app.yml
           echo "${{ secrets.APPLICATION_APP }}" > ./application-app.yml
         shell: bash
@@ -65,7 +65,7 @@ jobs:
         if: |
           contains(github.ref, 'main')
         run: |
-          cd ./src/main/resources
+          cd ./motticle-web/src/main/resources
           touch ./application-prod.yml
           echo "${{ secrets.APPLICATION_PROD }}" > ./application-prod.yml
         shell: bash
@@ -73,7 +73,7 @@ jobs:
         # main 설정 파일 생성 및 write
       - name: Make application.yml
         run: |
-          cd ./src/main/resources
+          cd ./motticle-web/src/main/resources
           touch ./application.yml
           echo "${{ secrets.APPLICATION }}" > ./application.yml
         shell: bash

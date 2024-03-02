@@ -55,5 +55,5 @@ bootJar {
 
 jar {
     enabled = false
-    archivesBaseName = 'inspiration'
+//    archivesBaseName = 'motticle'
 }
