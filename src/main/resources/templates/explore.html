@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0 viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta property="og:title" content="💫 모띠클 | 둘러보기">
+    <meta property="og:description" content="다른 사람들이 공유한 아티클을 둘러보아요.">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="ec2-3-37-72-225.ap-northeast-2.compute.amazonaws.com/explore">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/1454948.png">
+    <title>모띠클 : 둘러보기</title>
+</head>
+<body>
+<div class=home-view>
+    <a class="homeButton" style="font-family: 'gwangyang';" href="/explore">둘러보기</a>
+    <div style="position: absolute; top: 52px; right: 21px;">
+        <a href="/my-page" style="cursor: pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="31" height="31" fill="none">
+                <g clip-path="url(#a)">
+                    <path fill="#535353"
+                          d="M20.667 24.542v5.554A15.4 15.4 0 0 1 15.5 31a15.4 15.4 0 0 1-5.167-.904v-5.554c0-.713.58-1.292 1.292-1.292h7.75c.712 0 1.292.579 1.292 1.292ZM15.5 10.333a2.586 2.586 0 0 0-2.583 2.584A2.586 2.586 0 0 0 15.5 15.5a2.586 2.586 0 0 0 2.583-2.583 2.586 2.586 0 0 0-2.583-2.584Zm7.75 18.57v-4.361a3.88 3.88 0 0 0-3.875-3.875h-7.75a3.88 3.88 0 0 0-3.875 3.875v4.36C3.125 26.218 0 21.222 0 15.5 0 6.953 6.953 0 15.5 0S31 6.953 31 15.5c0 5.722-3.125 10.718-7.75 13.402Zm-2.583-15.986A5.172 5.172 0 0 0 15.5 7.75a5.172 5.172 0 0 0-5.167 5.167 5.172 5.172 0 0 0 5.167 5.166 5.172 5.172 0 0 0 5.167-5.166Z"/>
+                    <path fill="#000" fill-opacity=".2"
+                          d="M20.667 24.542v5.554A15.4 15.4 0 0 1 15.5 31a15.4 15.4 0 0 1-5.167-.904v-5.554c0-.713.58-1.292 1.292-1.292h7.75c.712 0 1.292.579 1.292 1.292ZM15.5 10.333a2.586 2.586 0 0 0-2.583 2.584A2.586 2.586 0 0 0 15.5 15.5a2.586 2.586 0 0 0 2.583-2.583 2.586 2.586 0 0 0-2.583-2.584Zm7.75 18.57v-4.361a3.88 3.88 0 0 0-3.875-3.875h-7.75a3.88 3.88 0 0 0-3.875 3.875v4.36C3.125 26.218 0 21.222 0 15.5 0 6.953 6.953 0 15.5 0S31 6.953 31 15.5c0 5.722-3.125 10.718-7.75 13.402Zm-2.583-15.986A5.172 5.172 0 0 0 15.5 7.75a5.172 5.172 0 0 0-5.167 5.167 5.172 5.172 0 0 0 5.167 5.166 5.172 5.172 0 0 0 5.167-5.166Z"/>
+                </g>
+                <defs>
+                    <clipPath id="a">
+                        <path fill="#fff" d="M0 0h31v31H0z"/>
+                    </clipPath>
+                </defs>
+            </svg>
+        </a>
+    </div>
+    <div id="home-tagButtonsContainer">
+        <button id="addTagButtonTop" class="home-tag-add-button" onclick="navigateToAddTag()">+태그추가
+        </button>
+    </div>
+    <div>
+        <hr style="bottom: 0; width: 100%; border: 0; height: 1px; background-color: #cdcdcd;">
+        <button class="home-search" onclick="moveSearchPage()" style="cursor: pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none">
+                <g clip-path="url(#a)">
+                    <path fill="#2DD197"
+                          d="m14.817 13.933-3.73-3.73a6.26 6.26 0 1 0-.884.883l3.73 3.73a.625.625 0 0 0 .884-.883ZM6.25 11.25a5 5 0 1 1 0-9.999 5 5 0 0 1 0 9.999Z"/>
+                </g>
+                <defs>
+                    <clipPath id="a">
+                        <path fill="#fff" d="M0 0h15v15H0z"/>
+                    </clipPath>
+                </defs>
+            </svg>
+            검색하기
+        </button>
+        <div>
+            <select id="sortDropdown" onchange="changeSortOrder(this.value)">
+                <option value="latest">최신순</option>
+                <option value="oldest">오래된순</option>
+                <option value="scrap-count">스크랩순</option>
+            </select>
+        </div>
+    </div>
+    <article style="display: block; ">
+        <section class="explore-article-section" data-projection-id="1" style="opacity: 1">
+
+        </section>
+    </article>
+    <footer>
+        <nav class="footer-nav">
+            <div class="nav-home-button">
+                <a href="/" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none">
+                        <path fill="#A6A6A6"
+                              d="M15 18.731a3.75 3.75 0 0 0-3.75 3.75v7.5h7.5v-7.5a3.75 3.75 0 0 0-3.75-3.75Z"/>
+                        <path fill="#A6A6A6"
+                              d="M21.25 22.481v7.5h5a3.75 3.75 0 0 0 3.75-3.75v-11.4a2.5 2.5 0 0 0-.704-1.74L18.674 1.605a5 5 0 0 0-7.344 0L.726 13.086A2.5 2.5 0 0 0 0 14.85V26.23a3.75 3.75 0 0 0 3.75 3.75h5v-7.5c.023-3.408 2.775-6.192 6.098-6.272 3.434-.083 6.376 2.748 6.402 6.272Z"/>
+                        <path fill="#A6A6A6"
+                              d="M15 18.731a3.75 3.75 0 0 0-3.75 3.75v7.5h7.5v-7.5a3.75 3.75 0 0 0-3.75-3.75Z"/>
+                    </svg>
+                </a>
+                <span style="color:#a5a5a5;">홈</span>
+            </div>
+            <div class="nav-add-button" style="display: none">
+                <a onclick="openModal()" style="cursor: pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" fill="none">
+                        <path fill="#F8BD7E"
+                              d="M32.5 0A32.5 32.5 0 1 0 65 32.5 32.535 32.535 0 0 0 32.5 0Zm10.833 35.208h-8.125v8.125a2.708 2.708 0 1 1-5.416 0v-8.125h-8.125a2.708 2.708 0 1 1 0-5.416h8.125v-8.125a2.708 2.708 0 1 1 5.416 0v8.125h8.125a2.708 2.708 0 1 1 0 5.416Z"/>
+                    </svg>
+                </a>
+            </div>
+            <div class="nav-explore-button">
+                <a href="/explore" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none">
+                        <g clip-path="url(#a)">
+                            <path fill="#14E69C"
+                                  d="M16.917 8.458A8.459 8.459 0 0 0 0 8.458c0 4.799 2.727 10.253 6.513 11.703a3.41 3.41 0 0 0-.471 1.432c0 1.898 1.799 2.74 3.112 3.354.725.339 1.721.804 1.721 1.164a2.767 2.767 0 0 1-.517 1.028 1.208 1.208 0 1 0 2.035 1.305 4.526 4.526 0 0 0 .899-2.333c0-1.898-1.8-2.74-3.113-3.353-.725-.34-1.72-.805-1.732-1.046.184-.432.414-.844.687-1.227 4.432-.578 7.783-6.71 7.783-12.027Zm-5.83 4.193a6.915 6.915 0 0 0 .996-2.984 1.208 1.208 0 1 1 2.417 0 9.258 9.258 0 0 1-1.364 4.265 1.21 1.21 0 0 1-2.054-1.28h.006Zm12.476 9.81c-.825-.437-1.675-.89-1.794-1.403-.055-.234-.03-.76.623-1.78C26.22 18.729 29 13.322 29 8.458a7.008 7.008 0 0 0-7.25-7.25 7.433 7.433 0 0 0-4.23 1.252 10.804 10.804 0 0 1 1.813 5.998 18.23 18.23 0 0 1-2.155 8.231 7.162 7.162 0 0 0 2.658 2.224 4.085 4.085 0 0 0-.425 2.693c.37 1.583 1.835 2.362 3.013 2.99.745.396 1.587.846 1.715 1.29.032.466-.103.928-.38 1.303a1.208 1.208 0 1 0 2.092 1.208 4.022 4.022 0 0 0 .611-3.174 5.032 5.032 0 0 0-2.9-2.761Zm-.393-9.81a6.917 6.917 0 0 0 .997-2.984 1.208 1.208 0 1 1 2.416 0 9.257 9.257 0 0 1-1.364 4.265 1.21 1.21 0 1 1-2.054-1.28h.005Z"/>
+                        </g>
+                        <defs>
+                            <clipPath id="a">
+                                <path fill="#fff" d="M0 0h29v29H0z"/>
+                            </clipPath>
+                        </defs>
+                    </svg>
+                </a>
+                <span style="color:#2DD197;">둘러보기</span>
+            </div>
+        </nav>
+    </footer>
+    <div id="spinner" class=""></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/static/js/toast.js"></script>
+<script src="/static/js/explore.js"></script>
+</body>
+</html>

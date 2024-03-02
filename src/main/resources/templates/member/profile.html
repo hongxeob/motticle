@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0 viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta property="og:title" content="💫 모띠클 | 프로필">
+    <meta property="og:description" content="내 가입 정보를 확인하세요.">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="ec2-3-37-72-225.ap-northeast-2.compute.amazonaws.com/profile">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/1454948.png">
+    <title>모띠클 : 내 계정</title>
+
+</head>
+<body>
+<div class=view>
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+        <h1 class="nav-text">내 계정</h1>
+        <div class="redirect-home">
+            <a href="/" style="cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                    <g fill-rule="evenodd" clip-path="url(#a)" clip-rule="evenodd">
+                        <path fill="#535353"
+                              d="M10.527.619c.414-.4.942-.619 1.487-.619.545 0 1.072.22 1.486.619l7.233 6.975 2.839 2.557c.117.105.214.236.287.383a1.437 1.437 0 0 1 .096.977 1.348 1.348 0 0 1-.205.446 1.19 1.19 0 0 1-.341.323 1.02 1.02 0 0 1-.869.108 1.103 1.103 0 0 1-.395-.23l-1-.9v10.173c0 .681-.24 1.335-.668 1.816-.428.482-1.009.753-1.614.753h-4.566v-6.423c0-.681-.24-1.335-.669-1.817-.428-.482-1.009-.752-1.614-.752-.606 0-1.186.27-1.615.752a2.741 2.741 0 0 0-.668 1.817V24H5.165c-.606 0-1.187-.27-1.615-.753a2.741 2.741 0 0 1-.668-1.816V11.257l-1 .899a1.113 1.113 0 0 1-.396.248 1.021 1.021 0 0 1-.887-.094 1.185 1.185 0 0 1-.348-.328 1.348 1.348 0 0 1-.208-.454 1.44 1.44 0 0 1 .111-.994 1.25 1.25 0 0 1 .302-.382l2.839-2.556L10.527.619Z"/>
+                        <path fill="#000" fill-opacity=".2"
+                              d="M10.527.619c.414-.4.942-.619 1.487-.619.545 0 1.072.22 1.486.619l7.233 6.975 2.839 2.557c.117.105.214.236.287.383a1.437 1.437 0 0 1 .096.977 1.348 1.348 0 0 1-.205.446 1.19 1.19 0 0 1-.341.323 1.02 1.02 0 0 1-.869.108 1.103 1.103 0 0 1-.395-.23l-1-.9v10.173c0 .681-.24 1.335-.668 1.816-.428.482-1.009.753-1.614.753h-4.566v-6.423c0-.681-.24-1.335-.669-1.817-.428-.482-1.009-.752-1.614-.752-.606 0-1.186.27-1.615.752a2.741 2.741 0 0 0-.668 1.817V24H5.165c-.606 0-1.187-.27-1.615-.753a2.741 2.741 0 0 1-.668-1.816V11.257l-1 .899a1.113 1.113 0 0 1-.396.248 1.021 1.021 0 0 1-.887-.094 1.185 1.185 0 0 1-.348-.328 1.348 1.348 0 0 1-.208-.454 1.44 1.44 0 0 1 .111-.994 1.25 1.25 0 0 1 .302-.382l2.839-2.556L10.527.619Z"/>
+                    </g>
+                    <defs>
+                        <clipPath id="a">
+                            <path fill="#fff" d="M0 0h24v24H0z"/>
+                        </clipPath>
+                    </defs>
+                </svg>
+            </a>
+        </div>
+    </nav>
+    <section class="myAccount">
+        <ul class="menu">
+            <li class="accountInfo" id="nicknameInfo">
+                <div class="account-container">
+                    <span class="account-text">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="24" fill="none">
+                            <path fill="#2DD197"
+                                  d="M8 16a8 8 0 1 1 8-8 8.009 8.009 0 0 1-8 8Zm0 2a9.942 9.942 0 0 1-6-2.014V21.5a2.5 2.5 0 0 0 4.062 1.952L8 21.9l1.938 1.55A2.5 2.5 0 0 0 14 21.5v-5.514A9.942 9.942 0 0 1 8 18Z"/>
+                        </svg>
+                        닉네임
+                    </span>
+                    <span class="account-value"></span>
+                </div>
+                <a href="/profile/update">
+                    <button class="update-nickName-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="currentColor">
+                            <path d="M3 17.46v3.04c0 .28.22.5.5.5h3.04c.13 0 .26-.05.35-.15L17.81 9.94l-3.75-3.75L3.15 17.1c-.1.1-.15.22-.15.36zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83l3.75 3.75l1.83-1.83z"></path>
+                        </svg>
+                    </button>
+                </a>
+            </li>
+            <li class="accountInfo" id="emailInfo">
+                <div class="account-container">
+                    <span class="account-text">
+                       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                            fill="none">
+                        <path fill="#2DD197"
+                              d="M21.911 0H2.75A2.753 2.753 0 0 0 0 2.75V22h1.833v-8.25h20.078l-5.18-6.875L21.911 0Z"/>
+                    </svg>
+                        이메일
+                    </span>
+                    <span class="account-value"></span>
+                </div>
+            </li>
+            <li class="accountInfo" id="genderInfo">
+                <div class="account-container">
+                    <span class="account-text">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><g fill="#2DD197"
+                                                                                                  clip-path="url(#a)"><path
+                            d="M16.043 14H7.957A4.963 4.963 0 0 0 3 18.957V24h18v-5.043A4.963 4.963 0 0 0 16.043 14ZM12 12a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/></g><defs><clipPath
+                            id="a"><path fill="#fff" d="M0 0h24v24H0z"/></clipPath></defs></svg>
+                        성별
+                    </span>
+                    <span class="account-value"></span>
+                </div>
+            </li>
+        </ul>
+
+    </section>
+</div>
+
+<script src="/static/js/member/profile.js"></script>
+</body>
+</html>

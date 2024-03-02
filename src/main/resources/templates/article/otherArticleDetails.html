@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0 viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta property="og:title" content="💫 모띠클 | 아티클 둘러보기">
+    <meta property="og:description" content="다른 사용자의 아티클을 확인해보세요.">
+    <meta property="og:image" content="URL to Your Image">
+    <meta property="og:url" content="ec2-3-37-72-225.ap-northeast-2.compute.amazonaws.com">
+    <meta property="og:type" content="website">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="/static/images/1454948.png">
+    <title>모띠클 : 둘러보기</title>
+    <style>
+        #tagButtonsContainer,
+        .go-back,
+        .memo-text,
+        .report-button,
+        .tag-text {
+            display: none;
+        }
+
+        #spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+            margin-top: -70vh;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        #myModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 80%;
+            height: 50%;
+            max-width: 600px;
+            background-color: rgb(255, 255, 255);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 8px;
+        }
+
+        #reportContent {
+            width: 100%;
+            min-height: 200px;
+            resize: vertical;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="view">
+    <nav class="nav">
+        <span onclick="goBack()" class="go-back"><</span>
+        <h1 class="nav-text">둘러보기</h1>
+        <div class="redirect-home">
+            <a href="/" style="cursor: pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                    <g fill-rule="evenodd" clip-path="url(#a)" clip-rule="evenodd">
+                        <path fill="#535353"
+                              d="M10.527.619c.414-.4.942-.619 1.487-.619.545 0 1.072.22 1.486.619l7.233 6.975 2.839 2.557c.117.105.214.236.287.383a1.437 1.437 0 0 1 .096.977 1.348 1.348 0 0 1-.205.446 1.19 1.19 0 0 1-.341.323 1.02 1.02 0 0 1-.869.108 1.103 1.103 0 0 1-.395-.23l-1-.9v10.173c0 .681-.24 1.335-.668 1.816-.428.482-1.009.753-1.614.753h-4.566v-6.423c0-.681-.24-1.335-.669-1.817-.428-.482-1.009-.752-1.614-.752-.606 0-1.186.27-1.615.752a2.741 2.741 0 0 0-.668 1.817V24H5.165c-.606 0-1.187-.27-1.615-.753a2.741 2.741 0 0 1-.668-1.816V11.257l-1 .899a1.113 1.113 0 0 1-.396.248 1.021 1.021 0 0 1-.887-.094 1.185 1.185 0 0 1-.348-.328 1.348 1.348 0 0 1-.208-.454 1.44 1.44 0 0 1 .111-.994 1.25 1.25 0 0 1 .302-.382l2.839-2.556L10.527.619Z"/>
+                        <path fill="#000" fill-opacity=".2"
+                              d="M10.527.619c.414-.4.942-.619 1.487-.619.545 0 1.072.22 1.486.619l7.233 6.975 2.839 2.557c.117.105.214.236.287.383a1.437 1.437 0 0 1 .096.977 1.348 1.348 0 0 1-.205.446 1.19 1.19 0 0 1-.341.323 1.02 1.02 0 0 1-.869.108 1.103 1.103 0 0 1-.395-.23l-1-.9v10.173c0 .681-.24 1.335-.668 1.816-.428.482-1.009.753-1.614.753h-4.566v-6.423c0-.681-.24-1.335-.669-1.817-.428-.482-1.009-.752-1.614-.752-.606 0-1.186.27-1.615.752a2.741 2.741 0 0 0-.668 1.817V24H5.165c-.606 0-1.187-.27-1.615-.753a2.741 2.741 0 0 1-.668-1.816V11.257l-1 .899a1.113 1.113 0 0 1-.396.248 1.021 1.021 0 0 1-.887-.094 1.185 1.185 0 0 1-.348-.328 1.348 1.348 0 0 1-.208-.454 1.44 1.44 0 0 1 .111-.994 1.25 1.25 0 0 1 .302-.382l2.839-2.556L10.527.619Z"/>
+                    </g>
+                    <defs>
+                        <clipPath id="a">
+                            <path fill="#fff" d="M0 0h24v24H0z"/>
+                        </clipPath>
+                    </defs>
+                </svg>
+            </a>
+        </div>
+    </nav>
+
+    <div id="articleDetailsContainer">
+        <section style="flex-grow: 1; -webkit-box-flex: 1;">
+            <h1 id="articleTitle"></h1>
+            <div id="contentAndImageContainer">
+                <div id="articleDetails">
+                </div>
+            </div>
+            <div class="tag-wrapper">
+                <span class="tag-text">태그</span>
+                <div id="tagButtonsContainer">
+                </div>
+            </div>
+            <div style="text-align: end;">
+                <div class="details-scrap-count">
+                </div>
+                <div style="color: grey" class="created-at">
+                </div>
+                <div class="report-button"
+                     style="cursor: pointer; display: flex; align-items: center; justify-content: flex-end;margin-top: 10px;">
+                    <span>신고하기</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+                        <g clip-path="url(#a)">
+                            <path fill="#FF511A"
+                                  d="m21.194 16.9-1.26-12.598A4.762 4.762 0 0 0 15.18 0H8.819a4.763 4.763 0 0 0-4.754 4.302L2.805 16.9A1.001 1.001 0 0 0 3.8 18h16.398a1 1 0 0 0 .996-1.1ZM11 6H9.925l-.11 1.1a1 1 0 1 1-1.991-.2l.2-2a1 1 0 0 1 .995-.9h1.979a1 1 0 0 1 0 2H11Zm10 14H3a3 3 0 0 0-3 3 1 1 0 0 0 1 1h22a1 1 0 0 0 1-1 3 3 0 0 0-3-3Z"/>
+                        </g>
+                        <defs>
+                            <clipPath id="a">
+                                <path fill="#fff" d="M0 0h24v24H0z"/>
+                            </clipPath>
+                        </defs>
+                    <svg>
+
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content" style="padding: 0px">
+            <span class="close" style="cursor: pointer">❌</span>
+            <h2>신고하기</h2>
+            <textarea id="reportContent" placeholder="신고 사유를 입력하세요"></textarea>
+            <button id="submitReport" class="registerButton">제출</button>
+        </div>
+    </div>
+    <div id="spinner" class="spinner"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="/static/js/article/other-article-details.js"></script>
+<script src="/static/js/toast.js"></script>
+</body>
+</html>
