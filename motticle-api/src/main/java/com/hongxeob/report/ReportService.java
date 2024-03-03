@@ -1,5 +1,6 @@
 package com.hongxeob.report;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,7 +11,9 @@ import com.hongxeob.domain.exception.BusinessException;
 import com.hongxeob.domain.member.Member;
 import com.hongxeob.domain.report.Report;
 import com.hongxeob.domain.report.ReportRepository;
+import com.hongxeob.domain.scrap.NotificationType;
 import com.hongxeob.member.MemberService;
+import com.hongxeob.notification.req.NotificationEvent;
 import com.hongxeob.report.dto.req.ReportReq;
 import com.hongxeob.report.dto.res.ReportRes;
 
@@ -26,6 +29,7 @@ public class ReportService {
 	private final ReportRepository reportRepository;
 	private final MemberService memberService;
 	private final ArticleService articleService;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public ReportRes reportArticle(Long memberId, ReportReq req) {
 		Member member = memberService.getMember(memberId);
@@ -46,6 +50,9 @@ public class ReportService {
 			.build();
 
 		reportRepository.save(report);
+
+		NotificationEvent notificationEvent = NotificationEvent.from(NotificationType.REPORTED, article);
+		applicationEventPublisher.publishEvent(notificationEvent);
 
 		return ReportRes.from(report);
 	}

@@ -2,6 +2,7 @@ package com.hongxeob.scrap;
 
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +14,11 @@ import com.hongxeob.domain.article.Article;
 import com.hongxeob.domain.enumeration.ErrorCode;
 import com.hongxeob.domain.exception.BusinessException;
 import com.hongxeob.domain.member.Member;
+import com.hongxeob.domain.scrap.NotificationType;
 import com.hongxeob.domain.scrap.Scrap;
 import com.hongxeob.domain.scrap.ScrapRepository;
 import com.hongxeob.member.MemberService;
+import com.hongxeob.notification.req.NotificationEvent;
 import com.hongxeob.opengraph.OpenGraphProcessor;
 import com.hongxeob.scrap.dto.req.ScrapReq;
 import com.hongxeob.scrap.dto.res.ScrapRes;
@@ -34,6 +37,7 @@ public class ScrapService {
 	private final ArticleService articleService;
 	private final OpenGraphProcessor openGraphProcessor;
 	private final BucketUtils bucketUtils;
+	private final ApplicationEventPublisher applicationEventPublisher;
 
 	public ScrapRes scrap(Long memberId, ScrapReq scrapReq) {
 		bucketUtils.checkRequestBucketCount();
@@ -56,6 +60,9 @@ public class ScrapService {
 			.build();
 
 		Scrap savedScrap = scrapRepository.save(scrap);
+
+		NotificationEvent notificationEvent = NotificationEvent.from(NotificationType.SCRAPED, article);
+		applicationEventPublisher.publishEvent(notificationEvent);
 
 		return ScrapRes.from(savedScrap);
 	}
