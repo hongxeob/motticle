@@ -61,7 +61,11 @@ public enum ErrorCode {
 
 	//신고
 	CANNOT_REPORT_YOUR_OWN_ARTICLE("R001", "본인 아티클은 신고할 수 없습니다."),
-	ALREADY_REPORTED_ARTICLE_BY_SAME_MEMBER("R002", "이미 신고한 아티클입니다.");
+	ALREADY_REPORTED_ARTICLE_BY_SAME_MEMBER("R002", "이미 신고한 아티클입니다."),
+
+	//알림
+	INVALID_REDIS_MESSAGE_FORMAT("N001", "Redis 메시지 형식이 유효하지 않습니다."),
+	SSE_STREAM_ERROR("N002", "SSE 스트림 연결 중 오류가 발생했습니다.");
 
 	private final String code;
 	private final String message;
