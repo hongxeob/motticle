@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import com.hongxeob.article.ArticleService;
 import com.hongxeob.domain.article.Article;
@@ -38,6 +39,9 @@ class ReportServiceTest {
 
 	@Mock
 	private ArticleService articleService;
+
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
 
 	@InjectMocks
 	private ReportService reportService;

@@ -20,9 +20,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Slice;
 
 import com.hongxeob.article.ArticleService;
@@ -35,9 +39,11 @@ import com.hongxeob.domain.exception.BusinessException;
 import com.hongxeob.domain.member.GenderType;
 import com.hongxeob.domain.member.Member;
 import com.hongxeob.domain.member.Role;
+import com.hongxeob.domain.scrap.NotificationType;
 import com.hongxeob.domain.scrap.Scrap;
 import com.hongxeob.domain.scrap.ScrapRepository;
 import com.hongxeob.member.MemberService;
+import com.hongxeob.notification.req.NotificationEvent;
 import com.hongxeob.opengraph.OpenGraphProcessor;
 import com.hongxeob.scrap.dto.req.ScrapReq;
 import com.hongxeob.scrap.dto.res.ScrapRes;
@@ -59,6 +65,12 @@ class ScrapServiceTest {
 
 	@Mock
 	private BucketUtils bucketUtils;
+
+	@Mock
+	private ApplicationEventPublisher applicationEventPublisher;
+
+	@Captor
+	private ArgumentCaptor<NotificationEvent> eventCaptor;
 
 	@InjectMocks
 	private ScrapService scrapService;
