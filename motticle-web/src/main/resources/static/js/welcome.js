@@ -1,8 +1,4 @@
 window.onload = function () {
-    const selectedTags = document.querySelectorAll('.home-tag-button.selected');
-    selectedTags.forEach(tag => tag.classList.remove('selected'));
-    selectRandomTag();
-
     const homeButton = document.querySelector('.nav-home-button');
     homeButton.addEventListener('click', function () {
         showToast("로그인 후 이용해주세요.", false);
@@ -32,16 +28,6 @@ noArticlesContainer.innerHTML = noArticlesImage;
 viewContainer.appendChild(noArticlesContainer);
 noArticlesContainer.style.display = 'none';
 
-function selectRandomTag() {
-    const tagButtons = document.querySelectorAll('.home-tag-button');
-
-    if (tagButtons.length > 0) {
-        const randomIndex = Math.floor(Math.random() * tagButtons.length);
-
-        tagButtons[randomIndex].click();
-    }
-}
-
 let currentPage = 1;
 
 function changeSortOrder(order) {
@@ -58,7 +44,6 @@ async function fetchAndRenderData() {
             const data = await response.json();
             const tags = data.tagRes;
             renderTags(tags);
-            selectRandomTag();
         } else {
             console.error('Error fetching tags:', response.statusText);
         }
@@ -67,7 +52,9 @@ async function fetchAndRenderData() {
     }
 }
 
-fetchAndRenderData();
+fetchAndRenderData().then(() => {
+    fetchAndRenderArticles();
+});
 
 function renderTags(tags) {
     const tagButtonsContainer = document.getElementById('home-tagButtonsContainer');
@@ -115,18 +102,6 @@ async function fetchAndRenderArticles(sortOrder) {
     const selectedTagsBeforeAlert = Array.from(document.querySelectorAll('.home-tag-button.selected'))
         .map(button => button.id);
 
-    if (selectedTagsBeforeAlert.length === 0) {
-        showToast("적어도 하나의 태그를 선택해주세요.", true);
-
-        selectedTagsBeforeAlert.forEach(tagId => {
-            const tagButton = document.getElementById(`tag${tagId}`);
-            if (tagButton) {
-                tagButton.classList.add('selected');
-            }
-        });
-
-        return;
-    }
     noArticlesContainer.style.display = 'none';
 
     const spinner = document.getElementById('spinner');
@@ -135,12 +110,14 @@ async function fetchAndRenderArticles(sortOrder) {
     const articleListContainer = document.querySelector('.explore-article-section');
     articleListContainer.innerHTML = '';
 
-    const selectedTagsName = Array.from(document.querySelectorAll('.home-tag-button.selected'))
-        .map(button => button.value);
+    let tagNames = '';
 
-    const selectedTags = selectedTagsName.map(tagName => encodeURIComponent(tagName));
-    const tagNames = selectedTags.join(',');
-    const sortDropdown = document.getElementById('sortDropdown');
+    if (selectedTagsBeforeAlert.length > 0) {
+        const selectedTagsName = Array.from(document.querySelectorAll('.home-tag-button.selected'))
+            .map(button => button.value);
+        const selectedTags = selectedTagsName.map(tagName => encodeURIComponent(tagName));
+        tagNames = selectedTags.join(',');
+    }
 
     try {
         const articlesResponse = await fetch(`/api/articles/welcome?tagNames=${tagNames}&sortOrder=${sortOrder}`);
@@ -167,10 +144,6 @@ async function fetchAndRenderArticles(sortOrder) {
     }
 }
 
-async function checkScrapedArticle() {
-    showToast("로그인 후 이용하세요", false);
-}
-
 async function renderArticles(articlesData) {
     const exploreArticleSection = document.querySelector('.explore-article-section');
 
@@ -182,22 +155,6 @@ async function renderArticles(articlesData) {
                 const content = article.content;
                 const type = article.type;
                 const tags = article.tagsRes.tagRes || [];
-                // const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                // svgElement.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-                // svgElement.setAttribute("width", "20");
-                // svgElement.setAttribute("height", "20");
-                // svgElement.setAttribute("fill", "none");
-                // svgElement.setAttribute("viewBox", "0 0 20 20");
-
-                // const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                //
-                // pathElement.setAttribute("fill", "#F8BD7E");
-                // const unfilledD = "M16.78 20a2.333 2.333 0 0 1-1.655-.696L10 14.21l-5.125 5.099a2.333 2.333 0 0 1-2.58.507 2.333 2.333 0 0 1-1.462-2.187V4.167A4.167 4.167 0 0 1 5 0h10a4.166 4.166 0 0 1 4.166 4.167v13.461a2.333 2.333 0 0 1-1.459 2.187 2.391 2.391 0 0 1-.926.185ZM5 1.667a2.5 2.5 0 0 0-2.5 2.5v13.461a.703.703 0 0 0 1.197.5l5.72-5.684a.833.833 0 0 1 1.174 0l5.713 5.683a.703.703 0 0 0 1.197-.5V4.167a2.5 2.5 0 0 0-2.5-2.5H5Z";
-                // const filledD = "M1.962 19.427a2.46 2.46 0 0 0 2.722-.536l4.904-4.878 4.904 4.878a2.463 2.463 0 0 0 2.725.537 2.46 2.46 0 0 0 1.537-2.31V3.97a4.172 4.172 0 0 0-4.166-4.167h-10A4.172 4.172 0 0 0 .42 3.97v13.15a2.46 2.46 0 0 0 1.54 2.308Z";
-                //
-                // pathElement.setAttribute("fill", "#F8BD7E");
-                // pathElement.setAttribute("d", isScrapped ? filledD : unfilledD);
-
 
                 const exploreArticleArticle = document.createElement('article');
                 exploreArticleArticle.className = 'explore-article-article';
