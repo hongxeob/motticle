@@ -1,5 +1,7 @@
 package com.hongxeob.tag;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,7 @@ import com.hongxeob.domain.tag.TagRepository;
 import com.hongxeob.member.MemberService;
 import com.hongxeob.tag.dto.req.TagReq;
 import com.hongxeob.tag.dto.res.TagRes;
+import com.hongxeob.tag.dto.res.TagsRes;
 import com.hongxeob.tag.dto.res.TagsSliceRes;
 
 import lombok.RequiredArgsConstructor;
@@ -59,6 +62,13 @@ public class TagService {
 		Slice<Tag> tagSlice = tagRepository.findAllByMemberId(member.getId(), pageable);
 
 		return TagsSliceRes.from(tagSlice);
+	}
+
+	@Transactional(readOnly = true)
+	public TagsRes findAll() {
+		List<Tag> tagList = tagRepository.findAll();
+
+		return TagsRes.from(tagList);
 	}
 
 	public void delete(Long memberId, Long id) {

@@ -102,6 +102,43 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 		return checkLastPage(pageable, result);
 	}
 
+	@Override
+	public Slice<Article> findAllWithTagIdAndArticleTypeAndKeywordWithoutLogin(
+		Collection<String> tagNames,
+		Collection<ArticleType> articleTypes,
+		String keyword,
+		String sortType,
+		Pageable pageable) {
+
+		BooleanExpression expression = qArticle.isPublic.isTrue();
+
+		if (!CollectionUtils.isEmpty(tagNames)) {
+			expression = expression.and(qArticleTag.tag.name.in(tagNames));
+		}
+		if (!CollectionUtils.isEmpty(articleTypes)) {
+			expression = addExpression(expression, qArticle.type.in(articleTypes));
+		}
+		if (StringUtils.hasText(keyword)) {
+			expression = addExpression(expression, qArticle.title.containsIgnoreCase(keyword)
+				.or(qArticle.content.containsIgnoreCase(keyword)));
+		}
+
+		JPAQuery<Article> query = queryFactory.selectFrom(qArticle)
+			.leftJoin(qArticle.articleTags, qArticleTag)
+			.where(expression)
+			.distinct();
+
+		orderSpecifier(sortType, query);
+
+		// 페이징 적용
+		List<Article> result = query
+			.limit(pageable.getPageSize() + 1)
+			.offset(pageable.getOffset())
+			.fetch();
+
+		return checkLastPage(pageable, result);
+	}
+
 	private void orderSpecifier(String sortType, JPAQuery<Article> query) {
 		OrderSpecifier<?> orderSpecifier;
 		if ("scrap-count".equalsIgnoreCase(sortType)) {

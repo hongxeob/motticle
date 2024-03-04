@@ -24,4 +24,12 @@ public interface ArticleRepositoryCustom {
 		String sortType,
 		Pageable pageable
 	);
+
+	Slice<Article> findAllWithTagIdAndArticleTypeAndKeywordWithoutLogin(
+		Collection<String> tagNames,
+		Collection<ArticleType> articleTypes,
+		String keyword,
+		String sortType,
+		Pageable pageable
+	);
 }

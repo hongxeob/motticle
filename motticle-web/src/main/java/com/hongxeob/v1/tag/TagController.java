@@ -16,6 +16,7 @@ import com.hongxeob.common.aop.CurrentMemberId;
 import com.hongxeob.tag.TagService;
 import com.hongxeob.tag.dto.req.TagReq;
 import com.hongxeob.tag.dto.res.TagRes;
+import com.hongxeob.tag.dto.res.TagsRes;
 import com.hongxeob.tag.dto.res.TagsSliceRes;
 
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,13 @@ public class TagController {
 		TagsSliceRes tagsSliceRes = tagService.findAllByMemberId(memberId, pageable);
 
 		return ResponseEntity.ok(tagsSliceRes);
+	}
+
+	@GetMapping("/welcome")
+	public ResponseEntity<TagsRes> getAllTags() {
+		TagsRes tagsRes = tagService.findAll();
+
+		return ResponseEntity.ok(tagsRes);
 	}
 
 	@DeleteMapping("/{id}")

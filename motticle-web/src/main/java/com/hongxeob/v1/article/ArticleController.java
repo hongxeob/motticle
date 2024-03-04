@@ -107,6 +107,15 @@ public class ArticleController {
 		return ResponseEntity.ok(articleRes);
 	}
 
+	@GetMapping("/welcome")
+	public ResponseEntity<ArticlesOgRes> getArticlesByConditionWithoutLogin(@Validated SearchReq searchReq,
+																			@RequestParam(required = false) String keyword
+	) {
+		ArticlesOgRes articleRes = articleService.findAllByConditionAndNotLogin(searchReq, keyword);
+
+		return ResponseEntity.ok(articleRes);
+	}
+
 	@CurrentMemberId
 	@PatchMapping("{id}")
 	public ResponseEntity<ArticleInfoRes> updateArticle(@PathVariable Long id, Long memberId, @RequestBody ArticleModifyReq req) {

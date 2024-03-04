@@ -242,6 +242,22 @@ public class ArticleService {
 		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articlesSliceRes);
 	}
 
+	@Transactional(readOnly = true)
+	public ArticlesOgRes findAllByConditionAndNotLogin(SearchReq searchReq, String keyword) {
+		List<ArticleType> types = ArticleType.from(searchReq.articleTypes());
+
+		PageRequest pageable = getPageRequest(searchReq);
+
+		Slice<Article> articlesSliceRes = articleRepository.findAllWithTagIdAndArticleTypeAndKeywordWithoutLogin(
+			searchReq.tagNames(),
+			types,
+			keyword,
+			searchReq.sortOrder(),
+			pageable);
+
+		return openGraphProcessor.generateArticlesOgResWithOpenGraph(articlesSliceRes);
+	}
+
 	public void remove(Long memberId, Long id) {
 		Member member = memberService.getMember(memberId);
 
