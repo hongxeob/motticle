@@ -268,6 +268,7 @@ function validateLink() {
         })
         .catch(error => {
             console.error('링크 확인 중 오류 발생:', error);
+            spinner.style.display = 'none';
             showToast("유효하지 않은 링크입니다. 다시 입력해주세요.", true);
         });
 }

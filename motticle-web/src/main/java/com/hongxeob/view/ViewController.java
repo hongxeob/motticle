@@ -91,4 +91,14 @@ public class ViewController {
 	public String scrap() {
 		return "article/scrap-list";
 	}
+
+	@GetMapping("/welcome")
+	public String welcome() {
+		return "welcome";
+	}
+
+	@GetMapping("/welcome/search")
+	public String welcomeSearch() {
+		return "article/welcome-search";
+	}
 }
