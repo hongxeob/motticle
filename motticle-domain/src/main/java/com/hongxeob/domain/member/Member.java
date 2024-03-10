@@ -7,6 +7,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.Table;
 
 import com.hongxeob.domain.common.jpa.BaseEntity;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "members")
+@Table(name = "members", indexes = @Index(name = "idx_emil", columnList = "email"))
 public class Member extends BaseEntity {
 
 	@Id
@@ -29,7 +30,7 @@ public class Member extends BaseEntity {
 	@Column(nullable = false, unique = true, length = 30)
 	private String nickname;
 
-	@Column(nullable = false, unique = true, length = 100)
+	@Column(nullable = false, length = 100)
 	private String email;
 
 	private String image;
