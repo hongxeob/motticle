@@ -15,10 +15,6 @@ dependencies {
     implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
     annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 
-//    implementation 'com.querydsl:querydsl-core'
-//    implementation 'com.querydsl:querydsl-jpa'
-//    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
-
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 
