@@ -10,9 +10,11 @@ import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -48,8 +50,9 @@ public class NotificationService {
 	private final RedisOperations<String, NotificationRes> eventRedisOperations;
 	private final ObjectMapper objectMapper;
 
+	@Async
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	@TransactionalEventListener
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 	public void send(NotificationEvent notificationEvent) {
 		Notification savedNotification = notificationRepository.save(createNotification(notificationEvent));
 		NotificationRes notificationRes = NotificationRes.from(savedNotification);
